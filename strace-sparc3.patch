@@ -1,0 +1,48 @@
+--- strace-4.2/linux/sparc/syscall.h.jj	Sat Aug 19 17:02:43 2000
++++ strace-4.2/linux/sparc/syscall.h	Sat Aug 19 17:11:26 2000
+@@ -46,7 +46,7 @@ int	sys_uname(), sys_sysinfo();
+ int sys_getuid32(), sys_getgid32(), sys_geteuid32(), sys_getegid32();
+ int sys_setreuid32(), sys_setregid32(), sys_getgroups32(), sys_setgroups32();
+ int sys_fchown(), sys_setresuid32(), sys_getresuid32(), sys_setresgid32();
+-int sys_getresgid32(), sys_chown(), sys_setuid32(), sys_setgid32();
++int sys_getresgid32(), sys_lchown(), sys_setuid32(), sys_setgid32();
+ int sys_setfsuid32(), sys_setfsgid32();
+ 
+ /* 1.2 memory management */
+@@ -89,6 +89,8 @@ int	sys_chdir(),sys_chroot();
+ int	sys_fchdir(),sys_fchroot();
+ int	sys_mkdir(),sys_rmdir(),sys_getdirentries(), sys_getdents(),sys_getdents64(),sys_readdir();
+ int	sys_creat(),sys_open(),sys_mknod(),sys_unlink(),sys_stat(),sys_fstat(),sys_lstat();
++int	sys_stat64(), sys_lstat64(), sys_fstat64(), sys_truncate64(), sys_ftruncate64(), sys_madvise();
++int	sys_pivot_root();
+ int	sys_chown(),sys_fchown(),sys_chmod(),sys_fchmod(),sys_utimes();
+ int	sys_link(),sys_symlink(),sys_readlink(),sys_rename();
+ int	sys_lseek(),sys_truncate(),sys_ftruncate(),sys_access(),sys_fsync(),sys_sysctl();
+--- strace-4.2/linux/sparc/syscallent.h.jj	Sat Aug 19 17:02:43 2000
++++ strace-4.2/linux/sparc/syscallent.h	Sat Aug 19 17:16:53 2000
+@@ -29,7 +29,7 @@
+ 	{ 2,	TS,	sys_sigaltstack,"sigaltstack" },	/* 28 */
+ 	{ 0,	TS,	sys_pause,	"pause" },		/* 29 */
+ 	{ 2,	TF,	sys_utime,	"utime" },		/* 30 */
+-	{ 3,	TF,	sys_lchown,	"lchown32" },		/* 31 */
++	{ 3,	TF,	sys_chown,	"lchown32" },		/* 31 */
+ 	{ 3,	0,	sys_fchown,	"fchown32" },		/* 32 */
+ 	{ 2,	TF,	sys_access,	"access" },		/* 33 */
+ 	{ 1,	0,	sys_nice,	"nice" },		/* 34 */
+@@ -75,14 +75,14 @@
+ 	{ 3,	0,	sys_mprotect,	"mprotect" },		/* 74 */
+ 	{ 3,	0,	sys_madvise,	"madvise" },		/* 75 */
+ 	{ 1,	0,	sys_vhangup,	"vhangup" },		/* 76 */
+-	{ 2,	TF,	sys_truncate64,	"truncate64" },		/* 77 */
++	{ 2,	TF,	printargs,	"truncate64" },		/* 77 */
+ 	{ 3,	0,	sys_mincore,	"mincore" },		/* 78 */
+ 	{ 2,	0,	sys_getgroups,	"getgroups" },		/* 79 */
+ 	{ 2,	0,	sys_setgroups,	"setgroups" },		/* 80 */
+ 	{ 1,	0,	sys_getpgrp,	"getpgrp" },		/* 81 */
+ 	{ 2,	0,	sys_setgroups32,"setgroups32" },	/* 82 */
+ 	{ 3,	0,	sys_setitimer,	"setitimer" },		/* 83 */
+-	{ 2,	0,	sys_ftruncate64,"ftruncate64" },	/* 84 */
++	{ 2,	0,	printargs,	"ftruncate64" },	/* 84 */
+ 	{ 1,	TF,	sys_swapon,	"swapon" },		/* 85 */
+ 	{ 2,	0,	sys_getitimer,	"getitimer" },		/* 86 */
+ 	{ 1,	0,	sys_setuid32,	"setuid32" },		/* 87 */

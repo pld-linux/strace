@@ -1,0 +1,4914 @@
+--- strace-4.2/linux/dummy.h.ia64	Thu Jul 15 17:11:37 1999
++++ strace-4.2/linux/dummy.h	Tue Mar 21 15:04:51 2000
+@@ -60,7 +60,6 @@
+ #define	sys_umount		sys_chdir
+ #define	sys_swapon		sys_chdir
+ #define	sys_swapoff		sys_chdir
+-#define	sys_clone		sys_fork
+ #define	sys_delete_module	sys_chdir
+ #define	sys_fchdir		sys_close
+ #define	sys_setfsuid		sys_setuid
+--- strace-4.2/linux/ia64/Makefile.in.ia64	Tue Mar 21 15:04:51 2000
++++ strace-4.2/linux/ia64/Makefile.in	Tue Mar 21 15:04:51 2000
+@@ -0,0 +1,57 @@
++#
++# $Id$
++#
++
++srcdir = @srcdir@
++VPATH = $(srcdir)
++
++CC = @CC@
++CPP = @CPP@
++SHELL = /bin/sh
++
++DEFS = @DEFS@
++LDLIBS = @LIBS@
++
++CFLAGS = -g
++LDFLAGS = -g
++WARNFLAGS = @WARNFLAGS@
++
++CPPFLAGS =
++INCLUDES = -I. -I.. -I$(srcdir)/.. -I../.. -I$(srcdir)
++
++includedir = @includedir@
++
++all: ioctlent.h errnoent.h signalent.h syscallent.h
++
++ioctlent.raw: ioctlent.sh
++	$(SHELL) $(srcdir)/ioctlent.sh $(includedir) >$@
++
++ioctlent.h: ioctlent.raw ioctlsort
++	./ioctlsort >$@
++
++ioctlsort: ioctlsort.o
++	$(CC) $(LDFLAGS) ioctlsort.o -o ioctlsort
++
++ioctlsort.o: ../../ioctlsort.c
++	$(CC) $(WARNFLAGS) $(DEFS) $(CPPFLAGS) $(INCLUDES) $(CFLAGS) -c $(srcdir)/../../ioctlsort.c
++
++ioctlsort.o: ioctlent.raw
++
++errnoent.h: ../../errnoent.sh $(includedir)/asm/errno.h
++	$(SHELL) $(srcdir)/../../errnoent.sh $(includedir)/asm/errno.h >$@
++
++signalent.h: ../../signalent.sh $(includedir)/asm/signal.h
++	$(SHELL) $(srcdir)/../../signalent.sh $(includedir)/asm/signal.h >$@
++
++#syscallent.h: ../../syscallent.sh $(includedir)/sys/syscall.h
++syscallent.h:
++	$(SHELL) $(srcdir)/../../syscallent.sh $(includedir)/sys/syscall.h >$@
++
++clean:
++	rm -f ioctlent.c *.raw *.tmp *.o ioctlsort
++
++distclean: clean
++	rm -f Makefile
++
++maintainer-clean: distclean
++	rm -f ioctlent.h errnoent.h signalent.h
+--- strace-4.2/linux/ia64/errnoent.h.ia64	Tue Mar 21 15:04:51 2000
++++ strace-4.2/linux/ia64/errnoent.h	Tue Mar 21 15:04:51 2000
+@@ -0,0 +1,125 @@
++	"ERRNO_0", /* 0 */
++	"EPERM", /* 1 */
++	"ENOENT", /* 2 */
++	"ESRCH", /* 3 */
++	"EINTR", /* 4 */
++	"EIO", /* 5 */
++	"ENXIO", /* 6 */
++	"E2BIG", /* 7 */
++	"ENOEXEC", /* 8 */
++	"EBADF", /* 9 */
++	"ECHILD", /* 10 */
++	"EAGAIN", /* 11 */
++	"ENOMEM", /* 12 */
++	"EACCES", /* 13 */
++	"EFAULT", /* 14 */
++	"ENOTBLK", /* 15 */
++	"EBUSY", /* 16 */
++	"EEXIST", /* 17 */
++	"EXDEV", /* 18 */
++	"ENODEV", /* 19 */
++	"ENOTDIR", /* 20 */
++	"EISDIR", /* 21 */
++	"EINVAL", /* 22 */
++	"ENFILE", /* 23 */
++	"EMFILE", /* 24 */
++	"ENOTTY", /* 25 */
++	"ETXTBSY", /* 26 */
++	"EFBIG", /* 27 */
++	"ENOSPC", /* 28 */
++	"ESPIPE", /* 29 */
++	"EROFS", /* 30 */
++	"EMLINK", /* 31 */
++	"EPIPE", /* 32 */
++	"EDOM", /* 33 */
++	"ERANGE", /* 34 */
++	"EDEADLK", /* 35 */
++	"ENAMETOOLONG", /* 36 */
++	"ENOLCK", /* 37 */
++	"ENOSYS", /* 38 */
++	"ENOTEMPTY", /* 39 */
++	"ELOOP", /* 40 */
++	"ERRNO_41", /* 41 */
++	"ENOMSG", /* 42 */
++	"EIDRM", /* 43 */
++	"ECHRNG", /* 44 */
++	"EL2NSYNC", /* 45 */
++	"EL3HLT", /* 46 */
++	"EL3RST", /* 47 */
++	"ELNRNG", /* 48 */
++	"EUNATCH", /* 49 */
++	"ENOCSI", /* 50 */
++	"EL2HLT", /* 51 */
++	"EBADE", /* 52 */
++	"EBADR", /* 53 */
++	"EXFULL", /* 54 */
++	"ENOANO", /* 55 */
++	"EBADRQC", /* 56 */
++	"EBADSLT", /* 57 */
++	"ERRNO_58", /* 58 */
++	"EBFONT", /* 59 */
++	"ENOSTR", /* 60 */
++	"ENODATA", /* 61 */
++	"ETIME", /* 62 */
++	"ENOSR", /* 63 */
++	"ENONET", /* 64 */
++	"ENOPKG", /* 65 */
++	"EREMOTE", /* 66 */
++	"ENOLINK", /* 67 */
++	"EADV", /* 68 */
++	"ESRMNT", /* 69 */
++	"ECOMM", /* 70 */
++	"EPROTO", /* 71 */
++	"EMULTIHOP", /* 72 */
++	"EDOTDOT", /* 73 */
++	"EBADMSG", /* 74 */
++	"EOVERFLOW", /* 75 */
++	"ENOTUNIQ", /* 76 */
++	"EBADFD", /* 77 */
++	"EREMCHG", /* 78 */
++	"ELIBACC", /* 79 */
++	"ELIBBAD", /* 80 */
++	"ELIBSCN", /* 81 */
++	"ELIBMAX", /* 82 */
++	"ELIBEXEC", /* 83 */
++	"EILSEQ", /* 84 */
++	"ERESTART", /* 85 */
++	"ESTRPIPE", /* 86 */
++	"EUSERS", /* 87 */
++	"ENOTSOCK", /* 88 */
++	"EDESTADDRREQ", /* 89 */
++	"EMSGSIZE", /* 90 */
++	"EPROTOTYPE", /* 91 */
++	"ENOPROTOOPT", /* 92 */
++	"EPROTONOSUPPORT", /* 93 */
++	"ESOCKTNOSUPPORT", /* 94 */
++	"EOPNOTSUPP", /* 95 */
++	"EPFNOSUPPORT", /* 96 */
++	"EAFNOSUPPORT", /* 97 */
++	"EADDRINUSE", /* 98 */
++	"EADDRNOTAVAIL", /* 99 */
++	"ENETDOWN", /* 100 */
++	"ENETUNREACH", /* 101 */
++	"ENETRESET", /* 102 */
++	"ECONNABORTED", /* 103 */
++	"ECONNRESET", /* 104 */
++	"ENOBUFS", /* 105 */
++	"EISCONN", /* 106 */
++	"ENOTCONN", /* 107 */
++	"ESHUTDOWN", /* 108 */
++	"ETOOMANYREFS", /* 109 */
++	"ETIMEDOUT", /* 110 */
++	"ECONNREFUSED", /* 111 */
++	"EHOSTDOWN", /* 112 */
++	"EHOSTUNREACH", /* 113 */
++	"EALREADY", /* 114 */
++	"EINPROGRESS", /* 115 */
++	"ESTALE", /* 116 */
++	"EUCLEAN", /* 117 */
++	"ENOTNAM", /* 118 */
++	"ENAVAIL", /* 119 */
++	"EISNAM", /* 120 */
++	"EREMOTEIO", /* 121 */
++	"EDQUOT", /* 122 */
++	"ENOMEDIUM", /* 123 */
++	"EMEDIUMTYPE", /* 124 */
+--- strace-4.2/linux/ia64/ioctlent.h.ia64	Tue Mar 21 15:04:51 2000
++++ strace-4.2/linux/ia64/ioctlent.h	Tue Mar 21 15:04:51 2000
+@@ -0,0 +1,623 @@
++{"linux/fs.h", "FIBMAP", 0x1},
++{"linux/fs.h", "FIGETBSZ", 0x2},
++{"linux/fd.h", "FDCLRPRM", 0x241},
++{"linux/fd.h", "FDMSGON", 0x245},
++{"linux/fd.h", "FDMSGOFF", 0x246},
++{"linux/fd.h", "FDFMTBEG", 0x247},
++{"linux/fd.h", "FDFMTEND", 0x249},
++{"linux/fd.h", "FDSETEMSGTRESH", 0x24a},
++{"linux/fd.h", "FDFLUSH", 0x24b},
++{"linux/fd.h", "FDRESET", 0x254},
++{"linux/fd.h", "FDWERRORCLR", 0x256},
++{"linux/fd.h", "FDRAWCMD", 0x258},
++{"linux/fd.h", "FDTWADDLE", 0x259},
++{"linux/fd.h", "FDEJECT", 0x25a},
++{"linux/in6.h", "IPV6_PRIORITY_RESERVED1", 0x300},
++{"linux/quota.h", "Q_GETQUOTA", 0x300},
++{"linux/hdreg.h", "HDIO_GETGEO", 0x301},
++{"linux/ps2esdi.h", "HDIO_GETGEO", 0x301},
++{"linux/hdreg.h", "HDIO_GET_UNMASKINTR", 0x302},
++{"linux/hdreg.h", "HDIO_GET_MULTCOUNT", 0x304},
++{"linux/hdreg.h", "HDIO_OBSOLETE_IDENTITY", 0x307},
++{"linux/hdreg.h", "HDIO_GET_KEEPSETTINGS", 0x308},
++{"linux/hdreg.h", "HDIO_GET_32BIT", 0x309},
++{"linux/hdreg.h", "HDIO_GET_NOWERR", 0x30a},
++{"linux/hdreg.h", "HDIO_GET_DMA", 0x30b},
++{"linux/hdreg.h", "HDIO_GET_NICE", 0x30c},
++{"linux/hdreg.h", "HDIO_GET_IDENTITY", 0x30d},
++{"linux/hdreg.h", "HDIO_DRIVE_CMD", 0x31f},
++{"linux/hdreg.h", "HDIO_SET_MULTCOUNT", 0x321},
++{"linux/hdreg.h", "HDIO_SET_UNMASKINTR", 0x322},
++{"linux/hdreg.h", "HDIO_SET_KEEPSETTINGS", 0x323},
++{"linux/hdreg.h", "HDIO_SET_32BIT", 0x324},
++{"linux/hdreg.h", "HDIO_SET_NOWERR", 0x325},
++{"linux/hdreg.h", "HDIO_SET_DMA", 0x326},
++{"linux/hdreg.h", "HDIO_SET_PIO_MODE", 0x327},
++{"linux/hdreg.h", "HDIO_SCAN_HWIF", 0x328},
++{"linux/hdreg.h", "HDIO_SET_NICE", 0x329},
++{"linux/hdreg.h", "HDIO_UNREGISTER_HWIF", 0x32a},
++{"linux/zorro.h", "ZORRO_MANUF_CARDCO_1", 0x3ec},
++{"linux/zorro.h", "ZORRO_MANUF_A_SQUARED", 0x3ed},
++{"linux/zorro.h", "ZORRO_MANUF_COMSPEC_COMMUNICATIONS", 0x3ee},
++{"linux/zorro.h", "ZORRO_MANUF_ANAKIN_RESEARCH", 0x3f1},
++{"linux/zorro.h", "ZORRO_MANUF_MICROBOTICS", 0x3f2},
++{"linux/zorro.h", "ZORRO_MANUF_ACCESS_ASSOCIATES_ALEGRA", 0x3f4},
++{"linux/zorro.h", "ZORRO_MANUF_EXPANSION_TECHNOLOGIES", 0x3f6},
++{"linux/zorro.h", "ZORRO_MANUF_ASDG", 0x3ff},
++{"linux/umsdos_fs.h", "UMSDOS_READDIR_DOS", 0x4d2},
++{"linux/umsdos_fs.h", "UMSDOS_UNLINK_DOS", 0x4d3},
++{"linux/umsdos_fs.h", "UMSDOS_RMDIR_DOS", 0x4d4},
++{"linux/umsdos_fs.h", "UMSDOS_STAT_DOS", 0x4d5},
++{"linux/umsdos_fs.h", "UMSDOS_CREAT_EMD", 0x4d6},
++{"linux/umsdos_fs.h", "UMSDOS_UNLINK_EMD", 0x4d7},
++{"linux/umsdos_fs.h", "UMSDOS_READDIR_EMD", 0x4d8},
++{"linux/umsdos_fs.h", "UMSDOS_GETVERSION", 0x4d9},
++{"linux/umsdos_fs.h", "UMSDOS_INIT_EMD", 0x4da},
++{"linux/umsdos_fs.h", "UMSDOS_DOS_SETUP", 0x4db},
++{"linux/umsdos_fs.h", "UMSDOS_RENAME_DOS", 0x4dc},
++{"linux/in6.h", "IPV6_PRIORITY_INTERACTIVE", 0x600},
++{"linux/quota.h", "Q_SYNC", 0x600},
++{"linux/lp.h", "LPCHAR", 0x601},
++{"linux/lp_m68k.h", "LPCHAR", 0x601},
++{"linux/lp.h", "LPTIME", 0x602},
++{"linux/lp_m68k.h", "LPTIME", 0x602},
++{"linux/lp.h", "LPABORT", 0x604},
++{"linux/lp_m68k.h", "LPABORT", 0x604},
++{"linux/lp.h", "LPSETIRQ", 0x605},
++{"linux/lp_m68k.h", "LPSETIRQ", 0x605},
++{"linux/lp.h", "LPGETIRQ", 0x606},
++{"linux/lp_m68k.h", "LPGETIRQ", 0x606},
++{"linux/lp.h", "LPWAIT", 0x608},
++{"linux/lp_m68k.h", "LPWAIT", 0x608},
++{"linux/lp.h", "LPCAREFUL", 0x609},
++{"linux/lp_m68k.h", "LPCAREFUL", 0x609},
++{"linux/lp.h", "LPABORTOPEN", 0x60a},
++{"linux/lp_m68k.h", "LPABORTOPEN", 0x60a},
++{"linux/lp.h", "LPGETSTATUS", 0x60b},
++{"linux/lp_m68k.h", "LPGETSTATUS", 0x60b},
++{"linux/lp.h", "LPRESET", 0x60c},
++{"linux/lp_m68k.h", "LPRESET", 0x60c},
++{"linux/lp.h", "LPGETSTATS", 0x60d},
++{"linux/lp.h", "LPGETFLAGS", 0x60e},
++{"linux/lp.h", "LPTRUSTIRQ", 0x60f},
++{"linux/zorro.h", "ZORRO_MANUF_GREAT_VALLEY_PRODUCTS_1", 0x6e1},
++{"linux/md.h", "REGISTER_DEV", 0x901},
++{"linux/md.h", "START_MD", 0x902},
++{"linux/md.h", "STOP_MD", 0x903},
++{"linux/md.h", "REGISTER_DEV_NEW", 0x904},
++{"linux/fs.h", "BLKROSET", 0x125d},
++{"linux/fs.h", "BLKROGET", 0x125e},
++{"linux/fs.h", "BLKRRPART", 0x125f},
++{"linux/fs.h", "BLKGETSIZE", 0x1260},
++{"linux/fs.h", "BLKFLSBUF", 0x1261},
++{"linux/fs.h", "BLKRASET", 0x1262},
++{"linux/fs.h", "BLKRAGET", 0x1263},
++{"linux/fs.h", "BLKFRASET", 0x1264},
++{"linux/fs.h", "BLKFRAGET", 0x1265},
++{"linux/fs.h", "BLKSECTSET", 0x1266},
++{"linux/fs.h", "BLKSECTGET", 0x1267},
++{"linux/fs.h", "BLKSSZGET", 0x1268},
++{"linux/zorro.h", "ZORRO_MANUF_APOLLO_2", 0x2200},
++{"scsi/sg.h", "SG_SET_TIMEOUT", 0x2201},
++{"scsi/sg.h", "SG_GET_TIMEOUT", 0x2202},
++{"linux/zorro.h", "ZORRO_MANUF_APOLLO_3", 0x2222},
++{"linux/apm_bios.h", "APM_IOC_STANDBY", 0x4101},
++{"linux/apm_bios.h", "APM_IOC_SUSPEND", 0x4102},
++{"linux/fb.h", "FBIOGET_VSCREENINFO", 0x4600},
++{"linux/fb.h", "FBIOPUT_VSCREENINFO", 0x4601},
++{"linux/ps2esdi.h", "CMD_READ", 0x4601},
++{"linux/fb.h", "FBIOGET_FSCREENINFO", 0x4602},
++{"linux/ps2esdi.h", "CMD_WRITE", 0x4602},
++{"linux/fb.h", "FBIOGETCMAP", 0x4604},
++{"linux/fb.h", "FBIOPUTCMAP", 0x4605},
++{"linux/fb.h", "FBIOPAN_DISPLAY", 0x4606},
++{"linux/fb.h", "FBIOGET_FCURSORINFO", 0x4607},
++{"linux/fb.h", "FBIOGET_VCURSORINFO", 0x4608},
++{"linux/fb.h", "FBIOPUT_VCURSORINFO", 0x4609},
++{"linux/fb.h", "FBIOGET_CURSORSTATE", 0x460a},
++{"linux/fb.h", "FBIOPUT_CURSORSTATE", 0x460b},
++{"linux/fb.h", "FBIOGET_CON2FBMAP", 0x460f},
++{"linux/fb.h", "FBIOPUT_CON2FBMAP", 0x4610},
++{"linux/hfmodem.h", "HFMODEM_IOCTL_CLEARRQ", 0x4803},
++{"linux/hfmodem.h", "HFMODEM_IOCTL_SAMPLEFINISHED", 0x4808},
++{"linux/isdn.h", "IIOCNETAIF", 0x4901},
++{"linux/isdn.h", "IIOCNETDIF", 0x4902},
++{"linux/isdn.h", "IIOCNETSCF", 0x4903},
++{"linux/isdn.h", "IIOCNETGCF", 0x4904},
++{"linux/isdn.h", "IIOCNETANM", 0x4905},
++{"linux/isdn.h", "IIOCNETDNM", 0x4906},
++{"linux/isdn.h", "IIOCNETGNM", 0x4907},
++{"linux/isdn.h", "IIOCGETSET", 0x4908},
++{"linux/isdn.h", "IIOCSETSET", 0x4909},
++{"linux/isdn.h", "IIOCSETVER", 0x490a},
++{"linux/isdn.h", "IIOCNETHUP", 0x490b},
++{"linux/isdn.h", "IIOCSETGST", 0x490c},
++{"linux/isdn.h", "IIOCSETBRJ", 0x490d},
++{"linux/isdn.h", "IIOCSIGPRF", 0x490e},
++{"linux/isdn.h", "IIOCGETPRF", 0x490f},
++{"linux/isdn.h", "IIOCSETPRF", 0x4910},
++{"linux/isdn.h", "IIOCGETMAP", 0x4911},
++{"linux/isdn.h", "IIOCSETMAP", 0x4912},
++{"linux/isdn.h", "IIOCNETASL", 0x4913},
++{"linux/isdn.h", "IIOCNETDIL", 0x4914},
++{"linux/isdn.h", "IIOCGETCPS", 0x4915},
++{"linux/isdn.h", "IIOCGETDVR", 0x4916},
++{"linux/isdn.h", "IIOCNETALN", 0x4920},
++{"linux/isdn.h", "IIOCNETDLN", 0x4921},
++{"linux/isdn.h", "IIOCDBGVAR", 0x497f},
++{"linux/isdn.h", "IIOCDRVCTL", 0x4980},
++{"linux/kd.h", "KIOCSOUND", 0x4b2f},
++{"linux/kd.h", "KDMKTONE", 0x4b30},
++{"linux/kd.h", "KDGETLED", 0x4b31},
++{"linux/kd.h", "KDSETLED", 0x4b32},
++{"linux/kd.h", "KDGKBTYPE", 0x4b33},
++{"linux/kd.h", "KDADDIO", 0x4b34},
++{"linux/kd.h", "KDDELIO", 0x4b35},
++{"linux/kd.h", "KDENABIO", 0x4b36},
++{"linux/kd.h", "KDDISABIO", 0x4b37},
++{"linux/kd.h", "KDSETMODE", 0x4b3a},
++{"linux/kd.h", "KDGETMODE", 0x4b3b},
++{"linux/kd.h", "KDMAPDISP", 0x4b3c},
++{"linux/kd.h", "KDUNMAPDISP", 0x4b3d},
++{"linux/kd.h", "GIO_SCRNMAP", 0x4b40},
++{"linux/kd.h", "PIO_SCRNMAP", 0x4b41},
++{"linux/kd.h", "KDGKBMODE", 0x4b44},
++{"linux/kd.h", "KDSKBMODE", 0x4b45},
++{"linux/kd.h", "KDGKBENT", 0x4b46},
++{"linux/kd.h", "KDSKBENT", 0x4b47},
++{"linux/kd.h", "KDGKBSENT", 0x4b48},
++{"linux/kd.h", "KDSKBSENT", 0x4b49},
++{"linux/kd.h", "KDGKBDIACR", 0x4b4a},
++{"linux/kd.h", "KDSKBDIACR", 0x4b4b},
++{"linux/kd.h", "KDGETKEYCODE", 0x4b4c},
++{"linux/kd.h", "KDSETKEYCODE", 0x4b4d},
++{"linux/kd.h", "KDSIGACCEPT", 0x4b4e},
++{"linux/kd.h", "KDGHWCLK", 0x4b50},
++{"linux/kd.h", "KDSHWCLK", 0x4b51},
++{"linux/kd.h", "KDKBDREP", 0x4b52},
++{"linux/kd.h", "GIO_FONT", 0x4b60},
++{"linux/kd.h", "PIO_FONT", 0x4b61},
++{"linux/kd.h", "KDGKBMETA", 0x4b62},
++{"linux/kd.h", "KDSKBMETA", 0x4b63},
++{"linux/kd.h", "KDGKBLED", 0x4b64},
++{"linux/kd.h", "KDSKBLED", 0x4b65},
++{"linux/kd.h", "GIO_UNIMAP", 0x4b66},
++{"linux/kd.h", "PIO_UNIMAP", 0x4b67},
++{"linux/kd.h", "PIO_UNIMAPCLR", 0x4b68},
++{"linux/kd.h", "GIO_UNISCRNMAP", 0x4b69},
++{"linux/kd.h", "PIO_UNISCRNMAP", 0x4b6a},
++{"linux/kd.h", "GIO_FONTX", 0x4b6b},
++{"linux/kd.h", "PIO_FONTX", 0x4b6c},
++{"linux/kd.h", "PIO_FONTRESET", 0x4b6d},
++{"linux/kd.h", "GIO_CMAP", 0x4b70},
++{"linux/kd.h", "PIO_CMAP", 0x4b71},
++{"linux/kd.h", "KDFONTOP", 0x4b72},
++{"linux/loop.h", "LOOP_SET_FD", 0x4c00},
++{"linux/loop.h", "LOOP_CLR_FD", 0x4c01},
++{"linux/loop.h", "LOOP_SET_STATUS", 0x4c02},
++{"linux/loop.h", "LOOP_GET_STATUS", 0x4c03},
++{"linux/random.h", "RNDZAPENTCNT", 0x5204},
++{"linux/random.h", "RNDCLEARPOOL", 0x5206},
++{"linux/cdrom.h", "CDROMPAUSE", 0x5301},
++{"linux/cdrom.h", "CDROMRESUME", 0x5302},
++{"linux/cdrom.h", "CDROMPLAYMSF", 0x5303},
++{"linux/cdrom.h", "CDROMPLAYTRKIND", 0x5304},
++{"linux/cdrom.h", "CDROMREADTOCHDR", 0x5305},
++{"linux/cdrom.h", "CDROMREADTOCENTRY", 0x5306},
++{"linux/cdrom.h", "CDROMSTOP", 0x5307},
++{"linux/cdrom.h", "CDROMSTART", 0x5308},
++{"linux/cdrom.h", "CDROMEJECT", 0x5309},
++{"linux/cdrom.h", "CDROMVOLCTRL", 0x530a},
++{"linux/cdrom.h", "CDROMSUBCHNL", 0x530b},
++{"linux/cdrom.h", "CDROMREADMODE2", 0x530c},
++{"linux/cdrom.h", "CDROMREADMODE1", 0x530d},
++{"linux/cdrom.h", "CDROMREADAUDIO", 0x530e},
++{"linux/cdrom.h", "CDROMEJECT_SW", 0x530f},
++{"linux/cdrom.h", "CDROMMULTISESSION", 0x5310},
++{"linux/cdrom.h", "CDROM_GET_MCN", 0x5311},
++{"linux/cdrom.h", "CDROMRESET", 0x5312},
++{"linux/cdrom.h", "CDROMVOLREAD", 0x5313},
++{"linux/cdrom.h", "CDROMREADRAW", 0x5314},
++{"linux/cdrom.h", "CDROMREADCOOKED", 0x5315},
++{"linux/cdrom.h", "CDROMSEEK", 0x5316},
++{"linux/cdrom.h", "CDROMPLAYBLK", 0x5317},
++{"linux/cdrom.h", "CDROMREADALL", 0x5318},
++{"linux/cdrom.h", "CDROMCLOSETRAY", 0x5319},
++{"linux/cdrom.h", "CDROM_SET_OPTIONS", 0x5320},
++{"linux/cdrom.h", "CDROM_CLEAR_OPTIONS", 0x5321},
++{"linux/cdrom.h", "CDROM_SELECT_SPEED", 0x5322},
++{"linux/cdrom.h", "CDROM_SELECT_DISC", 0x5323},
++{"linux/cdrom.h", "CDROM_MEDIA_CHANGED", 0x5325},
++{"linux/cdrom.h", "CDROM_DRIVE_STATUS", 0x5326},
++{"linux/cdrom.h", "CDROM_DISC_STATUS", 0x5327},
++{"linux/cdrom.h", "CDROM_CHANGER_NSLOTS", 0x5328},
++{"linux/cdrom.h", "CDROM_LOCKDOOR", 0x5329},
++{"linux/cdrom.h", "CDROM_DEBUG", 0x5330},
++{"linux/cdrom.h", "CDROM_GET_CAPABILITY", 0x5331},
++{"linux/cdrom.h", "CDROMAUDIOBUFSIZ", 0x5382},
++{"scsi/scsi.h", "SCSI_IOCTL_GET_IDLUN", 0x5382},
++{"scsi/scsi.h", "SCSI_IOCTL_TAGGED_ENABLE", 0x5383},
++{"scsi/scsi.h", "SCSI_IOCTL_TAGGED_DISABLE", 0x5384},
++{"scsi/scsi.h", "SCSI_IOCTL_PROBE_HOST", 0x5385},
++{"scsi/scsi.h", "SCSI_IOCTL_GET_BUS_NUMBER", 0x5386},
++{"asm/ioctls.h", "TCGETS", 0x5401},
++{"asm/ioctls.h", "TCSETS", 0x5402},
++{"asm/ioctls.h", "TCSETSW", 0x5403},
++{"asm/ioctls.h", "TCSETSF", 0x5404},
++{"asm/ioctls.h", "TCGETA", 0x5405},
++{"asm/ioctls.h", "TCSETA", 0x5406},
++{"asm/ioctls.h", "TCSETAW", 0x5407},
++{"asm/ioctls.h", "TCSETAF", 0x5408},
++{"asm/ioctls.h", "TCSBRK", 0x5409},
++{"asm/ioctls.h", "TCXONC", 0x540a},
++{"asm/ioctls.h", "TCFLSH", 0x540b},
++{"asm/ioctls.h", "TIOCEXCL", 0x540c},
++{"asm/ioctls.h", "TIOCNXCL", 0x540d},
++{"asm/ioctls.h", "TIOCSCTTY", 0x540e},
++{"asm/ioctls.h", "TIOCGPGRP", 0x540f},
++{"asm/ioctls.h", "TIOCSPGRP", 0x5410},
++{"asm/ioctls.h", "TIOCOUTQ", 0x5411},
++{"asm/ioctls.h", "TIOCSTI", 0x5412},
++{"asm/ioctls.h", "TIOCGWINSZ", 0x5413},
++{"asm/ioctls.h", "TIOCSWINSZ", 0x5414},
++{"asm/ioctls.h", "TIOCMGET", 0x5415},
++{"asm/ioctls.h", "TIOCMBIS", 0x5416},
++{"asm/ioctls.h", "TIOCMBIC", 0x5417},
++{"asm/ioctls.h", "TIOCMSET", 0x5418},
++{"asm/ioctls.h", "TIOCGSOFTCAR", 0x5419},
++{"asm/ioctls.h", "TIOCSSOFTCAR", 0x541a},
++{"asm/ioctls.h", "FIONREAD", 0x541b},
++{"asm/ioctls.h", "TIOCLINUX", 0x541c},
++{"asm/ioctls.h", "TIOCCONS", 0x541d},
++{"asm/ioctls.h", "TIOCGSERIAL", 0x541e},
++{"asm/ioctls.h", "TIOCSSERIAL", 0x541f},
++{"asm/ioctls.h", "TIOCPKT", 0x5420},
++{"asm/ioctls.h", "FIONBIO", 0x5421},
++{"asm/ioctls.h", "TIOCNOTTY", 0x5422},
++{"asm/ioctls.h", "TIOCSETD", 0x5423},
++{"asm/ioctls.h", "TIOCGETD", 0x5424},
++{"asm/ioctls.h", "TCSBRKP", 0x5425},
++{"asm/ioctls.h", "TIOCTTYGSTRUCT", 0x5426},
++{"asm/ioctls.h", "TIOCSBRK", 0x5427},
++{"asm/ioctls.h", "TIOCCBRK", 0x5428},
++{"asm/ioctls.h", "TIOCGSID", 0x5429},
++{"asm/ioctls.h", "FIONCLEX", 0x5450},
++{"asm/ioctls.h", "FIOCLEX", 0x5451},
++{"asm/ioctls.h", "FIOASYNC", 0x5452},
++{"asm/ioctls.h", "TIOCSERCONFIG", 0x5453},
++{"asm/ioctls.h", "TIOCSERGWILD", 0x5454},
++{"asm/ioctls.h", "TIOCSERSWILD", 0x5455},
++{"asm/ioctls.h", "TIOCGLCKTRMIOS", 0x5456},
++{"asm/ioctls.h", "TIOCSLCKTRMIOS", 0x5457},
++{"asm/ioctls.h", "TIOCSERGSTRUCT", 0x5458},
++{"asm/ioctls.h", "TIOCSERGETLSR", 0x5459},
++{"asm/ioctls.h", "TIOCSERGETMULTI", 0x545a},
++{"asm/ioctls.h", "TIOCSERSETMULTI", 0x545b},
++{"asm/ioctls.h", "TIOCMIWAIT", 0x545c},
++{"asm/ioctls.h", "TIOCGICOUNT", 0x545d},
++{"asm/ioctls.h", "TIOCGHAYESESP", 0x545e},
++{"asm/ioctls.h", "TIOCSHAYESESP", 0x545f},
++{"linux/vt.h", "VT_OPENQRY", 0x5600},
++{"linux/vt.h", "VT_GETMODE", 0x5601},
++{"linux/vt.h", "VT_SETMODE", 0x5602},
++{"linux/vt.h", "VT_GETSTATE", 0x5603},
++{"linux/vt.h", "VT_SENDSIG", 0x5604},
++{"linux/vt.h", "VT_RELDISP", 0x5605},
++{"linux/vt.h", "VT_ACTIVATE", 0x5606},
++{"linux/vt.h", "VT_WAITACTIVE", 0x5607},
++{"linux/vt.h", "VT_DISALLOCATE", 0x5608},
++{"linux/vt.h", "VT_RESIZE", 0x5609},
++{"linux/vt.h", "VT_RESIZEX", 0x560a},
++{"linux/vt.h", "VT_LOCKSWITCH", 0x560b},
++{"linux/vt.h", "VT_UNLOCKSWITCH", 0x560c},
++{"linux/comstats.h", "COM_GETPORTSTATS", 0x631e},
++{"linux/comstats.h", "COM_CLRPORTSTATS", 0x631f},
++{"linux/comstats.h", "COM_GETBRDSTATS", 0x6320},
++{"linux/comstats.h", "COM_READPORT", 0x6328},
++{"linux/comstats.h", "COM_READBOARD", 0x6329},
++{"linux/comstats.h", "COM_READPANEL", 0x632a},
++{"linux/synclink.h", "MGSL_IOCSTXIDLE", 0x6d02},
++{"linux/synclink.h", "MGSL_IOCGTXIDLE", 0x6d03},
++{"linux/synclink.h", "MGSL_IOCTXENABLE", 0x6d04},
++{"linux/synclink.h", "MGSL_IOCRXENABLE", 0x6d05},
++{"linux/synclink.h", "MGSL_IOCTXABORT", 0x6d06},
++{"linux/synclink.h", "MGSL_IOCGSTATS", 0x6d07},
++{"linux/synclink.h", "MGSL_IOCWAITEVENT", 0x6d08},
++{"linux/synclink.h", "MGSL_IOCCLRMODCOUNT", 0x6d0f},
++{"linux/ncp_fs.h", "NCP_IOC_CONN_LOGGED_IN", 0x6e03},
++{"linux/mc146818rtc.h", "RTC_AIE_ON", 0x7001},
++{"linux/mc146818rtc.h", "RTC_AIE_OFF", 0x7002},
++{"linux/mc146818rtc.h", "RTC_UIE_ON", 0x7003},
++{"linux/mc146818rtc.h", "RTC_UIE_OFF", 0x7004},
++{"linux/mc146818rtc.h", "RTC_PIE_ON", 0x7005},
++{"linux/mc146818rtc.h", "RTC_PIE_OFF", 0x7006},
++{"linux/nvram.h", "NVRAM_INIT", 0x7040},
++{"linux/nvram.h", "NVRAM_SETCKS", 0x7041},
++{"linux/cdk.h", "STL_BINTR", 0x7314},
++{"linux/cdk.h", "STL_BSTART", 0x7315},
++{"linux/cdk.h", "STL_BSTOP", 0x7316},
++{"linux/cdk.h", "STL_BRESET", 0x7317},
++{"linux/cdk.h", "STL_GETPFLAG", 0x7350},
++{"linux/cdk.h", "STL_SETPFLAG", 0x7351},
++{"linux/if_ppp.h", "PPPIOCXFERUNIT", 0x744e},
++{"asm/sockios.h", "FIOSETOWN", 0x8901},
++{"asm/sockios.h", "SIOCSPGRP", 0x8902},
++{"asm/sockios.h", "FIOGETOWN", 0x8903},
++{"asm/sockios.h", "SIOCGPGRP", 0x8904},
++{"asm/sockios.h", "SIOCATMARK", 0x8905},
++{"asm/sockios.h", "SIOCGSTAMP", 0x8906},
++{"linux/sockios.h", "SIOCADDRT", 0x890b},
++{"linux/sockios.h", "SIOCDELRT", 0x890c},
++{"linux/sockios.h", "SIOCRTMSG", 0x890d},
++{"linux/sockios.h", "SIOCGIFNAME", 0x8910},
++{"linux/sockios.h", "SIOCSIFLINK", 0x8911},
++{"linux/sockios.h", "SIOCGIFCONF", 0x8912},
++{"linux/sockios.h", "SIOCGIFFLAGS", 0x8913},
++{"linux/sockios.h", "SIOCSIFFLAGS", 0x8914},
++{"linux/sockios.h", "SIOCGIFADDR", 0x8915},
++{"linux/sockios.h", "SIOCSIFADDR", 0x8916},
++{"linux/sockios.h", "SIOCGIFDSTADDR", 0x8917},
++{"linux/sockios.h", "SIOCSIFDSTADDR", 0x8918},
++{"linux/sockios.h", "SIOCGIFBRDADDR", 0x8919},
++{"linux/sockios.h", "SIOCSIFBRDADDR", 0x891a},
++{"linux/sockios.h", "SIOCGIFNETMASK", 0x891b},
++{"linux/sockios.h", "SIOCSIFNETMASK", 0x891c},
++{"linux/sockios.h", "SIOCGIFMETRIC", 0x891d},
++{"linux/sockios.h", "SIOCSIFMETRIC", 0x891e},
++{"linux/sockios.h", "SIOCGIFMEM", 0x891f},
++{"linux/sockios.h", "SIOCSIFMEM", 0x8920},
++{"linux/sockios.h", "SIOCGIFMTU", 0x8921},
++{"linux/sockios.h", "SIOCSIFMTU", 0x8922},
++{"linux/sockios.h", "SIOCSIFNAME", 0x8923},
++{"linux/sockios.h", "SIOCSIFHWADDR", 0x8924},
++{"linux/sockios.h", "SIOCGIFENCAP", 0x8925},
++{"linux/sockios.h", "SIOCSIFENCAP", 0x8926},
++{"linux/sockios.h", "SIOCGIFHWADDR", 0x8927},
++{"linux/sockios.h", "SIOCGIFSLAVE", 0x8929},
++{"linux/sockios.h", "SIOCSIFSLAVE", 0x8930},
++{"linux/sockios.h", "SIOCADDMULTI", 0x8931},
++{"linux/sockios.h", "SIOCDELMULTI", 0x8932},
++{"linux/sockios.h", "SIOCGIFINDEX", 0x8933},
++{"linux/sockios.h", "SIOCSIFPFLAGS", 0x8934},
++{"linux/sockios.h", "SIOCGIFPFLAGS", 0x8935},
++{"linux/sockios.h", "SIOCDIFADDR", 0x8936},
++{"linux/sockios.h", "SIOCSIFHWBROADCAST", 0x8937},
++{"linux/sockios.h", "SIOCGIFCOUNT", 0x8938},
++{"linux/sockios.h", "SIOCGIFBR", 0x8940},
++{"linux/sockios.h", "SIOCSIFBR", 0x8941},
++{"linux/sockios.h", "SIOCGIFTXQLEN", 0x8942},
++{"linux/sockios.h", "SIOCSIFTXQLEN", 0x8943},
++{"linux/sockios.h", "SIOCDARP", 0x8953},
++{"linux/sockios.h", "SIOCGARP", 0x8954},
++{"linux/sockios.h", "SIOCSARP", 0x8955},
++{"linux/sockios.h", "SIOCDRARP", 0x8960},
++{"linux/sockios.h", "SIOCGRARP", 0x8961},
++{"linux/sockios.h", "SIOCSRARP", 0x8962},
++{"linux/sockios.h", "SIOCGIFMAP", 0x8970},
++{"linux/sockios.h", "SIOCSIFMAP", 0x8971},
++{"linux/sockios.h", "SIOCADDDLCI", 0x8980},
++{"linux/sockios.h", "SIOCDELDLCI", 0x8981},
++{"linux/sockios.h", "SIOCPROTOPRIVATE", 0x89e0},
++{"linux/sockios.h", "SIOCDEVPRIVATE", 0x89f0},
++{"linux/auto_fs.h", "AUTOFS_IOC_READY", 0x9360},
++{"linux/auto_fs.h", "AUTOFS_IOC_FAIL", 0x9361},
++{"linux/auto_fs.h", "AUTOFS_IOC_CATATONIC", 0x9362},
++{"linux/nbd.h", "NBD_SET_SOCK", 0xab00},
++{"linux/nbd.h", "NBD_SET_BLKSIZE", 0xab01},
++{"linux/nbd.h", "NBD_SET_SIZE", 0xab02},
++{"linux/nbd.h", "NBD_DO_IT", 0xab03},
++{"linux/nbd.h", "NBD_CLEAR_SOCK", 0xab04},
++{"linux/nbd.h", "NBD_CLEAR_QUE", 0xab05},
++{"linux/nbd.h", "NBD_PRINT_DEBUG", 0xab06},
++{"linux/nbd.h", "NBD_SET_SIZE_BLOCKS", 0xab07},
++{"linux/cyclades.h", "CYGETMON", 0x435901},
++{"linux/serial167.h", "CYGETMON", 0x435901},
++{"linux/cyclades.h", "CYGETTHRESH", 0x435902},
++{"linux/serial167.h", "CYGETTHRESH", 0x435902},
++{"linux/cyclades.h", "CYSETTHRESH", 0x435903},
++{"linux/serial167.h", "CYSETTHRESH", 0x435903},
++{"linux/cyclades.h", "CYGETDEFTHRESH", 0x435904},
++{"linux/serial167.h", "CYGETDEFTHRESH", 0x435904},
++{"linux/cyclades.h", "CYSETDEFTHRESH", 0x435905},
++{"linux/serial167.h", "CYSETDEFTHRESH", 0x435905},
++{"linux/cyclades.h", "CYGETTIMEOUT", 0x435906},
++{"linux/serial167.h", "CYGETTIMEOUT", 0x435906},
++{"linux/cyclades.h", "CYSETTIMEOUT", 0x435907},
++{"linux/serial167.h", "CYSETTIMEOUT", 0x435907},
++{"linux/cyclades.h", "CYGETDEFTIMEOUT", 0x435908},
++{"linux/serial167.h", "CYGETDEFTIMEOUT", 0x435908},
++{"linux/cyclades.h", "CYSETDEFTIMEOUT", 0x435909},
++{"linux/serial167.h", "CYSETDEFTIMEOUT", 0x435909},
++{"linux/cyclades.h", "CYSETRFLOW", 0x43590a},
++{"linux/cyclades.h", "CYGETRFLOW", 0x43590b},
++{"linux/cyclades.h", "CYSETRTSDTR_INV", 0x43590c},
++{"linux/cyclades.h", "CYGETRTSDTR_INV", 0x43590d},
++{"linux/cyclades.h", "CYZSETPOLLCYCLE", 0x43590e},
++{"linux/cyclades.h", "CYZGETPOLLCYCLE", 0x43590f},
++{"linux/cyclades.h", "CYGETCD1400VER", 0x435910},
++{"linux/cyclades.h", "CYGETCARDINFO", 0x435911},
++{"linux/cyclades.h", "CYSETWAIT", 0x435912},
++{"linux/cyclades.h", "CYGETWAIT", 0x435913},
++{"linux/random.h", "RNDADDTOENTCNT", 0x40045201},
++{"asm/ioctls.h", "TIOCSPTLCK", 0x40045431},
++{"linux/ncp_fs.h", "NCP_IOC_GETMOUNTUID", 0x40046e02},
++{"linux/ncp_fs.h", "NCP_IOC_SET_SIGN_WANTED", 0x40046e06},
++{"linux/if_ppp.h", "PPPIOCSDEBUG", 0x40047440},
++{"linux/if_ppp.h", "PPPIOCSMAXCID", 0x40047451},
++{"linux/if_ppp.h", "PPPIOCSMRU", 0x40047452},
++{"linux/if_ppp.h", "PPPIOCSRASYNCMAP", 0x40047454},
++{"linux/if_ppp.h", "PPPIOCSASYNCMAP", 0x40047457},
++{"linux/if_ppp.h", "PPPIOCSFLAGS", 0x40047459},
++{"linux/isdn_ppp.h", "PPPIOCBUNDLE", 0x40047481},
++{"linux/isdn_ppp.h", "PPPIOCSMPFLAGS", 0x40047483},
++{"linux/isdn_ppp.h", "PPPIOCSMPMTU", 0x40047484},
++{"linux/isdn_ppp.h", "PPPIOCSMPMRU", 0x40047485},
++{"linux/isdn_ppp.h", "PPPIOCSCOMPRESSOR", 0x40047487},
++{"linux/videodev.h", "VIDIOCCAPTURE", 0x40047608},
++{"linux/videodev.h", "VIDIOCSYNC", 0x40047612},
++{"linux/random.h", "RNDADDENTROPY", 0x40085203},
++{"linux/ext2_fs.h", "EXT2_IOC_SETFLAGS", 0x40086602},
++{"linux/synclink.h", "MGSL_IOCSPARAMS", 0x40086d00},
++{"linux/mtio.h", "MTIOCTOP", 0x40086d01},
++{"linux/mc146818rtc.h", "RTC_IRQP_SET", 0x4008700c},
++{"linux/mc146818rtc.h", "RTC_EPOCH_SET", 0x4008700e},
++{"linux/if_ppp.h", "PPPIOCSNPMODE", 0x4008744b},
++{"linux/ext2_fs.h", "EXT2_IOC_SETVERSION", 0x40087602},
++{"linux/videodev.h", "VIDIOCSFREQ", 0x4008760f},
++{"linux/fd.h", "FDFMTTRK", 0x400c0248},
++{"linux/capi.h", "CAPI_REGISTER", 0x400c4301},
++{"linux/hfmodem.h", "HFMODEM_IOCTL_MIXERPARAMS", 0x400c4806},
++{"linux/ncp_fs.h", "NCP_IOC_GETROOT", 0x400c6e08},
++{"linux/videodev.h", "VIDIOCSPICT", 0x400e7607},
++{"linux/hfmodem.h", "HFMODEM_IOCTL_SAMPLESTART", 0x40104807},
++{"linux/if_ppp.h", "PPPIOCSCOMPRESS", 0x4010744d},
++{"linux/videodev.h", "VIDIOCMCAPTURE", 0x40107613},
++{"linux/fd.h", "FDSETMAXERRS", 0x4014024c},
++{"linux/videodev.h", "VIDIOCSCAPTURE", 0x40147617},
++{"linux/videodev.h", "VIDIOCSFBUF", 0x4018760c},
++{"linux/fd.h", "FDSETPRM", 0x40200242},
++{"linux/fd.h", "FDDEFPRM", 0x40200243},
++{"linux/if_ppp.h", "PPPIOCSXASYNCMAP", 0x4020744f},
++{"linux/joystick.h", "JSIOCSCORR", 0x40246a21},
++{"linux/mc146818rtc.h", "RTC_ALM_SET", 0x40247007},
++{"linux/mc146818rtc.h", "RTC_SET_TIME", 0x4024700a},
++{"linux/videodev.h", "VIDIOCSWIN", 0x4028760a},
++{"linux/videodev.h", "VIDIOCSAUDIO", 0x40287611},
++{"linux/smb_fs.h", "SMB_IOC_NEWCONN", 0x402c7502},
++{"linux/videodev.h", "VIDIOCSCHAN", 0x40307603},
++{"linux/hfmodem.h", "HFMODEM_IOCTL_FSKTXREQUEST", 0x40384800},
++{"linux/hfmodem.h", "HFMODEM_IOCTL_FSKRXREQUEST", 0x40384801},
++{"linux/videodev.h", "VIDIOCSTUNER", 0x40407605},
++{"linux/fd.h", "FDSETDRVPRM", 0x40800290},
++{"linux/joystick.h", "JSIOCGAXES", 0x80016a11},
++{"linux/joystick.h", "JSIOCGBUTTONS", 0x80016a12},
++{"linux/capi.h", "CAPI_GET_ERRCODE", 0x80024321},
++{"linux/capi.h", "CAPI_INSTALLED", 0x80024322},
++{"linux/soundcard.h", "SOUND_MIXER_READ_VOLUME", 0x80044d00},
++{"linux/soundcard.h", "SOUND_MIXER_READ_BASS", 0x80044d01},
++{"linux/soundcard.h", "SOUND_MIXER_READ_TREBLE", 0x80044d02},
++{"linux/soundcard.h", "SOUND_MIXER_READ_SYNTH", 0x80044d03},
++{"linux/soundcard.h", "SOUND_MIXER_READ_PCM", 0x80044d04},
++{"linux/soundcard.h", "SOUND_MIXER_READ_SPEAKER", 0x80044d05},
++{"linux/soundcard.h", "SOUND_MIXER_READ_LINE", 0x80044d06},
++{"linux/soundcard.h", "SOUND_MIXER_READ_MIC", 0x80044d07},
++{"linux/soundcard.h", "SOUND_MIXER_READ_CD", 0x80044d08},
++{"linux/soundcard.h", "SOUND_MIXER_READ_IMIX", 0x80044d09},
++{"linux/soundcard.h", "SOUND_MIXER_READ_ALTPCM", 0x80044d0a},
++{"linux/soundcard.h", "SOUND_MIXER_READ_RECLEV", 0x80044d0b},
++{"linux/soundcard.h", "SOUND_MIXER_READ_IGAIN", 0x80044d0c},
++{"linux/soundcard.h", "SOUND_MIXER_READ_OGAIN", 0x80044d0d},
++{"linux/soundcard.h", "SOUND_MIXER_READ_LINE1", 0x80044d0e},
++{"linux/soundcard.h", "SOUND_MIXER_READ_LINE2", 0x80044d0f},
++{"linux/soundcard.h", "SOUND_MIXER_READ_LINE3", 0x80044d10},
++{"linux/soundcard.h", "SOUND_MIXER_READ_MUTE", 0x80044d1f},
++{"linux/soundcard.h", "SOUND_MIXER_READ_ENHANCE", 0x80044d1f},
++{"linux/soundcard.h", "SOUND_MIXER_READ_LOUD", 0x80044d1f},
++{"linux/soundcard.h", "SOUND_MIXER_READ_STEREODEVS", 0x80044dfb},
++{"linux/soundcard.h", "SOUND_MIXER_READ_CAPS", 0x80044dfc},
++{"linux/soundcard.h", "SOUND_MIXER_READ_RECMASK", 0x80044dfd},
++{"linux/soundcard.h", "SOUND_MIXER_READ_DEVMASK", 0x80044dfe},
++{"linux/soundcard.h", "SOUND_MIXER_READ_RECSRC", 0x80044dff},
++{"linux/random.h", "RNDGETENTCNT", 0x80045200},
++{"asm/ioctls.h", "TIOCGPTN", 0x80045430},
++{"linux/watchdog.h", "WDIOC_GETSTATUS", 0x80045701},
++{"linux/watchdog.h", "WDIOC_GETBOOTSTATUS", 0x80045702},
++{"linux/watchdog.h", "WDIOC_GETTEMP", 0x80045703},
++{"linux/watchdog.h", "WDIOC_SETOPTIONS", 0x80045704},
++{"linux/watchdog.h", "WDIOC_KEEPALIVE", 0x80045705},
++{"linux/joystick.h", "JSIOCGVERSION", 0x80046a01},
++{"linux/ncp_fs.h", "NCP_IOC_SIGN_WANTED", 0x80046e06},
++{"linux/if_ppp.h", "PPPIOCGDEBUG", 0x80047441},
++{"linux/if_ppp.h", "PPPIOCGMRU", 0x80047453},
++{"linux/if_ppp.h", "PPPIOCGRASYNCMAP", 0x80047455},
++{"linux/if_ppp.h", "PPPIOCGUNIT", 0x80047456},
++{"linux/if_ppp.h", "PPPIOCGASYNCMAP", 0x80047458},
++{"linux/if_ppp.h", "PPPIOCGFLAGS", 0x8004745a},
++{"linux/isdn_ppp.h", "PPPIOCGMPFLAGS", 0x80047482},
++{"linux/smb_fs.h", "SMB_IOC_GETMOUNTUID", 0x80047501},
++{"linux/auto_fs.h", "AUTOFS_IOC_PROTOVER", 0x80049363},
++{"linux/hfmodem.h", "HFMODEM_IOCTL_GETCURTIME", 0x80084804},
++{"linux/hfmodem.h", "HFMODEM_IOCTL_WAITRQ", 0x80084805},
++{"linux/random.h", "RNDGETPOOL", 0x80085202},
++{"linux/ext2_fs.h", "EXT2_IOC_GETFLAGS", 0x80086601},
++{"linux/synclink.h", "MGSL_IOCGPARAMS", 0x80086d01},
++{"linux/mtio.h", "MTIOCPOS", 0x80086d03},
++{"linux/mc146818rtc.h", "RTC_IRQP_READ", 0x8008700b},
++{"linux/mc146818rtc.h", "RTC_EPOCH_READ", 0x8008700d},
++{"linux/isdn_ppp.h", "PPPIOCGCOMPRESSORS", 0x80087486},
++{"linux/ext2_fs.h", "EXT2_IOC_GETVERSION", 0x80087601},
++{"linux/videodev.h", "VIDIOCGFREQ", 0x8008760e},
++{"linux/ncp_fs.h", "NCP_IOC_SETROOT", 0x800c6e08},
++{"linux/videodev.h", "VIDIOCKEY", 0x800c760d},
++{"linux/videodev.h", "VIDIOCGPICT", 0x800e7606},
++{"linux/fd.h", "FDGETDRVTYP", 0x8010020f},
++{"linux/mtio.h", "MTIOCGETSIZE", 0x80106d09},
++{"linux/ncp_fs.h", "NCP_IOC_NCPREQUEST", 0x80106e01},
++{"linux/ncp_fs.h", "NCP_IOC_SETPRIVATEDATA", 0x80106e0a},
++{"linux/if_ppp.h", "PPPIOCGIDLE", 0x8010743f},
++{"linux/fd.h", "FDGETMAXERRS", 0x8014020e},
++{"linux/mtio.h", "MTIOCVOLINFO", 0x80146d08},
++{"linux/ncp_fs.h", "NCP_IOC_LOCKUNLOCK", 0x80146e07},
++{"linux/videodev.h", "VIDIOCGUNIT", 0x80147615},
++{"linux/videodev.h", "VIDIOCGCAPTURE", 0x80147616},
++{"linux/ncp_fs.h", "NCP_IOC_SIGN_INIT", 0x80186e05},
++{"linux/ncp_fs.h", "NCP_IOC_SETOBJECTNAME", 0x80186e09},
++{"linux/videodev.h", "VIDIOCGFBUF", 0x8018760b},
++{"linux/fd.h", "FDGETPRM", 0x80200204},
++{"linux/if_ppp.h", "PPPIOCGXASYNCMAP", 0x80207450},
++{"linux/joystick.h", "JSIOCGCORR", 0x80246a22},
++{"linux/mc146818rtc.h", "RTC_ALM_READ", 0x80247008},
++{"linux/mc146818rtc.h", "RTC_RD_TIME", 0x80247009},
++{"linux/fd.h", "FDGETFDCSTAT", 0x80280215},
++{"linux/fd.h", "FDWERRORGET", 0x80280217},
++{"linux/watchdog.h", "WDIOC_GETSUPPORT", 0x80285700},
++{"linux/videodev.h", "VIDIOCGWIN", 0x80287609},
++{"linux/videodev.h", "VIDIOCGAUDIO", 0x80287610},
++{"linux/mtio.h", "MTIOCGET", 0x80306d02},
++{"linux/videodev.h", "VIDIOCGCAP", 0x803c7601},
++{"linux/fd.h", "FDGETDRVSTAT", 0x80500212},
++{"linux/fd.h", "FDPOLLDRVSTAT", 0x80500213},
++{"linux/fd.h", "FDGETDRVPRM", 0x80800211},
++{"linux/videodev.h", "VIDIOCGMBUF", 0x80887614},
++{"linux/auto_fs.h", "AUTOFS_IOC_EXPIRE", 0x810c9365},
++{"linux/msdos_fs.h", "VFAT_IOCTL_READDIR_BOTH", 0x82307201},
++{"linux/msdos_fs.h", "VFAT_IOCTL_READDIR_SHORT", 0x82307202},
++{"linux/capi.h", "CAPI_GET_MANUFACTURER", 0xc0044306},
++{"linux/capi.h", "CAPI_GET_SERIAL", 0xc0044308},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_VOLUME", 0xc0044d00},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_BASS", 0xc0044d01},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_TREBLE", 0xc0044d02},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_SYNTH", 0xc0044d03},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_PCM", 0xc0044d04},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_SPEAKER", 0xc0044d05},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_LINE", 0xc0044d06},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_MIC", 0xc0044d07},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_CD", 0xc0044d08},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_IMIX", 0xc0044d09},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_ALTPCM", 0xc0044d0a},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_RECLEV", 0xc0044d0b},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_IGAIN", 0xc0044d0c},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_OGAIN", 0xc0044d0d},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_LINE1", 0xc0044d0e},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_LINE2", 0xc0044d0f},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_LINE3", 0xc0044d10},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_MUTE", 0xc0044d1f},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_ENHANCE", 0xc0044d1f},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_LOUD", 0xc0044d1f},
++{"linux/soundcard.h", "SOUND_MIXER_WRITE_RECSRC", 0xc0044dff},
++{"linux/coda.h", "CIOC_KERNEL_VERSION", 0xc008630a},
++{"linux/if_ppp.h", "PPPIOCGNPMODE", 0xc008744c},
++{"linux/auto_fs.h", "AUTOFS_IOC_SETTIMEOUT", 0xc0089364},
++{"linux/capi.h", "CAPI_GET_VERSION", 0xc0104307},
++{"linux/capi.h", "CAPI_MANUFACTURER_CMD", 0xc0104320},
++{"linux/ncp_fs.h", "NCP_IOC_GETPRIVATEDATA", 0xc0106e0a},
++{"linux/mtio.h", "MTIOCRDFTSEG", 0xc0186d06},
++{"linux/mtio.h", "MTIOCWRFTSEG", 0xc0186d07},
++{"linux/mtio.h", "MTIOCFTFORMAT", 0xc0186d0a},
++{"linux/ncp_fs.h", "NCP_IOC_GETOBJECTNAME", 0xc0186e09},
++{"linux/mtio.h", "MTIOCFTCMD", 0xc0206d0b},
++{"linux/ncp_fs.h", "NCP_IOC_GET_FS_INFO", 0xc0286e04},
++{"linux/videodev.h", "VIDIOCGCHAN", 0xc0307602},
++{"linux/capi.h", "CAPI_GET_PROFILE", 0xc0404309},
++{"linux/videodev.h", "VIDIOCGTUNER", 0xc0407604},
++{"linux/isdn_ppp.h", "PPPIOCGCALLINFO", 0xc0887480},
+--- strace-4.2/linux/ia64/ioctlent.sh.ia64	Tue Mar 21 15:04:51 2000
++++ strace-4.2/linux/ia64/ioctlent.sh	Tue Mar 21 15:04:51 2000
+@@ -0,0 +1,98 @@
++#!/bin/sh
++# Copyright (c) 1993, 1994, 1995 Rick Sladkey <jrs@world.std.com>
++# All rights reserved.
++#
++# Copyright (c) 1995, 1996 Michael Elizabeth Chastain <mec@duracef.shout.net>
++# All rights reserved.
++#
++# Redistribution and use in source and binary forms, with or without
++# modification, are permitted provided that the following conditions
++# are met:
++# 1. Redistributions of source code must retain the above copyright
++#    notice, this list of conditions and the following disclaimer.
++# 2. Redistributions in binary form must reproduce the above copyright
++#    notice, this list of conditions and the following disclaimer in the
++#    documentation and/or other materials provided with the distribution.
++# 3. The name of the author may not be used to endorse or promote products
++#    derived from this software without specific prior written permission.
++#
++# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
++# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++# IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
++# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
++# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++#
++#	$Id$
++
++# Files to find.
++file_find='asm/*.h linux/*.h scsi/*.h'
++
++# Files to stop.
++file_stop='asm/byteorder.h linux/config.h linux/pci.h linux/xd.h'
++
++# Defs to find.
++# Work on the kernel source to convert all to df_iowr.
++# Don't know how to find low-numbered ioctls in linux/mc146818rtc.h.
++df_name='^[	 ]*#[	 ]*define[	 ]+[A-Z_][A-Z0-9_]*[	 ]+'
++df_iowr='_IO|_IOR|_IOW|_IOWR'
++df_NNNN='0[Xx](03|06|22|46|4B|4C|53|54|56|89|90)[0-9A-Fa-f][0-9A-Fa-f]'
++df_4359='0[Xx]4359[0-9A-Fa-f][0-9A-Fa-f]'	# linux/cyclades.h
++df_470N='470[0-9]'				# linux/fs.h        (only in 1.2.13)
++df_smix='MIXER_READ|MIXER_WRITE'		# linux/soundcard.h
++df_12NN='12[3-4][0-9]'				# linux/umsdos_fs.h (only in 1.2.13)
++df_tail='([()	 ]|$)'
++def_find="$df_name($df_iowr|$df_NNNN|$df_4359|$df_470N|$df_smix|$df_12NN)$df_tail"
++
++# Defs to stop.
++ds_tail='_MAGIC|_PATCH'
++ds_fdmp='FD(DEF|GET|SET)MEDIAPRM'		# linux/fd.h aliases (only in 1.2.13)
++ds_mtio='MTIOC(GET|SET)CONFIG'			# linux/mtio.h needs config (only in 1.2.13)
++def_stop="$ds_tail|$ds_fdmp|$ds_mtio"
++
++# Validate arg count.
++if [ $# -ne 1 ]
++then
++	echo "usage: $0 include-directory" >&2
++	exit 1
++fi
++
++# Grep through the files.
++(
++	# Construct list: find files minus stop files.
++	cd $1 || exit
++	file_list=`(ls $file_find $file_stop $file_stop 2>/dev/null) | sort | uniq -u`
++
++	# Grep matching #define lines.
++	# Transform to C structure form.
++	# Filter out stop list.
++	egrep "$def_find" $file_list |
++		sed -n -e 's/^\(.*\):#[	 ]*define[	 ]*\([A-Z_][A-Z0-9_]*\).*$/	{ "\1",	"\2",	\2	},/p' |
++		egrep -v "$def_stop"
++) > ioctlent.tmp
++
++# Generate the output file.
++echo '/* This file is automatically generated by ioctlent.sh */'
++echo
++echo '#include <sys/types.h>'
++echo
++echo '/* Needed for <linux/baycom.h> */'
++echo '#define BAYCOM_DEBUG'
++echo
++echo '/* Needed for <linux/cyclades.h> */'
++echo '#include <linux/termios.h>'
++echo '#include <linux/tqueue.h>'
++echo
++awk '{ print "#include <" substr($2, 2, length($2) - 3) ">" }' ioctlent.tmp | sort -u
++echo
++echo 'struct ioctlent ioctlent [] ='
++echo '{'
++cat ioctlent.tmp
++echo '};'
++
++# Clean up.
++rm -f ioctlent.tmp
+--- strace-4.2/linux/ia64/signalent.h.ia64	Tue Mar 21 15:04:51 2000
++++ strace-4.2/linux/ia64/signalent.h	Tue Mar 21 15:04:51 2000
+@@ -0,0 +1,64 @@
++	"SIG_0",	/* 0 */
++	"SIGHUP",	/* 1 */
++	"SIGINT",	/* 2 */
++	"SIGQUIT",	/* 3 */
++	"SIGILL",	/* 4 */
++	"SIGTRAP",	/* 5 */
++	"SIGABRT",	/* 6 */
++	"SIGBUS",	/* 7 */
++	"SIGFPE",	/* 8 */
++	"SIGKILL",	/* 9 */
++	"SIGUSR1",	/* 10 */
++	"SIGSEGV",	/* 11 */
++	"SIGUSR2",	/* 12 */
++	"SIGPIPE",	/* 13 */
++	"SIGALRM",	/* 14 */
++	"SIGTERM",	/* 15 */
++	"SIGSTKFLT",	/* 16 */
++	"SIGCHLD",	/* 17 */
++	"SIGCONT",	/* 18 */
++	"SIGSTOP",	/* 19 */
++	"SIGTSTP",	/* 20 */
++	"SIGTTIN",	/* 21 */
++	"SIGTTOU",	/* 22 */
++	"SIGURG",	/* 23 */
++	"SIGXCPU",	/* 24 */
++	"SIGXFSZ",	/* 25 */
++	"SIGVTALRM",	/* 26 */
++	"SIGPROF",	/* 27 */
++	"SIGWINCH",	/* 28 */
++	"SIGIO",	/* 29 */
++	"SIGPWR",	/* 30 */
++	"SIGSYS",	/* 31 */
++	"SIGRT0",	/* 32 */
++	"SIGRT1",	/* 33 */
++	"SIGRT2",	/* 34 */
++	"SIGRT3",	/* 35 */
++	"SIGRT4",	/* 36 */
++	"SIGRT5",	/* 37 */
++	"SIGRT6",	/* 38 */
++	"SIGRT7",	/* 39 */
++	"SIGRT8",	/* 40 */
++	"SIGRT9",	/* 41 */
++	"SIGRT10",	/* 42 */
++	"SIGRT11",	/* 43 */
++	"SIGRT12",	/* 44 */
++	"SIGRT13",	/* 45 */
++	"SIGRT14",	/* 46 */
++	"SIGRT15",	/* 47 */
++	"SIGRT16",	/* 48 */
++	"SIGRT17",	/* 49 */
++	"SIGRT18",	/* 50 */
++	"SIGRT19",	/* 51 */
++	"SIGRT20",	/* 52 */
++	"SIGRT21",	/* 53 */
++	"SIGRT22",	/* 54 */
++	"SIGRT23",	/* 55 */
++	"SIGRT24",	/* 56 */
++	"SIGRT25",	/* 57 */
++	"SIGRT26",	/* 58 */
++	"SIGRT27",	/* 59 */
++	"SIGRT28",	/* 60 */
++	"SIGRT29",	/* 61 */
++	"SIGRT30",	/* 62 */
++	"SIGRT31",	/* 63 */
+--- strace-4.2/linux/ia64/syscallent.h.ia64	Tue Mar 21 15:04:51 2000
++++ strace-4.2/linux/ia64/syscallent.h	Tue Mar 21 15:04:51 2000
+@@ -0,0 +1,1337 @@
++/*
++ * Copyright (c) 1999 David Mosberger-Tang <davidm@hpl.hp.com>
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. The name of the author may not be used to endorse or promote products
++ *    derived from this software without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
++ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
++ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ *	$Id$
++ */
++	{ 0,	0,	sys_setup,		"setup"		}, /* 0 */
++	{ 1,	TP,	sys_exit,		"_exit"		}, /* 1 */
++	{ 0,	TP,	sys_fork,		"fork"		}, /* 2 */
++	{ 3,	0,	sys_read,		"read"		}, /* 3 */
++	{ 3,	0,	sys_write,		"write"		}, /* 4 */
++	{ 3,	TF,	sys_open,		"open"		}, /* 5 */
++	{ 1,	0,	sys_close,		"close"		}, /* 6 */
++	{ 3,	TP,	sys_waitpid,		"waitpid"	}, /* 7 */
++	{ 2,	TF,	sys_creat,		"creat"		}, /* 8 */
++	{ 2,	TF,	sys_link,		"link"		}, /* 9 */
++	{ 1,	TF,	sys_unlink,		"unlink"	}, /* 10 */
++	{ 3,	TF|TP,	sys_execve,		"execve"	}, /* 11 */
++	{ 1,	TF,	sys_chdir,		"chdir"		}, /* 12 */
++	{ 8,	0,	printargs,		"SYS_13"	}, /* 13 */
++	{ 3,	TF,	sys_mknod,		"mknod"		}, /* 14 */
++	{ 2,	TF,	sys_chmod,		"chmod"		}, /* 15 */
++	{ 3,	TF,	sys_chown,		"lchown"	}, /* 16 */
++	{ 8,	0,	printargs,		"SYS_17"	}, /* 17 */
++	{ 8,	0,	printargs,		"SYS_18"	}, /* 18 */
++	{ 3,	0,	sys_lseek,		"lseek"		}, /* 19 */
++	{ 0,	0,	sys_getpid,		"getpid"	}, /* 20 */
++	{ 5,	TF,	sys_mount,		"mount"		}, /* 21 */
++	{ 1,	TF,	sys_umount,		"oldumount"	}, /* 22 */
++	{ 1,	0,	sys_setuid,		"setuid"	}, /* 23 */
++	{ 0,	0,	sys_getuid,		"getuid"	}, /* 24 */
++	{ 8,	0,	printargs,		"SYS_25"	}, /* 25 */
++	{ 4,	0,	sys_ptrace,		"ptrace"	}, /* 26 */
++	{ 1,	0,	sys_alarm,		"alarm"		}, /* 27 */
++	{ 8,	0,	printargs,		"SYS_28"	}, /* 28 */
++	{ 8,	0,	printargs,		"SYS_29"	}, /* 29 */
++	{ 8,	0,	printargs,		"SYS_30"	}, /* 30 */
++	{ 8,	0,	printargs,		"SYS_31"	}, /* 31 */
++	{ 8,	0,	printargs,		"SYS_32"	}, /* 32 */
++	{ 2,	TF,	sys_access,		"access"	}, /* 33 */
++	{ 1,	0,	sys_nice,		"nice"		}, /* 34 */
++	{ 8,	0,	printargs,		"SYS_35"	}, /* 35 */
++	{ 0,	0,	sys_sync,		"sync"		}, /* 36 */
++	{ 2,	TS,	sys_kill,		"kill"		}, /* 37 */
++	{ 2,	TF,	sys_rename,		"rename"	}, /* 38 */
++	{ 2,	TF,	sys_mkdir,		"mkdir"		}, /* 39 */
++	{ 1,	TF,	sys_rmdir,		"rmdir"		}, /* 40 */
++	{ 1,	0,	sys_dup,		"dup"		}, /* 41 */
++	{ 1,	0,	sys_pipe,		"pipe"		}, /* 42 */
++	{ 1,	0,	sys_times,		"times"		}, /* 43 */
++	{ 8,	0,	printargs,		"SYS_44"	}, /* 44 */
++	{ 1,	0,	sys_brk,		"brk"		}, /* 45 */
++	{ 1,	0,	sys_setgid,		"setgid"	}, /* 46 */
++	{ 0,	0,	sys_getgid,		"getgid"	}, /* 47 */
++	{ 3,	TS,	sys_signal,		"signal"	}, /* 48 */
++	{ 0,	0,	sys_geteuid,		"geteuid"	}, /* 49 */
++	{ 0,	0,	sys_getegid,		"getegid"	}, /* 50 */
++	{ 1,	TF,	sys_acct,		"acct"		}, /* 51 */
++	{ 2,	TF,	sys_umount2,		"umount"	}, /* 52 */
++	{ 8,	0,	printargs,		"SYS_53"	}, /* 53 */
++	{ 3,	0,	sys_ioctl,		"ioctl"		}, /* 54 */
++	{ 3,	0,	sys_fcntl,		"fcntl"		}, /* 55 */
++	{ 8,	0,	printargs,		"SYS_56"	}, /* 56 */
++	{ 2,	0,	sys_setpgid,		"setpgid"	}, /* 57 */
++	{ 8,	0,	printargs,		"SYS_58"	}, /* 58 */
++	{ 8,	0,	printargs,		"SYS_59"	}, /* 59 */
++	{ 1,	0,	sys_umask,		"umask"		}, /* 60 */
++	{ 1,	TF,	sys_chroot,		"chroot"	}, /* 61 */
++	{ 2,	0,	sys_ustat,		"ustat"		}, /* 62 */
++	{ 2,	0,	sys_dup2,		"dup2"		}, /* 63 */
++	{ 0,	0,	sys_getppid,		"getppid"	}, /* 64 */
++	{ 0,	0,	sys_getpgrp,		"getpgrp"	}, /* 65 */
++	{ 0,	0,	sys_setsid,		"setsid"	}, /* 66 */
++	{ 8,	0,	printargs,		"SYS_67"	}, /* 67 */
++	{ 8,	0,	printargs,		"SYS_68"	}, /* 68 */
++	{ 8,	0,	printargs,		"SYS_69"	}, /* 69 */
++	{ 2,	0,	sys_setreuid,		"setreuid"	}, /* 70 */
++	{ 2,	0,	sys_setregid,		"setregid"	}, /* 71 */
++	{ 8,	0,	printargs,		"SYS_72"	}, /* 72 */
++	{ 1,	TS,	sys_sigpending,		"sigpending"	}, /* 73 */
++	{ 2,	0,	sys_sethostname,	"sethostname"	}, /* 74 */
++	{ 2,	0,	sys_setrlimit,		"setrlimit"	}, /* 75 */
++	{ 2,	0,	sys_getrlimit,		"getrlimit"	}, /* 76 */
++	{ 2,	0,	sys_getrusage,		"getrusage"	}, /* 77 */
++	{ 2,	0,	sys_gettimeofday,	"gettimeofday"	}, /* 78 */
++	{ 2,	0,	sys_settimeofday,	"settimeofday"	}, /* 79 */
++	{ 2,	0,	sys_getgroups,		"getgroups"	}, /* 80 */
++	{ 2,	0,	sys_setgroups,		"setgroups"	}, /* 81 */
++	{ 8,	0,	printargs,		"SYS_82"	}, /* 82 */
++	{ 2,	TF,	sys_symlink,		"symlink"	}, /* 83 */
++	{ 8,	0,	printargs,		"SYS_84"	}, /* 84 */
++	{ 3,	TF,	sys_readlink,		"readlink"	}, /* 85 */
++	{ 1,	TF,	sys_uselib,		"uselib"	}, /* 86 */
++	{ 1,	TF,	sys_swapon,		"swapon"	}, /* 87 */
++	{ 3,	0,	sys_reboot,		"reboot"	}, /* 88 */
++	{ 3,	0,	sys_readdir,		"readdir"	}, /* 89 */
++	{ 6,	0,	sys_old_mmap,		"mmap"		}, /* 90 */
++	{ 2,	0,	sys_munmap,		"munmap"	}, /* 91 */
++	{ 2,	TF,	sys_truncate,		"truncate"	}, /* 92 */
++	{ 2,	0,	sys_ftruncate,		"ftruncate"	}, /* 93 */
++	{ 2,	0,	sys_fchmod,		"fchmod"	}, /* 94 */
++	{ 3,	0,	sys_fchown,		"fchown"	}, /* 95 */
++	{ 2,	0,	sys_getpriority,	"getpriority"	}, /* 96 */
++	{ 3,	0,	sys_setpriority,	"setpriority"	}, /* 97 */
++	{ 8,	0,	printargs,		"SYS_98"	}, /* 98 */
++	{ 2,	TF,	sys_statfs,		"statfs"	}, /* 99 */
++	{ 2,	0,	sys_fstatfs,		"fstatfs"	}, /* 100 */
++	{ 3,	0,	sys_ioperm,		"ioperm"	}, /* 101 */
++	{ 2,	0,	sys_socketcall,		"socketcall"	}, /* 102 */
++	{ 3,	0,	sys_syslog,		"syslog"	}, /* 103 */
++	{ 3,	0,	sys_setitimer,		"setitimer"	}, /* 104 */
++	{ 2,	0,	sys_getitimer,		"getitimer"	}, /* 105 */
++	{ 2,	TF,	sys_stat,		"stat"		}, /* 106 */
++	{ 2,	TF,	sys_lstat,		"lstat"		}, /* 107 */
++	{ 2,	0,	sys_fstat,		"fstat"		}, /* 108 */
++	{ 8,	0,	printargs,		"SYS_109"	}, /* 109 */
++	{ 1,	0,	sys_iopl,		"iopl"		}, /* 110 */
++	{ 0,	0,	sys_vhangup,		"vhangup"	}, /* 111 */
++	{ 8,	0,	printargs,		"SYS_112"	}, /* 112 */
++	{ 8,	0,	printargs,		"SYS_113"	}, /* 113 */
++	{ 4,	TP,	sys_wait4,		"wait4"		}, /* 114 */
++	{ 1,	0,	sys_swapoff,		"swapoff"	}, /* 115 */
++	{ 1,	0,	sys_sysinfo,		"sysinfo"	}, /* 116 */
++	{ 8,	0,	printargs,		"SYS_117"	}, /* 117 */
++	{ 1,	0,	sys_fsync,		"fsync"		}, /* 118 */
++	{ 1,	TS,	sys_sigreturn,		"sigreturn"	}, /* 119 */
++	{ 2,	TP,	sys_clone,		"clone"		}, /* 120 */
++	{ 2,	0,	sys_setdomainname,	"setdomainname"	}, /* 121 */
++	{ 1,	0,	sys_uname,		"uname"		}, /* 122 */
++	{ 3,	0,	sys_modify_ldt,		"modify_ldt"	}, /* 123 */
++	{ 1,	0,	sys_adjtimex,		"adjtimex"	}, /* 124 */
++	{ 3,	0,	sys_mprotect,		"mprotect"	}, /* 125 */
++	{ 3,	TS,	sys_sigprocmask,	"sigprocmask"	}, /* 126 */
++	{ 2,	0,	sys_create_module,	"create_module"	}, /* 127 */
++	{ 2,	0,	sys_init_module,	"init_module"	}, /* 128 */
++	{ 1,	0,	sys_delete_module,	"delete_module"	}, /* 129 */
++	{ 1,	0,	sys_get_kernel_syms,	"get_kernel_syms"}, /* 130 */
++	{ 4,	0,	sys_quotactl,		"quotactl"	}, /* 131 */
++	{ 1,	0,	sys_getpgid,		"getpgid"	}, /* 132 */
++	{ 1,	0,	sys_fchdir,		"fchdir"	}, /* 133 */
++	{ 0,	0,	sys_bdflush,		"bdflush"	}, /* 134 */
++	{ 3,	0,	sys_sysfs,		"sysfs"		}, /* 135 */
++	{ 1,	0,	sys_personality,	"personality"	}, /* 136 */
++	{ 8,	0,	printargs,		"SYS_137"	}, /* 137 */
++	{ 1,	0,	sys_setfsuid,		"setfsuid"	}, /* 138 */
++	{ 1,	0,	sys_setfsgid,		"setfsgid"	}, /* 139 */
++	{ 5,	0,	sys_llseek,		"_llseek"	}, /* 140 */
++	{ 3,	0,	sys_getdents,		"getdents"	}, /* 141 */
++	{ 5,	0,	sys_select,		"select"	}, /* 142 */
++	{ 2,	0,	sys_flock,		"flock"		}, /* 143 */
++	{ 3,	0,	sys_msync,		"msync"		}, /* 144 */
++	{ 3,	0,	sys_readv,		"readv"		}, /* 145 */
++	{ 3,	0,	sys_writev,		"writev"	}, /* 146 */
++	{ 1,	0,	sys_getsid,		"getsid"	}, /* 147 */
++	{ 1,	0,	sys_fdatasync,		"fdatasync"	}, /* 148 */
++	{ 1,	0,	sys_sysctl,		"_sysctl"	}, /* 149 */
++	{ 1,	0,	sys_mlock,		"mlock"		}, /* 150 */
++	{ 2,	0,	sys_munlock,		"munlock"	}, /* 151 */
++	{ 2,	0,	sys_mlockall,		"mlockall"	}, /* 152 */
++	{ 1,	0,	sys_munlockall,		"munlockall"	}, /* 153 */
++	{ 0,	0,	sys_sched_setparam,	"sched_setparam"}, /* 154 */
++	{ 2,	0,	sys_sched_getparam,	"sched_getparam"}, /* 155 */
++	{ 3,	0,	sys_sched_setscheduler,	"sched_setscheduler"}, /* 156 */
++	{ 1,	0,	sys_sched_getscheduler,	"sched_getscheduler"}, /* 157 */
++	{ 0,	0,	sys_sched_yield,	"sched_yield"}, /* 158 */
++	{ 1,	0,	sys_sched_get_priority_max,"sched_get_priority_max"}, /* 159 */
++	{ 1,	0,	sys_sched_get_priority_min,"sched_get_priority_min"}, /* 160 */
++	{ 2,	0,	sys_sched_rr_get_interval,"sched_rr_get_interval"}, /* 161 */
++	{ 2,	0,	sys_nanosleep,		"nanosleep"	}, /* 162 */
++	{ 4,	0,	sys_mremap,		"mremap"	}, /* 163 */
++	{ 3,	0,	sys_setresuid,		"setresuid"	}, /* 164 */
++	{ 3,	0,	sys_getresuid,		"getresuid"	}, /* 165 */
++	{ 5,	0,	printargs,		"vm86"		}, /* 166 */
++	{ 5,	0,	sys_query_module,	"query_module"	}, /* 167 */
++	{ 3,	0,	sys_poll,		"poll"		}, /* 168 */
++	{ 3,	0,	printargs,		"nfsservctl"	}, /* 169 */
++	{ 3,	0,	sys_setresgid,		"setresgid"	}, /* 170 */
++	{ 3,	0,	sys_getresgid,		"getresgid"	}, /* 171 */
++	{ 5,	0,	printargs,		"prctl"		}, /* 172 */
++	{ 1,	TS,	printargs,		"rt_sigreturn"	}, /* 173 */
++	{ 4,	TS,	sys_rt_sigaction,	"rt_sigaction"  }, /* 174 */
++	{ 4,	TS,	sys_rt_sigprocmask,	"rt_sigprocmask"}, /* 175 */
++	{ 2,	TS,	sys_rt_sigpending,	"rt_sigpending"	}, /* 176 */
++	{ 4,	TS,	sys_rt_sigtimedwait,	"rt_sigtimedwait"}, /* 177 */
++	{ 3,	TS,	sys_rt_sigqueueinfo,    "rt_sigqueueinfo"}, /* 178 */
++	{ 2,	TS,	sys_rt_sigsuspend,	"rt_sigsuspend"	}, /* 179 */
++
++	{ 5,	TF,	sys_pread,		"pread"		}, /* 180 */
++	{ 5,	TF,	sys_pwrite,		"pwrite"	}, /* 181 */
++	{ 3,	TF,	sys_chown,		"chown"		}, /* 182 */
++	{ 2,	0,	sys_getcwd,		"getcwd"	}, /* 183 */
++	{ 2,	0,	sys_capget,		"capget"	}, /* 184 */
++	{ 2,	0,	sys_capset,		"capset"	}, /* 185 */
++	{ 2,	TS,	sys_sigaltstack,	"sigaltstack"	}, /* 186 */
++	{ 4,	TF,	sys_sendfile,		"sendfile"	}, /* 187 */
++	{ 5,	0,	printargs,		"SYS_188"	}, /* 188 */
++	{ 5,	0,	printargs,		"SYS_189"	}, /* 189 */
++	{ 0,	TP,	sys_vfork,		"vfork"		}, /* 190 */
++	{ 5,	0,	printargs,		"getrlimit"	}, /* 191 */
++	{ 6,	0,	sys_mmap,		"mmap2"		}, /* 192 */
++	{ 5,	0,	printargs,		"truncate64"	}, /* 193 */
++	{ 5,	0,	printargs,		"ftruncate64"	}, /* 194 */
++	{ 2,	TF,	sys_stat64,		"stat64"	}, /* 195 */
++	{ 2,	TF,	sys_lstat64,		"lstat64"	}, /* 196 */
++	{ 2,	TF,	sys_fstat64,		"fstat64"	}, /* 197 */
++	{ 5,	0,	printargs,		"SYS_198"	}, /* 198 */
++	{ 5,	0,	printargs,		"SYS_199"	}, /* 199 */
++
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 200 */
++	{ 4,	TI,	sys_semop,		"semop"		}, /* 201 */
++	{ 4,	TI,	sys_semget,		"semget"	}, /* 202 */
++	{ 4,	TI,	sys_semctl,		"semctl"	}, /* 203 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 204 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 205 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 206 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 207 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 208 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 209 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 210 */
++	{ 4,	TI,	sys_msgsnd,		"msgsnd"	}, /* 211 */
++	{ 4,	TI,	sys_msgrcv,		"msgrcv"	}, /* 212 */
++	{ 4,	TI,	sys_msgget,		"msgget"	}, /* 213 */
++	{ 4,	TI,	sys_msgctl,		"msgctl"	}, /* 214 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 215 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 216 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 217 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 218 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 219 */
++	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 220 */
++	{ 4,	TI,	sys_shmat,		"shmat"		}, /* 221 */
++	{ 4,	TI,	sys_shmdt,		"shmdt"		}, /* 222 */
++	{ 4,	TI,	sys_shmget,		"shmget"	}, /* 223 */
++	{ 4,	TI,	sys_shmctl,		"shmctl"	}, /* 224 */
++	{ 5,	0,	printargs,		"SYS_225"	}, /* 225 */
++	{ 5,	0,	printargs,		"SYS_226"	}, /* 226 */
++	{ 5,	0,	printargs,		"SYS_227"	}, /* 227 */
++	{ 5,	0,	printargs,		"SYS_228"	}, /* 228 */
++	{ 5,	0,	printargs,		"SYS_229"	}, /* 229 */
++
++	{ 8,	0,	printargs,		"socket_subcall"}, /* 230 */
++	{ 3,	TN,	sys_socket,		"socket"	}, /* 231 */
++	{ 3,	TN,	sys_bind,		"bind"		}, /* 232 */
++	{ 3,	TN,	sys_connect,		"connect"	}, /* 233 */
++	{ 2,	TN,	sys_listen,		"listen"	}, /* 234 */
++	{ 3,	TN,	sys_accept,		"accept"	}, /* 235 */
++	{ 3,	TN,	sys_getsockname,	"getsockname"	}, /* 236 */
++	{ 3,	TN,	sys_getpeername,	"getpeername"	}, /* 237 */
++	{ 4,	TN,	sys_socketpair,		"socketpair"	}, /* 238 */
++	{ 4,	TN,	sys_send,		"send"		}, /* 239 */
++	{ 4,	TN,	sys_recv,		"recv"		}, /* 240 */
++	{ 6,	TN,	sys_sendto,		"sendto"	}, /* 241 */
++	{ 6,	TN,	sys_recvfrom,		"recvfrom"	}, /* 242 */
++	{ 2,	TN,	sys_shutdown,		"shutdown"	}, /* 243 */
++	{ 5,	TN,	sys_setsockopt,		"setsockopt"	}, /* 244 */
++	{ 5,	TN,	sys_getsockopt,		"getsockopt"	}, /* 245 */
++	{ 5,	TN,	sys_sendmsg,		"sendmsg"	}, /* 246 */
++	{ 5,	TN,	sys_recvmsg,		"recvmsg"	}, /* 247 */
++	{ 5,	0,	printargs,		"SYS_248"	}, /* 248 */
++	{ 5,	0,	printargs,		"SYS_249"	}, /* 249 */
++	{ 8,	0,	printargs,		"SYS_250"	}, /* 250 */
++	{ 8,	0,	printargs,		"SYS_251"	}, /* 251 */
++	{ 8,	0,	printargs,		"SYS_252"	}, /* 252 */
++	{ 8,	0,	printargs,		"SYS_253"	}, /* 253 */
++	{ 8,	0,	printargs,		"SYS_254"	}, /* 254 */
++	{ 8,	0,	printargs,		"SYS_255"	}, /* 255 */
++	{ 8,	0,	printargs,		"SYS_256"	}, /* 256 */
++	{ 8,	0,	printargs,		"SYS_257"	}, /* 257 */
++	{ 8,	0,	printargs,		"SYS_258"	}, /* 258 */
++	{ 8,	0,	printargs,		"SYS_259"	}, /* 259 */
++	{ 8,	0,	printargs,		"SYS_260"	}, /* 260 */
++	{ 8,	0,	printargs,		"SYS_261"	}, /* 261 */
++	{ 8,	0,	printargs,		"SYS_262"	}, /* 262 */
++	{ 8,	0,	printargs,		"SYS_263"	}, /* 263 */
++	{ 8,	0,	printargs,		"SYS_264"	}, /* 264 */
++	{ 8,	0,	printargs,		"SYS_265"	}, /* 265 */
++	{ 8,	0,	printargs,		"SYS_266"	}, /* 266 */
++	{ 8,	0,	printargs,		"SYS_267"	}, /* 267 */
++	{ 8,	0,	printargs,		"SYS_268"	}, /* 268 */
++	{ 8,	0,	printargs,		"SYS_269"	}, /* 269 */
++	{ 8,	0,	printargs,		"SYS_270"	}, /* 270 */
++	{ 8,	0,	printargs,		"SYS_271"	}, /* 271 */
++	{ 8,	0,	printargs,		"SYS_272"	}, /* 272 */
++	{ 8,	0,	printargs,		"SYS_273"	}, /* 273 */
++	{ 8,	0,	printargs,		"SYS_274"	}, /* 274 */
++	{ 8,	0,	printargs,		"SYS_275"	}, /* 275 */
++	{ 8,	0,	printargs,		"SYS_276"	}, /* 276 */
++	{ 8,	0,	printargs,		"SYS_277"	}, /* 277 */
++	{ 8,	0,	printargs,		"SYS_278"	}, /* 278 */
++	{ 8,	0,	printargs,		"SYS_279"	}, /* 279 */
++	{ 8,	0,	printargs,		"SYS_280"	}, /* 280 */
++	{ 8,	0,	printargs,		"SYS_281"	}, /* 281 */
++	{ 8,	0,	printargs,		"SYS_282"	}, /* 282 */
++	{ 8,	0,	printargs,		"SYS_283"	}, /* 283 */
++	{ 8,	0,	printargs,		"SYS_284"	}, /* 284 */
++	{ 8,	0,	printargs,		"SYS_285"	}, /* 285 */
++	{ 8,	0,	printargs,		"SYS_286"	}, /* 286 */
++	{ 8,	0,	printargs,		"SYS_287"	}, /* 287 */
++	{ 8,	0,	printargs,		"SYS_288"	}, /* 288 */
++	{ 8,	0,	printargs,		"SYS_289"	}, /* 289 */
++	{ 8,	0,	printargs,		"SYS_290"	}, /* 290 */
++	{ 8,	0,	printargs,		"SYS_291"	}, /* 291 */
++	{ 8,	0,	printargs,		"SYS_292"	}, /* 292 */
++	{ 8,	0,	printargs,		"SYS_293"	}, /* 293 */
++	{ 8,	0,	printargs,		"SYS_294"	}, /* 294 */
++	{ 8,	0,	printargs,		"SYS_295"	}, /* 295 */
++	{ 8,	0,	printargs,		"SYS_296"	}, /* 296 */
++	{ 8,	0,	printargs,		"SYS_297"	}, /* 297 */
++	{ 8,	0,	printargs,		"SYS_298"	}, /* 298 */
++	{ 8,	0,	printargs,		"SYS_299"	}, /* 299 */
++	{ 8,	0,	printargs,		"SYS_300"	}, /* 300 */
++	{ 8,	0,	printargs,		"SYS_301"	}, /* 301 */
++	{ 8,	0,	printargs,		"SYS_302"	}, /* 302 */
++	{ 8,	0,	printargs,		"SYS_303"	}, /* 303 */
++	{ 8,	0,	printargs,		"SYS_304"	}, /* 304 */
++	{ 8,	0,	printargs,		"SYS_305"	}, /* 305 */
++	{ 8,	0,	printargs,		"SYS_306"	}, /* 306 */
++	{ 8,	0,	printargs,		"SYS_307"	}, /* 307 */
++	{ 8,	0,	printargs,		"SYS_308"	}, /* 308 */
++	{ 8,	0,	printargs,		"SYS_309"	}, /* 309 */
++	{ 8,	0,	printargs,		"SYS_310"	}, /* 310 */
++	{ 8,	0,	printargs,		"SYS_311"	}, /* 311 */
++	{ 8,	0,	printargs,		"SYS_312"	}, /* 312 */
++	{ 8,	0,	printargs,		"SYS_313"	}, /* 313 */
++	{ 8,	0,	printargs,		"SYS_314"	}, /* 314 */
++	{ 8,	0,	printargs,		"SYS_315"	}, /* 315 */
++	{ 8,	0,	printargs,		"SYS_316"	}, /* 316 */
++	{ 8,	0,	printargs,		"SYS_317"	}, /* 317 */
++	{ 8,	0,	printargs,		"SYS_318"	}, /* 318 */
++	{ 8,	0,	printargs,		"SYS_319"	}, /* 319 */
++	{ 8,	0,	printargs,		"SYS_320"	}, /* 320 */
++	{ 8,	0,	printargs,		"SYS_321"	}, /* 321 */
++	{ 8,	0,	printargs,		"SYS_322"	}, /* 322 */
++	{ 8,	0,	printargs,		"SYS_323"	}, /* 323 */
++	{ 8,	0,	printargs,		"SYS_324"	}, /* 324 */
++	{ 8,	0,	printargs,		"SYS_325"	}, /* 325 */
++	{ 8,	0,	printargs,		"SYS_326"	}, /* 326 */
++	{ 8,	0,	printargs,		"SYS_327"	}, /* 327 */
++	{ 8,	0,	printargs,		"SYS_328"	}, /* 328 */
++	{ 8,	0,	printargs,		"SYS_329"	}, /* 329 */
++	{ 8,	0,	printargs,		"SYS_330"	}, /* 330 */
++	{ 8,	0,	printargs,		"SYS_331"	}, /* 331 */
++	{ 8,	0,	printargs,		"SYS_332"	}, /* 332 */
++	{ 8,	0,	printargs,		"SYS_333"	}, /* 333 */
++	{ 8,	0,	printargs,		"SYS_334"	}, /* 334 */
++	{ 8,	0,	printargs,		"SYS_335"	}, /* 335 */
++	{ 8,	0,	printargs,		"SYS_336"	}, /* 336 */
++	{ 8,	0,	printargs,		"SYS_337"	}, /* 337 */
++	{ 8,	0,	printargs,		"SYS_338"	}, /* 338 */
++	{ 8,	0,	printargs,		"SYS_339"	}, /* 339 */
++	{ 8,	0,	printargs,		"SYS_340"	}, /* 340 */
++	{ 8,	0,	printargs,		"SYS_341"	}, /* 341 */
++	{ 8,	0,	printargs,		"SYS_342"	}, /* 342 */
++	{ 8,	0,	printargs,		"SYS_343"	}, /* 343 */
++	{ 8,	0,	printargs,		"SYS_344"	}, /* 344 */
++	{ 8,	0,	printargs,		"SYS_345"	}, /* 345 */
++	{ 8,	0,	printargs,		"SYS_346"	}, /* 346 */
++	{ 8,	0,	printargs,		"SYS_347"	}, /* 347 */
++	{ 8,	0,	printargs,		"SYS_348"	}, /* 348 */
++	{ 8,	0,	printargs,		"SYS_349"	}, /* 349 */
++	{ 8,	0,	printargs,		"SYS_350"	}, /* 350 */
++	{ 8,	0,	printargs,		"SYS_351"	}, /* 351 */
++	{ 8,	0,	printargs,		"SYS_352"	}, /* 352 */
++	{ 8,	0,	printargs,		"SYS_353"	}, /* 353 */
++	{ 8,	0,	printargs,		"SYS_354"	}, /* 354 */
++	{ 8,	0,	printargs,		"SYS_355"	}, /* 355 */
++	{ 8,	0,	printargs,		"SYS_356"	}, /* 356 */
++	{ 8,	0,	printargs,		"SYS_357"	}, /* 357 */
++	{ 8,	0,	printargs,		"SYS_358"	}, /* 358 */
++	{ 8,	0,	printargs,		"SYS_359"	}, /* 359 */
++	{ 8,	0,	printargs,		"SYS_360"	}, /* 360 */
++	{ 8,	0,	printargs,		"SYS_361"	}, /* 361 */
++	{ 8,	0,	printargs,		"SYS_362"	}, /* 362 */
++	{ 8,	0,	printargs,		"SYS_363"	}, /* 363 */
++	{ 8,	0,	printargs,		"SYS_364"	}, /* 364 */
++	{ 8,	0,	printargs,		"SYS_365"	}, /* 365 */
++	{ 8,	0,	printargs,		"SYS_366"	}, /* 366 */
++	{ 8,	0,	printargs,		"SYS_367"	}, /* 367 */
++	{ 8,	0,	printargs,		"SYS_368"	}, /* 368 */
++	{ 8,	0,	printargs,		"SYS_369"	}, /* 369 */
++	{ 8,	0,	printargs,		"SYS_370"	}, /* 370 */
++	{ 8,	0,	printargs,		"SYS_371"	}, /* 371 */
++	{ 8,	0,	printargs,		"SYS_372"	}, /* 372 */
++	{ 8,	0,	printargs,		"SYS_373"	}, /* 373 */
++	{ 8,	0,	printargs,		"SYS_374"	}, /* 374 */
++	{ 8,	0,	printargs,		"SYS_375"	}, /* 375 */
++	{ 8,	0,	printargs,		"SYS_376"	}, /* 376 */
++	{ 8,	0,	printargs,		"SYS_377"	}, /* 377 */
++	{ 8,	0,	printargs,		"SYS_378"	}, /* 378 */
++	{ 8,	0,	printargs,		"SYS_379"	}, /* 379 */
++	{ 8,	0,	printargs,		"SYS_380"	}, /* 380 */
++	{ 8,	0,	printargs,		"SYS_381"	}, /* 381 */
++	{ 8,	0,	printargs,		"SYS_382"	}, /* 382 */
++	{ 8,	0,	printargs,		"SYS_383"	}, /* 383 */
++	{ 8,	0,	printargs,		"SYS_384"	}, /* 384 */
++	{ 8,	0,	printargs,		"SYS_385"	}, /* 385 */
++	{ 8,	0,	printargs,		"SYS_386"	}, /* 386 */
++	{ 8,	0,	printargs,		"SYS_387"	}, /* 387 */
++	{ 8,	0,	printargs,		"SYS_388"	}, /* 388 */
++	{ 8,	0,	printargs,		"SYS_389"	}, /* 389 */
++	{ 8,	0,	printargs,		"SYS_390"	}, /* 390 */
++	{ 8,	0,	printargs,		"SYS_391"	}, /* 391 */
++	{ 8,	0,	printargs,		"SYS_392"	}, /* 392 */
++	{ 8,	0,	printargs,		"SYS_393"	}, /* 393 */
++	{ 8,	0,	printargs,		"SYS_394"	}, /* 394 */
++	{ 8,	0,	printargs,		"SYS_395"	}, /* 395 */
++	{ 8,	0,	printargs,		"SYS_396"	}, /* 396 */
++	{ 8,	0,	printargs,		"SYS_397"	}, /* 397 */
++	{ 8,	0,	printargs,		"SYS_398"	}, /* 398 */
++	{ 8,	0,	printargs,		"SYS_399"	}, /* 399 */
++	{ 8,	0,	printargs,		"SYS_400"	}, /* 400 */
++	{ 8,	0,	printargs,		"SYS_401"	}, /* 401 */
++	{ 8,	0,	printargs,		"SYS_402"	}, /* 402 */
++	{ 8,	0,	printargs,		"SYS_403"	}, /* 403 */
++	{ 8,	0,	printargs,		"SYS_404"	}, /* 404 */
++	{ 8,	0,	printargs,		"SYS_405"	}, /* 405 */
++	{ 8,	0,	printargs,		"SYS_406"	}, /* 406 */
++	{ 8,	0,	printargs,		"SYS_407"	}, /* 407 */
++	{ 8,	0,	printargs,		"SYS_408"	}, /* 408 */
++	{ 8,	0,	printargs,		"SYS_409"	}, /* 409 */
++	{ 8,	0,	printargs,		"SYS_410"	}, /* 410 */
++	{ 8,	0,	printargs,		"SYS_411"	}, /* 411 */
++	{ 8,	0,	printargs,		"SYS_412"	}, /* 412 */
++	{ 8,	0,	printargs,		"SYS_413"	}, /* 413 */
++	{ 8,	0,	printargs,		"SYS_414"	}, /* 414 */
++	{ 8,	0,	printargs,		"SYS_415"	}, /* 415 */
++	{ 8,	0,	printargs,		"SYS_416"	}, /* 416 */
++	{ 8,	0,	printargs,		"SYS_417"	}, /* 417 */
++	{ 8,	0,	printargs,		"SYS_418"	}, /* 418 */
++	{ 8,	0,	printargs,		"SYS_419"	}, /* 419 */
++	{ 8,	0,	printargs,		"SYS_420"	}, /* 420 */
++	{ 8,	0,	printargs,		"SYS_421"	}, /* 421 */
++	{ 8,	0,	printargs,		"SYS_422"	}, /* 422 */
++	{ 8,	0,	printargs,		"SYS_423"	}, /* 423 */
++	{ 8,	0,	printargs,		"SYS_424"	}, /* 424 */
++	{ 8,	0,	printargs,		"SYS_425"	}, /* 425 */
++	{ 8,	0,	printargs,		"SYS_426"	}, /* 426 */
++	{ 8,	0,	printargs,		"SYS_427"	}, /* 427 */
++	{ 8,	0,	printargs,		"SYS_428"	}, /* 428 */
++	{ 8,	0,	printargs,		"SYS_429"	}, /* 429 */
++	{ 8,	0,	printargs,		"SYS_430"	}, /* 430 */
++	{ 8,	0,	printargs,		"SYS_431"	}, /* 431 */
++	{ 8,	0,	printargs,		"SYS_432"	}, /* 432 */
++	{ 8,	0,	printargs,		"SYS_433"	}, /* 433 */
++	{ 8,	0,	printargs,		"SYS_434"	}, /* 434 */
++	{ 8,	0,	printargs,		"SYS_435"	}, /* 435 */
++	{ 8,	0,	printargs,		"SYS_436"	}, /* 436 */
++	{ 8,	0,	printargs,		"SYS_437"	}, /* 437 */
++	{ 8,	0,	printargs,		"SYS_438"	}, /* 438 */
++	{ 8,	0,	printargs,		"SYS_439"	}, /* 439 */
++	{ 8,	0,	printargs,		"SYS_440"	}, /* 440 */
++	{ 8,	0,	printargs,		"SYS_441"	}, /* 441 */
++	{ 8,	0,	printargs,		"SYS_442"	}, /* 442 */
++	{ 8,	0,	printargs,		"SYS_443"	}, /* 443 */
++	{ 8,	0,	printargs,		"SYS_444"	}, /* 444 */
++	{ 8,	0,	printargs,		"SYS_445"	}, /* 445 */
++	{ 8,	0,	printargs,		"SYS_446"	}, /* 446 */
++	{ 8,	0,	printargs,		"SYS_447"	}, /* 447 */
++	{ 8,	0,	printargs,		"SYS_448"	}, /* 448 */
++	{ 8,	0,	printargs,		"SYS_449"	}, /* 449 */
++	{ 8,	0,	printargs,		"SYS_450"	}, /* 450 */
++	{ 8,	0,	printargs,		"SYS_451"	}, /* 451 */
++	{ 8,	0,	printargs,		"SYS_452"	}, /* 452 */
++	{ 8,	0,	printargs,		"SYS_453"	}, /* 453 */
++	{ 8,	0,	printargs,		"SYS_454"	}, /* 454 */
++	{ 8,	0,	printargs,		"SYS_455"	}, /* 455 */
++	{ 8,	0,	printargs,		"SYS_456"	}, /* 456 */
++	{ 8,	0,	printargs,		"SYS_457"	}, /* 457 */
++	{ 8,	0,	printargs,		"SYS_458"	}, /* 458 */
++	{ 8,	0,	printargs,		"SYS_459"	}, /* 459 */
++	{ 8,	0,	printargs,		"SYS_460"	}, /* 460 */
++	{ 8,	0,	printargs,		"SYS_461"	}, /* 461 */
++	{ 8,	0,	printargs,		"SYS_462"	}, /* 462 */
++	{ 8,	0,	printargs,		"SYS_463"	}, /* 463 */
++	{ 8,	0,	printargs,		"SYS_464"	}, /* 464 */
++	{ 8,	0,	printargs,		"SYS_465"	}, /* 465 */
++	{ 8,	0,	printargs,		"SYS_466"	}, /* 466 */
++	{ 8,	0,	printargs,		"SYS_467"	}, /* 467 */
++	{ 8,	0,	printargs,		"SYS_468"	}, /* 468 */
++	{ 8,	0,	printargs,		"SYS_469"	}, /* 469 */
++	{ 8,	0,	printargs,		"SYS_470"	}, /* 470 */
++	{ 8,	0,	printargs,		"SYS_471"	}, /* 471 */
++	{ 8,	0,	printargs,		"SYS_472"	}, /* 472 */
++	{ 8,	0,	printargs,		"SYS_473"	}, /* 473 */
++	{ 8,	0,	printargs,		"SYS_474"	}, /* 474 */
++	{ 8,	0,	printargs,		"SYS_475"	}, /* 475 */
++	{ 8,	0,	printargs,		"SYS_476"	}, /* 476 */
++	{ 8,	0,	printargs,		"SYS_477"	}, /* 477 */
++	{ 8,	0,	printargs,		"SYS_478"	}, /* 478 */
++	{ 8,	0,	printargs,		"SYS_479"	}, /* 479 */
++	{ 8,	0,	printargs,		"SYS_480"	}, /* 480 */
++	{ 8,	0,	printargs,		"SYS_481"	}, /* 481 */
++	{ 8,	0,	printargs,		"SYS_482"	}, /* 482 */
++	{ 8,	0,	printargs,		"SYS_483"	}, /* 483 */
++	{ 8,	0,	printargs,		"SYS_484"	}, /* 484 */
++	{ 8,	0,	printargs,		"SYS_485"	}, /* 485 */
++	{ 8,	0,	printargs,		"SYS_486"	}, /* 486 */
++	{ 8,	0,	printargs,		"SYS_487"	}, /* 487 */
++	{ 8,	0,	printargs,		"SYS_488"	}, /* 488 */
++	{ 8,	0,	printargs,		"SYS_489"	}, /* 489 */
++	{ 8,	0,	printargs,		"SYS_490"	}, /* 490 */
++	{ 8,	0,	printargs,		"SYS_491"	}, /* 491 */
++	{ 8,	0,	printargs,		"SYS_492"	}, /* 492 */
++	{ 8,	0,	printargs,		"SYS_493"	}, /* 493 */
++	{ 8,	0,	printargs,		"SYS_494"	}, /* 494 */
++	{ 8,	0,	printargs,		"SYS_495"	}, /* 495 */
++	{ 8,	0,	printargs,		"SYS_496"	}, /* 496 */
++	{ 8,	0,	printargs,		"SYS_497"	}, /* 497 */
++	{ 8,	0,	printargs,		"SYS_498"	}, /* 498 */
++	{ 8,	0,	printargs,		"SYS_499"	}, /* 499 */
++	{ 8,	0,	printargs,		"SYS_500"	}, /* 500 */
++	{ 8,	0,	printargs,		"SYS_501"	}, /* 501 */
++	{ 8,	0,	printargs,		"SYS_502"	}, /* 502 */
++	{ 8,	0,	printargs,		"SYS_503"	}, /* 503 */
++	{ 8,	0,	printargs,		"SYS_504"	}, /* 504 */
++	{ 8,	0,	printargs,		"SYS_505"	}, /* 505 */
++	{ 8,	0,	printargs,		"SYS_506"	}, /* 506 */
++	{ 8,	0,	printargs,		"SYS_507"	}, /* 507 */
++	{ 8,	0,	printargs,		"SYS_508"	}, /* 508 */
++	{ 8,	0,	printargs,		"SYS_509"	}, /* 509 */
++	{ 8,	0,	printargs,		"SYS_510"	}, /* 510 */
++	{ 8,	0,	printargs,		"SYS_511"	}, /* 511 */
++	{ 8,	0,	printargs,		"SYS_512"	}, /* 512 */
++	{ 8,	0,	printargs,		"SYS_513"	}, /* 513 */
++	{ 8,	0,	printargs,		"SYS_514"	}, /* 514 */
++	{ 8,	0,	printargs,		"SYS_515"	}, /* 515 */
++	{ 8,	0,	printargs,		"SYS_516"	}, /* 516 */
++	{ 8,	0,	printargs,		"SYS_517"	}, /* 517 */
++	{ 8,	0,	printargs,		"SYS_518"	}, /* 518 */
++	{ 8,	0,	printargs,		"SYS_519"	}, /* 519 */
++	{ 8,	0,	printargs,		"SYS_520"	}, /* 520 */
++	{ 8,	0,	printargs,		"SYS_521"	}, /* 521 */
++	{ 8,	0,	printargs,		"SYS_522"	}, /* 522 */
++	{ 8,	0,	printargs,		"SYS_523"	}, /* 523 */
++	{ 8,	0,	printargs,		"SYS_524"	}, /* 524 */
++	{ 8,	0,	printargs,		"SYS_525"	}, /* 525 */
++	{ 8,	0,	printargs,		"SYS_526"	}, /* 526 */
++	{ 8,	0,	printargs,		"SYS_527"	}, /* 527 */
++	{ 8,	0,	printargs,		"SYS_528"	}, /* 528 */
++	{ 8,	0,	printargs,		"SYS_529"	}, /* 529 */
++	{ 8,	0,	printargs,		"SYS_530"	}, /* 530 */
++	{ 8,	0,	printargs,		"SYS_531"	}, /* 531 */
++	{ 8,	0,	printargs,		"SYS_532"	}, /* 532 */
++	{ 8,	0,	printargs,		"SYS_533"	}, /* 533 */
++	{ 8,	0,	printargs,		"SYS_534"	}, /* 534 */
++	{ 8,	0,	printargs,		"SYS_535"	}, /* 535 */
++	{ 8,	0,	printargs,		"SYS_536"	}, /* 536 */
++	{ 8,	0,	printargs,		"SYS_537"	}, /* 537 */
++	{ 8,	0,	printargs,		"SYS_538"	}, /* 538 */
++	{ 8,	0,	printargs,		"SYS_539"	}, /* 539 */
++	{ 8,	0,	printargs,		"SYS_540"	}, /* 540 */
++	{ 8,	0,	printargs,		"SYS_541"	}, /* 541 */
++	{ 8,	0,	printargs,		"SYS_542"	}, /* 542 */
++	{ 8,	0,	printargs,		"SYS_543"	}, /* 543 */
++	{ 8,	0,	printargs,		"SYS_544"	}, /* 544 */
++	{ 8,	0,	printargs,		"SYS_545"	}, /* 545 */
++	{ 8,	0,	printargs,		"SYS_546"	}, /* 546 */
++	{ 8,	0,	printargs,		"SYS_547"	}, /* 547 */
++	{ 8,	0,	printargs,		"SYS_548"	}, /* 548 */
++	{ 8,	0,	printargs,		"SYS_549"	}, /* 549 */
++	{ 8,	0,	printargs,		"SYS_550"	}, /* 550 */
++	{ 8,	0,	printargs,		"SYS_551"	}, /* 551 */
++	{ 8,	0,	printargs,		"SYS_552"	}, /* 552 */
++	{ 8,	0,	printargs,		"SYS_553"	}, /* 553 */
++	{ 8,	0,	printargs,		"SYS_554"	}, /* 554 */
++	{ 8,	0,	printargs,		"SYS_555"	}, /* 555 */
++	{ 8,	0,	printargs,		"SYS_556"	}, /* 556 */
++	{ 8,	0,	printargs,		"SYS_557"	}, /* 557 */
++	{ 8,	0,	printargs,		"SYS_558"	}, /* 558 */
++	{ 8,	0,	printargs,		"SYS_559"	}, /* 559 */
++	{ 8,	0,	printargs,		"SYS_560"	}, /* 560 */
++	{ 8,	0,	printargs,		"SYS_561"	}, /* 561 */
++	{ 8,	0,	printargs,		"SYS_562"	}, /* 562 */
++	{ 8,	0,	printargs,		"SYS_563"	}, /* 563 */
++	{ 8,	0,	printargs,		"SYS_564"	}, /* 564 */
++	{ 8,	0,	printargs,		"SYS_565"	}, /* 565 */
++	{ 8,	0,	printargs,		"SYS_566"	}, /* 566 */
++	{ 8,	0,	printargs,		"SYS_567"	}, /* 567 */
++	{ 8,	0,	printargs,		"SYS_568"	}, /* 568 */
++	{ 8,	0,	printargs,		"SYS_569"	}, /* 569 */
++	{ 8,	0,	printargs,		"SYS_570"	}, /* 570 */
++	{ 8,	0,	printargs,		"SYS_571"	}, /* 571 */
++	{ 8,	0,	printargs,		"SYS_572"	}, /* 572 */
++	{ 8,	0,	printargs,		"SYS_573"	}, /* 573 */
++	{ 8,	0,	printargs,		"SYS_574"	}, /* 574 */
++	{ 8,	0,	printargs,		"SYS_575"	}, /* 575 */
++	{ 8,	0,	printargs,		"SYS_576"	}, /* 576 */
++	{ 8,	0,	printargs,		"SYS_577"	}, /* 577 */
++	{ 8,	0,	printargs,		"SYS_578"	}, /* 578 */
++	{ 8,	0,	printargs,		"SYS_579"	}, /* 579 */
++	{ 8,	0,	printargs,		"SYS_580"	}, /* 580 */
++	{ 8,	0,	printargs,		"SYS_581"	}, /* 581 */
++	{ 8,	0,	printargs,		"SYS_582"	}, /* 582 */
++	{ 8,	0,	printargs,		"SYS_583"	}, /* 583 */
++	{ 8,	0,	printargs,		"SYS_584"	}, /* 584 */
++	{ 8,	0,	printargs,		"SYS_585"	}, /* 585 */
++	{ 8,	0,	printargs,		"SYS_586"	}, /* 586 */
++	{ 8,	0,	printargs,		"SYS_587"	}, /* 587 */
++	{ 8,	0,	printargs,		"SYS_588"	}, /* 588 */
++	{ 8,	0,	printargs,		"SYS_589"	}, /* 589 */
++	{ 8,	0,	printargs,		"SYS_590"	}, /* 590 */
++	{ 8,	0,	printargs,		"SYS_591"	}, /* 591 */
++	{ 8,	0,	printargs,		"SYS_592"	}, /* 592 */
++	{ 8,	0,	printargs,		"SYS_593"	}, /* 593 */
++	{ 8,	0,	printargs,		"SYS_594"	}, /* 594 */
++	{ 8,	0,	printargs,		"SYS_595"	}, /* 595 */
++	{ 8,	0,	printargs,		"SYS_596"	}, /* 596 */
++	{ 8,	0,	printargs,		"SYS_597"	}, /* 597 */
++	{ 8,	0,	printargs,		"SYS_598"	}, /* 598 */
++	{ 8,	0,	printargs,		"SYS_599"	}, /* 599 */
++	{ 8,	0,	printargs,		"SYS_600"	}, /* 600 */
++	{ 8,	0,	printargs,		"SYS_601"	}, /* 601 */
++	{ 8,	0,	printargs,		"SYS_602"	}, /* 602 */
++	{ 8,	0,	printargs,		"SYS_603"	}, /* 603 */
++	{ 8,	0,	printargs,		"SYS_604"	}, /* 604 */
++	{ 8,	0,	printargs,		"SYS_605"	}, /* 605 */
++	{ 8,	0,	printargs,		"SYS_606"	}, /* 606 */
++	{ 8,	0,	printargs,		"SYS_607"	}, /* 607 */
++	{ 8,	0,	printargs,		"SYS_608"	}, /* 608 */
++	{ 8,	0,	printargs,		"SYS_609"	}, /* 609 */
++	{ 8,	0,	printargs,		"SYS_610"	}, /* 610 */
++	{ 8,	0,	printargs,		"SYS_611"	}, /* 611 */
++	{ 8,	0,	printargs,		"SYS_612"	}, /* 612 */
++	{ 8,	0,	printargs,		"SYS_613"	}, /* 613 */
++	{ 8,	0,	printargs,		"SYS_614"	}, /* 614 */
++	{ 8,	0,	printargs,		"SYS_615"	}, /* 615 */
++	{ 8,	0,	printargs,		"SYS_616"	}, /* 616 */
++	{ 8,	0,	printargs,		"SYS_617"	}, /* 617 */
++	{ 8,	0,	printargs,		"SYS_618"	}, /* 618 */
++	{ 8,	0,	printargs,		"SYS_619"	}, /* 619 */
++	{ 8,	0,	printargs,		"SYS_620"	}, /* 620 */
++	{ 8,	0,	printargs,		"SYS_621"	}, /* 621 */
++	{ 8,	0,	printargs,		"SYS_622"	}, /* 622 */
++	{ 8,	0,	printargs,		"SYS_623"	}, /* 623 */
++	{ 8,	0,	printargs,		"SYS_624"	}, /* 624 */
++	{ 8,	0,	printargs,		"SYS_625"	}, /* 625 */
++	{ 8,	0,	printargs,		"SYS_626"	}, /* 626 */
++	{ 8,	0,	printargs,		"SYS_627"	}, /* 627 */
++	{ 8,	0,	printargs,		"SYS_628"	}, /* 628 */
++	{ 8,	0,	printargs,		"SYS_629"	}, /* 629 */
++	{ 8,	0,	printargs,		"SYS_630"	}, /* 630 */
++	{ 8,	0,	printargs,		"SYS_631"	}, /* 631 */
++	{ 8,	0,	printargs,		"SYS_632"	}, /* 632 */
++	{ 8,	0,	printargs,		"SYS_633"	}, /* 633 */
++	{ 8,	0,	printargs,		"SYS_634"	}, /* 634 */
++	{ 8,	0,	printargs,		"SYS_635"	}, /* 635 */
++	{ 8,	0,	printargs,		"SYS_636"	}, /* 636 */
++	{ 8,	0,	printargs,		"SYS_637"	}, /* 637 */
++	{ 8,	0,	printargs,		"SYS_638"	}, /* 638 */
++	{ 8,	0,	printargs,		"SYS_639"	}, /* 639 */
++	{ 8,	0,	printargs,		"SYS_640"	}, /* 640 */
++	{ 8,	0,	printargs,		"SYS_641"	}, /* 641 */
++	{ 8,	0,	printargs,		"SYS_642"	}, /* 642 */
++	{ 8,	0,	printargs,		"SYS_643"	}, /* 643 */
++	{ 8,	0,	printargs,		"SYS_644"	}, /* 644 */
++	{ 8,	0,	printargs,		"SYS_645"	}, /* 645 */
++	{ 8,	0,	printargs,		"SYS_646"	}, /* 646 */
++	{ 8,	0,	printargs,		"SYS_647"	}, /* 647 */
++	{ 8,	0,	printargs,		"SYS_648"	}, /* 648 */
++	{ 8,	0,	printargs,		"SYS_649"	}, /* 649 */
++	{ 8,	0,	printargs,		"SYS_650"	}, /* 650 */
++	{ 8,	0,	printargs,		"SYS_651"	}, /* 651 */
++	{ 8,	0,	printargs,		"SYS_652"	}, /* 652 */
++	{ 8,	0,	printargs,		"SYS_653"	}, /* 653 */
++	{ 8,	0,	printargs,		"SYS_654"	}, /* 654 */
++	{ 8,	0,	printargs,		"SYS_655"	}, /* 655 */
++	{ 8,	0,	printargs,		"SYS_656"	}, /* 656 */
++	{ 8,	0,	printargs,		"SYS_657"	}, /* 657 */
++	{ 8,	0,	printargs,		"SYS_658"	}, /* 658 */
++	{ 8,	0,	printargs,		"SYS_659"	}, /* 659 */
++	{ 8,	0,	printargs,		"SYS_660"	}, /* 660 */
++	{ 8,	0,	printargs,		"SYS_661"	}, /* 661 */
++	{ 8,	0,	printargs,		"SYS_662"	}, /* 662 */
++	{ 8,	0,	printargs,		"SYS_663"	}, /* 663 */
++	{ 8,	0,	printargs,		"SYS_664"	}, /* 664 */
++	{ 8,	0,	printargs,		"SYS_665"	}, /* 665 */
++	{ 8,	0,	printargs,		"SYS_666"	}, /* 666 */
++	{ 8,	0,	printargs,		"SYS_667"	}, /* 667 */
++	{ 8,	0,	printargs,		"SYS_668"	}, /* 668 */
++	{ 8,	0,	printargs,		"SYS_669"	}, /* 669 */
++	{ 8,	0,	printargs,		"SYS_670"	}, /* 670 */
++	{ 8,	0,	printargs,		"SYS_671"	}, /* 671 */
++	{ 8,	0,	printargs,		"SYS_672"	}, /* 672 */
++	{ 8,	0,	printargs,		"SYS_673"	}, /* 673 */
++	{ 8,	0,	printargs,		"SYS_674"	}, /* 674 */
++	{ 8,	0,	printargs,		"SYS_675"	}, /* 675 */
++	{ 8,	0,	printargs,		"SYS_676"	}, /* 676 */
++	{ 8,	0,	printargs,		"SYS_677"	}, /* 677 */
++	{ 8,	0,	printargs,		"SYS_678"	}, /* 678 */
++	{ 8,	0,	printargs,		"SYS_679"	}, /* 679 */
++	{ 8,	0,	printargs,		"SYS_680"	}, /* 680 */
++	{ 8,	0,	printargs,		"SYS_681"	}, /* 681 */
++	{ 8,	0,	printargs,		"SYS_682"	}, /* 682 */
++	{ 8,	0,	printargs,		"SYS_683"	}, /* 683 */
++	{ 8,	0,	printargs,		"SYS_684"	}, /* 684 */
++	{ 8,	0,	printargs,		"SYS_685"	}, /* 685 */
++	{ 8,	0,	printargs,		"SYS_686"	}, /* 686 */
++	{ 8,	0,	printargs,		"SYS_687"	}, /* 687 */
++	{ 8,	0,	printargs,		"SYS_688"	}, /* 688 */
++	{ 8,	0,	printargs,		"SYS_689"	}, /* 689 */
++	{ 8,	0,	printargs,		"SYS_690"	}, /* 690 */
++	{ 8,	0,	printargs,		"SYS_691"	}, /* 691 */
++	{ 8,	0,	printargs,		"SYS_692"	}, /* 692 */
++	{ 8,	0,	printargs,		"SYS_693"	}, /* 693 */
++	{ 8,	0,	printargs,		"SYS_694"	}, /* 694 */
++	{ 8,	0,	printargs,		"SYS_695"	}, /* 695 */
++	{ 8,	0,	printargs,		"SYS_696"	}, /* 696 */
++	{ 8,	0,	printargs,		"SYS_697"	}, /* 697 */
++	{ 8,	0,	printargs,		"SYS_698"	}, /* 698 */
++	{ 8,	0,	printargs,		"SYS_699"	}, /* 699 */
++	{ 8,	0,	printargs,		"SYS_700"	}, /* 700 */
++	{ 8,	0,	printargs,		"SYS_701"	}, /* 701 */
++	{ 8,	0,	printargs,		"SYS_702"	}, /* 702 */
++	{ 8,	0,	printargs,		"SYS_703"	}, /* 703 */
++	{ 8,	0,	printargs,		"SYS_704"	}, /* 704 */
++	{ 8,	0,	printargs,		"SYS_705"	}, /* 705 */
++	{ 8,	0,	printargs,		"SYS_706"	}, /* 706 */
++	{ 8,	0,	printargs,		"SYS_707"	}, /* 707 */
++	{ 8,	0,	printargs,		"SYS_708"	}, /* 708 */
++	{ 8,	0,	printargs,		"SYS_709"	}, /* 709 */
++	{ 8,	0,	printargs,		"SYS_710"	}, /* 710 */
++	{ 8,	0,	printargs,		"SYS_711"	}, /* 711 */
++	{ 8,	0,	printargs,		"SYS_712"	}, /* 712 */
++	{ 8,	0,	printargs,		"SYS_713"	}, /* 713 */
++	{ 8,	0,	printargs,		"SYS_714"	}, /* 714 */
++	{ 8,	0,	printargs,		"SYS_715"	}, /* 715 */
++	{ 8,	0,	printargs,		"SYS_716"	}, /* 716 */
++	{ 8,	0,	printargs,		"SYS_717"	}, /* 717 */
++	{ 8,	0,	printargs,		"SYS_718"	}, /* 718 */
++	{ 8,	0,	printargs,		"SYS_719"	}, /* 719 */
++	{ 8,	0,	printargs,		"SYS_720"	}, /* 720 */
++	{ 8,	0,	printargs,		"SYS_721"	}, /* 721 */
++	{ 8,	0,	printargs,		"SYS_722"	}, /* 722 */
++	{ 8,	0,	printargs,		"SYS_723"	}, /* 723 */
++	{ 8,	0,	printargs,		"SYS_724"	}, /* 724 */
++	{ 8,	0,	printargs,		"SYS_725"	}, /* 725 */
++	{ 8,	0,	printargs,		"SYS_726"	}, /* 726 */
++	{ 8,	0,	printargs,		"SYS_727"	}, /* 727 */
++	{ 8,	0,	printargs,		"SYS_728"	}, /* 728 */
++	{ 8,	0,	printargs,		"SYS_729"	}, /* 729 */
++	{ 8,	0,	printargs,		"SYS_730"	}, /* 730 */
++	{ 8,	0,	printargs,		"SYS_731"	}, /* 731 */
++	{ 8,	0,	printargs,		"SYS_732"	}, /* 732 */
++	{ 8,	0,	printargs,		"SYS_733"	}, /* 733 */
++	{ 8,	0,	printargs,		"SYS_734"	}, /* 734 */
++	{ 8,	0,	printargs,		"SYS_735"	}, /* 735 */
++	{ 8,	0,	printargs,		"SYS_736"	}, /* 736 */
++	{ 8,	0,	printargs,		"SYS_737"	}, /* 737 */
++	{ 8,	0,	printargs,		"SYS_738"	}, /* 738 */
++	{ 8,	0,	printargs,		"SYS_739"	}, /* 739 */
++	{ 8,	0,	printargs,		"SYS_740"	}, /* 740 */
++	{ 8,	0,	printargs,		"SYS_741"	}, /* 741 */
++	{ 8,	0,	printargs,		"SYS_742"	}, /* 742 */
++	{ 8,	0,	printargs,		"SYS_743"	}, /* 743 */
++	{ 8,	0,	printargs,		"SYS_744"	}, /* 744 */
++	{ 8,	0,	printargs,		"SYS_745"	}, /* 745 */
++	{ 8,	0,	printargs,		"SYS_746"	}, /* 746 */
++	{ 8,	0,	printargs,		"SYS_747"	}, /* 747 */
++	{ 8,	0,	printargs,		"SYS_748"	}, /* 748 */
++	{ 8,	0,	printargs,		"SYS_749"	}, /* 749 */
++	{ 8,	0,	printargs,		"SYS_750"	}, /* 750 */
++	{ 8,	0,	printargs,		"SYS_751"	}, /* 751 */
++	{ 8,	0,	printargs,		"SYS_752"	}, /* 752 */
++	{ 8,	0,	printargs,		"SYS_753"	}, /* 753 */
++	{ 8,	0,	printargs,		"SYS_754"	}, /* 754 */
++	{ 8,	0,	printargs,		"SYS_755"	}, /* 755 */
++	{ 8,	0,	printargs,		"SYS_756"	}, /* 756 */
++	{ 8,	0,	printargs,		"SYS_757"	}, /* 757 */
++	{ 8,	0,	printargs,		"SYS_758"	}, /* 758 */
++	{ 8,	0,	printargs,		"SYS_759"	}, /* 759 */
++	{ 8,	0,	printargs,		"SYS_760"	}, /* 760 */
++	{ 8,	0,	printargs,		"SYS_761"	}, /* 761 */
++	{ 8,	0,	printargs,		"SYS_762"	}, /* 762 */
++	{ 8,	0,	printargs,		"SYS_763"	}, /* 763 */
++	{ 8,	0,	printargs,		"SYS_764"	}, /* 764 */
++	{ 8,	0,	printargs,		"SYS_765"	}, /* 765 */
++	{ 8,	0,	printargs,		"SYS_766"	}, /* 766 */
++	{ 8,	0,	printargs,		"SYS_767"	}, /* 767 */
++	{ 8,	0,	printargs,		"SYS_768"	}, /* 768 */
++	{ 8,	0,	printargs,		"SYS_769"	}, /* 769 */
++	{ 8,	0,	printargs,		"SYS_770"	}, /* 770 */
++	{ 8,	0,	printargs,		"SYS_771"	}, /* 771 */
++	{ 8,	0,	printargs,		"SYS_772"	}, /* 772 */
++	{ 8,	0,	printargs,		"SYS_773"	}, /* 773 */
++	{ 8,	0,	printargs,		"SYS_774"	}, /* 774 */
++	{ 8,	0,	printargs,		"SYS_775"	}, /* 775 */
++	{ 8,	0,	printargs,		"SYS_776"	}, /* 776 */
++	{ 8,	0,	printargs,		"SYS_777"	}, /* 777 */
++	{ 8,	0,	printargs,		"SYS_778"	}, /* 778 */
++	{ 8,	0,	printargs,		"SYS_779"	}, /* 779 */
++	{ 8,	0,	printargs,		"SYS_780"	}, /* 780 */
++	{ 8,	0,	printargs,		"SYS_781"	}, /* 781 */
++	{ 8,	0,	printargs,		"SYS_782"	}, /* 782 */
++	{ 8,	0,	printargs,		"SYS_783"	}, /* 783 */
++	{ 8,	0,	printargs,		"SYS_784"	}, /* 784 */
++	{ 8,	0,	printargs,		"SYS_785"	}, /* 785 */
++	{ 8,	0,	printargs,		"SYS_786"	}, /* 786 */
++	{ 8,	0,	printargs,		"SYS_787"	}, /* 787 */
++	{ 8,	0,	printargs,		"SYS_788"	}, /* 788 */
++	{ 8,	0,	printargs,		"SYS_789"	}, /* 789 */
++	{ 8,	0,	printargs,		"SYS_790"	}, /* 790 */
++	{ 8,	0,	printargs,		"SYS_791"	}, /* 791 */
++	{ 8,	0,	printargs,		"SYS_792"	}, /* 792 */
++	{ 8,	0,	printargs,		"SYS_793"	}, /* 793 */
++	{ 8,	0,	printargs,		"SYS_794"	}, /* 794 */
++	{ 8,	0,	printargs,		"SYS_795"	}, /* 795 */
++	{ 8,	0,	printargs,		"SYS_796"	}, /* 796 */
++	{ 8,	0,	printargs,		"SYS_797"	}, /* 797 */
++	{ 8,	0,	printargs,		"SYS_798"	}, /* 798 */
++	{ 8,	0,	printargs,		"SYS_799"	}, /* 799 */
++	{ 8,	0,	printargs,		"SYS_800"	}, /* 800 */
++	{ 8,	0,	printargs,		"SYS_801"	}, /* 801 */
++	{ 8,	0,	printargs,		"SYS_802"	}, /* 802 */
++	{ 8,	0,	printargs,		"SYS_803"	}, /* 803 */
++	{ 8,	0,	printargs,		"SYS_804"	}, /* 804 */
++	{ 8,	0,	printargs,		"SYS_805"	}, /* 805 */
++	{ 8,	0,	printargs,		"SYS_806"	}, /* 806 */
++	{ 8,	0,	printargs,		"SYS_807"	}, /* 807 */
++	{ 8,	0,	printargs,		"SYS_808"	}, /* 808 */
++	{ 8,	0,	printargs,		"SYS_809"	}, /* 809 */
++	{ 8,	0,	printargs,		"SYS_810"	}, /* 810 */
++	{ 8,	0,	printargs,		"SYS_811"	}, /* 811 */
++	{ 8,	0,	printargs,		"SYS_812"	}, /* 812 */
++	{ 8,	0,	printargs,		"SYS_813"	}, /* 813 */
++	{ 8,	0,	printargs,		"SYS_814"	}, /* 814 */
++	{ 8,	0,	printargs,		"SYS_815"	}, /* 815 */
++	{ 8,	0,	printargs,		"SYS_816"	}, /* 816 */
++	{ 8,	0,	printargs,		"SYS_817"	}, /* 817 */
++	{ 8,	0,	printargs,		"SYS_818"	}, /* 818 */
++	{ 8,	0,	printargs,		"SYS_819"	}, /* 819 */
++	{ 8,	0,	printargs,		"SYS_820"	}, /* 820 */
++	{ 8,	0,	printargs,		"SYS_821"	}, /* 821 */
++	{ 8,	0,	printargs,		"SYS_822"	}, /* 822 */
++	{ 8,	0,	printargs,		"SYS_823"	}, /* 823 */
++	{ 8,	0,	printargs,		"SYS_824"	}, /* 824 */
++	{ 8,	0,	printargs,		"SYS_825"	}, /* 825 */
++	{ 8,	0,	printargs,		"SYS_826"	}, /* 826 */
++	{ 8,	0,	printargs,		"SYS_827"	}, /* 827 */
++	{ 8,	0,	printargs,		"SYS_828"	}, /* 828 */
++	{ 8,	0,	printargs,		"SYS_829"	}, /* 829 */
++	{ 8,	0,	printargs,		"SYS_830"	}, /* 830 */
++	{ 8,	0,	printargs,		"SYS_831"	}, /* 831 */
++	{ 8,	0,	printargs,		"SYS_832"	}, /* 832 */
++	{ 8,	0,	printargs,		"SYS_833"	}, /* 833 */
++	{ 8,	0,	printargs,		"SYS_834"	}, /* 834 */
++	{ 8,	0,	printargs,		"SYS_835"	}, /* 835 */
++	{ 8,	0,	printargs,		"SYS_836"	}, /* 836 */
++	{ 8,	0,	printargs,		"SYS_837"	}, /* 837 */
++	{ 8,	0,	printargs,		"SYS_838"	}, /* 838 */
++	{ 8,	0,	printargs,		"SYS_839"	}, /* 839 */
++	{ 8,	0,	printargs,		"SYS_840"	}, /* 840 */
++	{ 8,	0,	printargs,		"SYS_841"	}, /* 841 */
++	{ 8,	0,	printargs,		"SYS_842"	}, /* 842 */
++	{ 8,	0,	printargs,		"SYS_843"	}, /* 843 */
++	{ 8,	0,	printargs,		"SYS_844"	}, /* 844 */
++	{ 8,	0,	printargs,		"SYS_845"	}, /* 845 */
++	{ 8,	0,	printargs,		"SYS_846"	}, /* 846 */
++	{ 8,	0,	printargs,		"SYS_847"	}, /* 847 */
++	{ 8,	0,	printargs,		"SYS_848"	}, /* 848 */
++	{ 8,	0,	printargs,		"SYS_849"	}, /* 849 */
++	{ 8,	0,	printargs,		"SYS_850"	}, /* 850 */
++	{ 8,	0,	printargs,		"SYS_851"	}, /* 851 */
++	{ 8,	0,	printargs,		"SYS_852"	}, /* 852 */
++	{ 8,	0,	printargs,		"SYS_853"	}, /* 853 */
++	{ 8,	0,	printargs,		"SYS_854"	}, /* 854 */
++	{ 8,	0,	printargs,		"SYS_855"	}, /* 855 */
++	{ 8,	0,	printargs,		"SYS_856"	}, /* 856 */
++	{ 8,	0,	printargs,		"SYS_857"	}, /* 857 */
++	{ 8,	0,	printargs,		"SYS_858"	}, /* 858 */
++	{ 8,	0,	printargs,		"SYS_859"	}, /* 859 */
++	{ 8,	0,	printargs,		"SYS_860"	}, /* 860 */
++	{ 8,	0,	printargs,		"SYS_861"	}, /* 861 */
++	{ 8,	0,	printargs,		"SYS_862"	}, /* 862 */
++	{ 8,	0,	printargs,		"SYS_863"	}, /* 863 */
++	{ 8,	0,	printargs,		"SYS_864"	}, /* 864 */
++	{ 8,	0,	printargs,		"SYS_865"	}, /* 865 */
++	{ 8,	0,	printargs,		"SYS_866"	}, /* 866 */
++	{ 8,	0,	printargs,		"SYS_867"	}, /* 867 */
++	{ 8,	0,	printargs,		"SYS_868"	}, /* 868 */
++	{ 8,	0,	printargs,		"SYS_869"	}, /* 869 */
++	{ 8,	0,	printargs,		"SYS_870"	}, /* 870 */
++	{ 8,	0,	printargs,		"SYS_871"	}, /* 871 */
++	{ 8,	0,	printargs,		"SYS_872"	}, /* 872 */
++	{ 8,	0,	printargs,		"SYS_873"	}, /* 873 */
++	{ 8,	0,	printargs,		"SYS_874"	}, /* 874 */
++	{ 8,	0,	printargs,		"SYS_875"	}, /* 875 */
++	{ 8,	0,	printargs,		"SYS_876"	}, /* 876 */
++	{ 8,	0,	printargs,		"SYS_877"	}, /* 877 */
++	{ 8,	0,	printargs,		"SYS_878"	}, /* 878 */
++	{ 8,	0,	printargs,		"SYS_879"	}, /* 879 */
++	{ 8,	0,	printargs,		"SYS_880"	}, /* 880 */
++	{ 8,	0,	printargs,		"SYS_881"	}, /* 881 */
++	{ 8,	0,	printargs,		"SYS_882"	}, /* 882 */
++	{ 8,	0,	printargs,		"SYS_883"	}, /* 883 */
++	{ 8,	0,	printargs,		"SYS_884"	}, /* 884 */
++	{ 8,	0,	printargs,		"SYS_885"	}, /* 885 */
++	{ 8,	0,	printargs,		"SYS_886"	}, /* 886 */
++	{ 8,	0,	printargs,		"SYS_887"	}, /* 887 */
++	{ 8,	0,	printargs,		"SYS_888"	}, /* 888 */
++	{ 8,	0,	printargs,		"SYS_889"	}, /* 889 */
++	{ 8,	0,	printargs,		"SYS_890"	}, /* 890 */
++	{ 8,	0,	printargs,		"SYS_891"	}, /* 891 */
++	{ 8,	0,	printargs,		"SYS_892"	}, /* 892 */
++	{ 8,	0,	printargs,		"SYS_893"	}, /* 893 */
++	{ 8,	0,	printargs,		"SYS_894"	}, /* 894 */
++	{ 8,	0,	printargs,		"SYS_895"	}, /* 895 */
++	{ 8,	0,	printargs,		"SYS_896"	}, /* 896 */
++	{ 8,	0,	printargs,		"SYS_897"	}, /* 897 */
++	{ 8,	0,	printargs,		"SYS_898"	}, /* 898 */
++	{ 8,	0,	printargs,		"SYS_899"	}, /* 899 */
++	{ 8,	0,	printargs,		"SYS_900"	}, /* 900 */
++	{ 8,	0,	printargs,		"SYS_901"	}, /* 901 */
++	{ 8,	0,	printargs,		"SYS_902"	}, /* 902 */
++	{ 8,	0,	printargs,		"SYS_903"	}, /* 903 */
++	{ 8,	0,	printargs,		"SYS_904"	}, /* 904 */
++	{ 8,	0,	printargs,		"SYS_905"	}, /* 905 */
++	{ 8,	0,	printargs,		"SYS_906"	}, /* 906 */
++	{ 8,	0,	printargs,		"SYS_907"	}, /* 907 */
++	{ 8,	0,	printargs,		"SYS_908"	}, /* 908 */
++	{ 8,	0,	printargs,		"SYS_909"	}, /* 909 */
++	{ 8,	0,	printargs,		"SYS_910"	}, /* 910 */
++	{ 8,	0,	printargs,		"SYS_911"	}, /* 911 */
++	{ 8,	0,	printargs,		"SYS_912"	}, /* 912 */
++	{ 8,	0,	printargs,		"SYS_913"	}, /* 913 */
++	{ 8,	0,	printargs,		"SYS_914"	}, /* 914 */
++	{ 8,	0,	printargs,		"SYS_915"	}, /* 915 */
++	{ 8,	0,	printargs,		"SYS_916"	}, /* 916 */
++	{ 8,	0,	printargs,		"SYS_917"	}, /* 917 */
++	{ 8,	0,	printargs,		"SYS_918"	}, /* 918 */
++	{ 8,	0,	printargs,		"SYS_919"	}, /* 919 */
++	{ 8,	0,	printargs,		"SYS_920"	}, /* 920 */
++	{ 8,	0,	printargs,		"SYS_921"	}, /* 921 */
++	{ 8,	0,	printargs,		"SYS_922"	}, /* 922 */
++	{ 8,	0,	printargs,		"SYS_923"	}, /* 923 */
++	{ 8,	0,	printargs,		"SYS_924"	}, /* 924 */
++	{ 8,	0,	printargs,		"SYS_925"	}, /* 925 */
++	{ 8,	0,	printargs,		"SYS_926"	}, /* 926 */
++	{ 8,	0,	printargs,		"SYS_927"	}, /* 927 */
++	{ 8,	0,	printargs,		"SYS_928"	}, /* 928 */
++	{ 8,	0,	printargs,		"SYS_929"	}, /* 929 */
++	{ 8,	0,	printargs,		"SYS_930"	}, /* 930 */
++	{ 8,	0,	printargs,		"SYS_931"	}, /* 931 */
++	{ 8,	0,	printargs,		"SYS_932"	}, /* 932 */
++	{ 8,	0,	printargs,		"SYS_933"	}, /* 933 */
++	{ 8,	0,	printargs,		"SYS_934"	}, /* 934 */
++	{ 8,	0,	printargs,		"SYS_935"	}, /* 935 */
++	{ 8,	0,	printargs,		"SYS_936"	}, /* 936 */
++	{ 8,	0,	printargs,		"SYS_937"	}, /* 937 */
++	{ 8,	0,	printargs,		"SYS_938"	}, /* 938 */
++	{ 8,	0,	printargs,		"SYS_939"	}, /* 939 */
++	{ 8,	0,	printargs,		"SYS_940"	}, /* 940 */
++	{ 8,	0,	printargs,		"SYS_941"	}, /* 941 */
++	{ 8,	0,	printargs,		"SYS_942"	}, /* 942 */
++	{ 8,	0,	printargs,		"SYS_943"	}, /* 943 */
++	{ 8,	0,	printargs,		"SYS_944"	}, /* 944 */
++	{ 8,	0,	printargs,		"SYS_945"	}, /* 945 */
++	{ 8,	0,	printargs,		"SYS_946"	}, /* 946 */
++	{ 8,	0,	printargs,		"SYS_947"	}, /* 947 */
++	{ 8,	0,	printargs,		"SYS_948"	}, /* 948 */
++	{ 8,	0,	printargs,		"SYS_949"	}, /* 949 */
++	{ 8,	0,	printargs,		"SYS_950"	}, /* 950 */
++	{ 8,	0,	printargs,		"SYS_951"	}, /* 951 */
++	{ 8,	0,	printargs,		"SYS_952"	}, /* 952 */
++	{ 8,	0,	printargs,		"SYS_953"	}, /* 953 */
++	{ 8,	0,	printargs,		"SYS_954"	}, /* 954 */
++	{ 8,	0,	printargs,		"SYS_955"	}, /* 955 */
++	{ 8,	0,	printargs,		"SYS_956"	}, /* 956 */
++	{ 8,	0,	printargs,		"SYS_957"	}, /* 957 */
++	{ 8,	0,	printargs,		"SYS_958"	}, /* 958 */
++	{ 8,	0,	printargs,		"SYS_959"	}, /* 959 */
++	{ 8,	0,	printargs,		"SYS_960"	}, /* 960 */
++	{ 8,	0,	printargs,		"SYS_961"	}, /* 961 */
++	{ 8,	0,	printargs,		"SYS_962"	}, /* 962 */
++	{ 8,	0,	printargs,		"SYS_963"	}, /* 963 */
++	{ 8,	0,	printargs,		"SYS_964"	}, /* 964 */
++	{ 8,	0,	printargs,		"SYS_965"	}, /* 965 */
++	{ 8,	0,	printargs,		"SYS_966"	}, /* 966 */
++	{ 8,	0,	printargs,		"SYS_967"	}, /* 967 */
++	{ 8,	0,	printargs,		"SYS_968"	}, /* 968 */
++	{ 8,	0,	printargs,		"SYS_969"	}, /* 969 */
++	{ 8,	0,	printargs,		"SYS_970"	}, /* 970 */
++	{ 8,	0,	printargs,		"SYS_971"	}, /* 971 */
++	{ 8,	0,	printargs,		"SYS_972"	}, /* 972 */
++	{ 8,	0,	printargs,		"SYS_973"	}, /* 973 */
++	{ 8,	0,	printargs,		"SYS_974"	}, /* 974 */
++	{ 8,	0,	printargs,		"SYS_975"	}, /* 975 */
++	{ 8,	0,	printargs,		"SYS_976"	}, /* 976 */
++	{ 8,	0,	printargs,		"SYS_977"	}, /* 977 */
++	{ 8,	0,	printargs,		"SYS_978"	}, /* 978 */
++	{ 8,	0,	printargs,		"SYS_979"	}, /* 979 */
++	{ 8,	0,	printargs,		"SYS_980"	}, /* 980 */
++	{ 8,	0,	printargs,		"SYS_981"	}, /* 981 */
++	{ 8,	0,	printargs,		"SYS_982"	}, /* 982 */
++	{ 8,	0,	printargs,		"SYS_983"	}, /* 983 */
++	{ 8,	0,	printargs,		"SYS_984"	}, /* 984 */
++	{ 8,	0,	printargs,		"SYS_985"	}, /* 985 */
++	{ 8,	0,	printargs,		"SYS_986"	}, /* 986 */
++	{ 8,	0,	printargs,		"SYS_987"	}, /* 987 */
++	{ 8,	0,	printargs,		"SYS_988"	}, /* 988 */
++	{ 8,	0,	printargs,		"SYS_989"	}, /* 989 */
++	{ 8,	0,	printargs,		"SYS_990"	}, /* 990 */
++	{ 8,	0,	printargs,		"SYS_991"	}, /* 991 */
++	{ 8,	0,	printargs,		"SYS_992"	}, /* 992 */
++	{ 8,	0,	printargs,		"SYS_993"	}, /* 993 */
++	{ 8,	0,	printargs,		"SYS_994"	}, /* 994 */
++	{ 8,	0,	printargs,		"SYS_995"	}, /* 995 */
++	{ 8,	0,	printargs,		"SYS_996"	}, /* 996 */
++	{ 8,	0,	printargs,		"SYS_997"	}, /* 997 */
++	{ 8,	0,	printargs,		"SYS_998"	}, /* 998 */
++	{ 8,	0,	printargs,		"SYS_999"	}, /* 999 */
++	{ 8,	0,	printargs,		"SYS_1000"	}, /* 1000 */
++	{ 8,	0,	printargs,		"SYS_1001"	}, /* 1001 */
++	{ 8,	0,	printargs,		"SYS_1002"	}, /* 1002 */
++	{ 8,	0,	printargs,		"SYS_1003"	}, /* 1003 */
++	{ 8,	0,	printargs,		"SYS_1004"	}, /* 1004 */
++	{ 8,	0,	printargs,		"SYS_1005"	}, /* 1005 */
++	{ 8,	0,	printargs,		"SYS_1006"	}, /* 1006 */
++	{ 8,	0,	printargs,		"SYS_1007"	}, /* 1007 */
++	{ 8,	0,	printargs,		"SYS_1008"	}, /* 1008 */
++	{ 8,	0,	printargs,		"SYS_1009"	}, /* 1009 */
++	{ 8,	0,	printargs,		"SYS_1010"	}, /* 1010 */
++	{ 8,	0,	printargs,		"SYS_1011"	}, /* 1011 */
++	{ 8,	0,	printargs,		"SYS_1012"	}, /* 1012 */
++	{ 8,	0,	printargs,		"SYS_1013"	}, /* 1013 */
++	{ 8,	0,	printargs,		"SYS_1014"	}, /* 1014 */
++	{ 8,	0,	printargs,		"SYS_1015"	}, /* 1015 */
++	{ 8,	0,	printargs,		"SYS_1016"	}, /* 1016 */
++	{ 8,	0,	printargs,		"SYS_1017"	}, /* 1017 */
++	{ 8,	0,	printargs,		"SYS_1018"	}, /* 1018 */
++	{ 8,	0,	printargs,		"SYS_1019"	}, /* 1019 */
++	{ 8,	0,	printargs,		"SYS_1020"	}, /* 1020 */
++	{ 8,	0,	printargs,		"SYS_1021"	}, /* 1021 */
++	{ 8,	0,	printargs,		"SYS_1022"	}, /* 1022 */
++	{ 8,	0,	printargs,		"SYS_1023"	}, /* 1023 */
++	{ 0,	0,	printargs,		"ni_syscall"	}, /* 1024 */
++	{ 1,	TP,	sys_exit,		"exit"		}, /* 1025 */
++	{ 3,	TF,	sys_read,		"read"		}, /* 1026 */
++	{ 3,	TF,	sys_write,		"write"		}, /* 1027 */
++	{ 3,	TF,	sys_open,		"open"		}, /* 1028 */
++	{ 1,	0,	sys_close,		"close"		}, /* 1029 */
++	{ 2,	0,	sys_creat,		"creat"		}, /* 1030 */
++	{ 2,	TF,	sys_link,		"link"		}, /* 1031 */
++	{ 1,	TF,	sys_unlink,		"unlink"	}, /* 1032 */
++	{ 3,	TF|TP,	sys_execve,		"execve"	}, /* 1033 */
++	{ 1,	TF,	sys_chdir,		"chdir"		}, /* 1034 */
++	{ 1,	TF,	sys_fchdir,		"fchdir"	}, /* 1035 */
++	{ 2,	0,	sys_utimes,		"utimes"	}, /* 1036 */
++	{ 3,	TF,	sys_mknod,		"mknod"		}, /* 1037 */
++	{ 2,	TF,	sys_chmod,		"chmod"		}, /* 1038 */
++	{ 3,	TF,	sys_chown,		"chown"		}, /* 1039 */
++	{ 3,	TF,	sys_lseek,		"lseek"		}, /* 1040 */
++	{ 0,	0,	sys_getpid,		"getpid"	}, /* 1041 */
++	{ 0,	0,	sys_getppid,		"getppid"	}, /* 1042 */
++	{ 5,	TF,	sys_mount,		"mount"		}, /* 1043 */
++	{ 1,	0,	sys_umount2,		"umount"	}, /* 1044 */
++	{ 1,	0,	sys_setuid,		"setuid"	}, /* 1045 */
++	{ 0,	0,	sys_getuid,		"getuid"	}, /* 1046 */
++	{ 0,	0,	sys_geteuid,		"geteuid"	}, /* 1047 */
++	{ 4,	0,	sys_ptrace,		"ptrace"	}, /* 1048 */
++	{ 2,	TF,	sys_access,		"access"	}, /* 1049 */
++	{ 0,	0,	sys_sync,		"sync"		}, /* 1050 */
++	{ 1,	0,	sys_fsync,		"fsync"		}, /* 1051 */
++	{ 1,	0,	sys_fdatasync,		"fdatasync"	}, /* 1052 */
++	{ 2,	TS,	sys_kill,		"kill"		}, /* 1053 */
++	{ 2,	TF,	sys_rename,		"rename"	}, /* 1054 */
++	{ 2,	TF,	sys_mkdir,		"mkdir"		}, /* 1055 */
++	{ 1,	TF,	sys_rmdir,		"rmdir"		}, /* 1056 */
++	{ 1,	0,	sys_dup,		"dup"		}, /* 1057 */
++	{ 1,	0,	sys_pipe,		"pipe"		}, /* 1058 */
++	{ 1,	0,	sys_times,		"times"		}, /* 1059 */
++	{ 1,	0,	sys_brk,		"brk"		}, /* 1060 */
++	{ 1,	0,	sys_setgid,		"setgid"	}, /* 1061 */
++	{ 0,	0,	sys_getgid,		"getgid"	}, /* 1062 */
++	{ 0,	0,	sys_getegid,		"getegid"	}, /* 1063 */
++	{ 1,	TF,	sys_acct,		"acct"		}, /* 1064 */
++	{ 3,	0,	sys_ioctl,		"ioctl"		}, /* 1065 */
++	{ 3,	0,	sys_fcntl,		"fcntl"		}, /* 1066 */
++	{ 1,	0,	sys_umask,		"umask"		}, /* 1067 */
++	{ 1,	TF,	sys_chroot,		"chroot"	}, /* 1068 */
++	{ 2,	0,	sys_ustat,		"ustat"		}, /* 1069 */
++	{ 2,	0,	sys_dup2,		"dup2"		}, /* 1070 */
++	{ 2,	0,	sys_setreuid,		"setreuid"	}, /* 1071 */
++	{ 2,	0,	sys_setregid,		"setregid"	}, /* 1072 */
++	{ 3,	0,	printargs,		"getresuid"	}, /* 1073 */
++	{ 3,	0,	sys_setresuid,		"setresuid"	}, /* 1074 */
++	{ 3,	0,	sys_getresuid,		"getresgid"	}, /* 1075 */
++	{ 3,	0,	printargs,		"setresgid"	}, /* 1076 */
++	{ 2,	0,	sys_getgroups,		"getgroups"	}, /* 1077 */
++	{ 2,	0,	sys_setgroups,		"setgroups"	}, /* 1078 */
++	{ 1,	0,	sys_getpgid,		"getpgid"	}, /* 1079 */
++	{ 2,	0,	sys_setpgid,		"setpgid"	}, /* 1080 */
++	{ 0,	0,	sys_setsid,		"setsid"	}, /* 1081 */
++	{ 1,	0,	sys_getsid,		"getsid"	}, /* 1082 */
++	{ 2,	0,	sys_sethostname,	"sethostname"	}, /* 1083 */
++	{ 2,	0,	sys_setrlimit,		"setrlimit"	}, /* 1084 */
++	{ 2,	0,	sys_getrlimit,		"getrlimit"	}, /* 1085 */
++	{ 2,	0,	sys_getrusage,		"getrusage"	}, /* 1086 */
++	{ 2,	0,	sys_gettimeofday,	"gettimeofday"	}, /* 1087 */
++	{ 2,	0,	sys_settimeofday,	"settimeofday"	}, /* 1088 */
++	{ 5,	0,	sys_select,		"select"	}, /* 1089 */
++	{ 3,	0,	sys_poll,		"poll"		}, /* 1090 */
++	{ 2,	TF,	sys_symlink,		"symlink"	}, /* 1091 */
++	{ 3,	TF,	sys_readlink,		"readlink"	}, /* 1092 */
++	{ 1,	0,	sys_uselib,		"uselib"	}, /* 1093 */
++	{ 1,	0,	sys_swapon,		"swapon"	}, /* 1094 */
++	{ 1,	0,	sys_swapoff,		"swapoff"	}, /* 1095 */
++	{ 3,	0,	sys_reboot,		"reboot"	}, /* 1096 */
++	{ 2,	TF,	sys_truncate,		"truncate"	}, /* 1097 */
++	{ 2,	0,	sys_ftruncate,		"ftruncate"	}, /* 1098 */
++	{ 2,	0,	sys_fchmod,		"fchmod"	}, /* 1099 */
++	{ 3,	0,	sys_fchown,		"fchown"	}, /* 1100 */
++	{ 2,	0,	sys_getpriority,	"getpriority"	}, /* 1101 */
++	{ 3,	0,	sys_setpriority,	"setpriority"	}, /* 1102 */
++	{ 2,	TF,	sys_statfs,		"statfs"	}, /* 1103 */
++	{ 2,	0,	sys_fstatfs,		"fstatfs"	}, /* 1104 */
++	{ 3,	0,	sys_ioperm,		"ioperm"	}, /* 1105 */
++	{ 3,	TI,	sys_semget,		"semget"	}, /* 1106 */
++	{ 3,	TI,	printargs,		"semop"		}, /* 1107 */
++	{ 4,	TI,	sys_semctl,		"semctl"	}, /* 1108 */
++	{ 2,	TI,	sys_msgget,		"msgget"	}, /* 1109 */
++	{ 4,	TI,	sys_msgsnd,		"msgsnd"	}, /* 1110 */
++	{ 5,	TI,	sys_msgrcv,		"msgrcv"	}, /* 1111 */
++	{ 3,	TI,	sys_msgctl,		"msgctl"	}, /* 1112 */
++	{ 3,	TI,	sys_shmget,		"shmget"	}, /* 1113 */
++	{ 3,	TI,	sys_shmat,		"shmat"		}, /* 1114 */
++	{ 1,	TI,	sys_shmdt,		"shmdt"		}, /* 1115 */
++	{ 3,	TI,	sys_shmctl,		"shmctl"	}, /* 1116 */
++	{ 3,	0,	sys_syslog,		"syslog"	}, /* 1117 */
++	{ 3,	0,	sys_setitimer,		"setitimer"	}, /* 1118 */
++	{ 2,	0,	sys_getitimer,		"getitimer"	}, /* 1119 */
++	{ 2,	TF,	sys_stat,		"stat"		}, /* 1120 */
++	{ 2,	TF,	sys_lstat,		"lstat"		}, /* 1121 */
++	{ 2,	0,	sys_fstat,		"fstat"		}, /* 1122 */
++	{ 0,	0,	sys_vhangup,		"vhangup"	}, /* 1123 */
++	{ 3,	TF,	sys_chown,		"lchown"	}, /* 1124 */
++	{ 5,	0,	printargs,		"vm86"		}, /* 1125 */
++	{ 4,	TP,	sys_wait4,		"wait4"		}, /* 1126 */
++	{ 1,	0,	sys_sysinfo,		"sysinfo"	}, /* 1127 */
++	{ 2,	TP,	sys_clone,		"clone"		}, /* 1128 */
++	{ 2,	0,	sys_setdomainname,	"setdomainname"	}, /* 1129 */
++	{ 1,	0,	sys_uname,		"uname"		}, /* 1130 */
++	{ 1,	0,	sys_adjtimex,		"adjtimex"	}, /* 1131 */
++	{ 2,	0,	sys_create_module,	"create_module"	}, /* 1132 */
++	{ 4,	0,	sys_init_module,	"init_module"	}, /* 1133 */
++	{ 1,	0,	sys_delete_module,	"delete_module"	}, /* 1134 */
++	{ 1,	0,	sys_get_kernel_syms,	"get_kernel_syms"}, /* 1135 */
++	{ 5,	0,	sys_query_module,	"query_module"	}, /* 1136 */
++	{ 4,	0,	sys_quotactl,		"quotactl"	}, /* 1137 */
++	{ 0,	0,	sys_bdflush,		"bdflush"	}, /* 1138 */
++	{ 3,	0,	sys_sysfs,		"sysfs"		}, /* 1139 */
++	{ 1,	0,	sys_personality,	"personality"	}, /* 1140 */
++	{ 5,	0,	sys_afs_syscall,	"afs_syscall"	}, /* 1141 */
++	{ 1,	0,	sys_setfsuid,		"setfsuid"	}, /* 1142 */
++	{ 1,	0,	sys_setfsgid,		"setfsgid"	}, /* 1143 */
++	{ 3,	0,	sys_getdents,		"getdents"	}, /* 1144 */
++	{ 2,	0,	sys_flock,		"flock"		}, /* 1145 */
++	{ 5,	0,	sys_readv,		"readv"		}, /* 1146 */
++	{ 5,	0,	sys_writev,		"writev"	}, /* 1147 */
++	{ 4,	0,	sys_pread,		"pread"		}, /* 1148 */
++	{ 4,	0,	sys_pwrite,		"pwrite"	}, /* 1149 */
++	{ 1,	0,	printargs,		"_sysctl"	}, /* 1150 */
++	{ 6,	0,	sys_mmap,		"mmap"		}, /* 1151 */
++	{ 2,	0,	sys_munmap,		"munmap"	}, /* 1152 */
++	{ 2,	0,	sys_mlock,		"mlock"		}, /* 1153 */
++	{ 1,	0,	sys_mlockall,		"mlockall"	}, /* 1154 */
++	{ 3,	0,	sys_mprotect,		"mprotect"	}, /* 1155 */
++	{ 4,	0,	sys_mremap,		"mremap"	}, /* 1156 */
++	{ 3,	0,	sys_msync,		"msync"		}, /* 1157 */
++	{ 2,	0,	sys_munlock,		"munlock"	}, /* 1158 */
++	{ 0,	0,	sys_munlockall,		"munlockall"	}, /* 1159 */
++	{ 2,	0,	sys_sched_getparam,	"sched_getparam"}, /* 1160 */
++	{ 2,	0,	sys_sched_setparam,	"sched_setparam"}, /* 1161 */
++	{ 2,	0,	sys_sched_getscheduler,	"sched_getscheduler"}, /* 1162 */
++	{ 3,	0,	sys_sched_setscheduler,	"sched_setscheduler"}, /* 1163 */
++	{ 0,	0,	sys_sched_yield,	"sched_yield"	}, /* 1164 */
++	{ 1,	0,	sys_sched_get_priority_max,"sched_get_priority_max"}, /* 1165 */
++	{ 1,	0,	sys_sched_get_priority_min,"sched_get_priority_min"}, /* 1166 */
++	{ 2,	0,	sys_sched_rr_get_interval,"sched_rr_get_interval"}, /* 1167 */
++	{ 2,	0,	sys_nanosleep,		"nanosleep"	}, /* 1168 */
++	{ 3,	0,	printargs,		"nfsservctl"	}, /* 1169 */
++	{ 5,	0,	printargs,		"prctl"		}, /* 1170 */
++	{ 1,	0,	sys_getpagesize,	"getpagesize"	}, /* 1171 */
++	{ 6,	0,	sys_mmap,		"mmap2"		}, /* 1172 */
++	{ 5,	0,	printargs,		"pciconfig_read"}, /* 1173 */
++	{ 5,	0,	printargs,		"pciconfig_write"}, /* 1174 */
++	{ 8,	0,	printargs,		"SYS_1175"	}, /* 1175 */
++	{ 2,	TS,	sys_sigaltstack,	"sigaltstack"	}, /* 1176 */
++	{ 4,	TS,	sys_rt_sigaction,	"rt_sigaction"	}, /* 1177 */
++	{ 2,	TS,	sys_rt_sigpending,	"rt_sigpending"	}, /* 1178 */
++	{ 4,	TS,	sys_rt_sigprocmask,	"rt_sigprocmask"}, /* 1179 */
++	{ 3,	TS,	sys_rt_sigqueueinfo,	"rt_sigqueueinfo"}, /* 1180 */
++	{ 0,	TS,	printargs,		"rt_sigreturn"	}, /* 1181 */
++	{ 2,	TS,	sys_rt_sigsuspend,	"rt_sigsuspend"	}, /* 1182 */
++	{ 4,	TS,	sys_rt_sigtimedwait,	"rt_sigtimedwait"}, /* 1183 */
++	{ 2,	TF,	sys_getcwd,		"getcwd"	}, /* 1184 */
++	{ 2,	0,	sys_capget,		"capget"	}, /* 1185 */
++	{ 2,	0,	sys_capset,		"capset"	}, /* 1186 */
++	{ 4,	TF,	sys_sendfile,		"sendfile"	}, /* 1187 */
++	{ 5,	TN,	printargs,		"getpmsg"	}, /* 1188 */
++	{ 5,	TN,	printargs,		"putpmsg"	}, /* 1189 */
++	{ 3,	TN,	sys_socket,		"socket"	}, /* 1190 */
++	{ 3,	TN,	sys_bind,		"bind"		}, /* 1191 */
++	{ 3,	TN,	sys_connect,		"connect"	}, /* 1192 */
++	{ 2,	TN,	sys_listen,		"listen"	}, /* 1193 */
++	{ 3,	TN,	sys_accept,		"accept"	}, /* 1194 */
++	{ 3,	TN,	sys_getsockname,	"getsockname"	}, /* 1195 */
++	{ 3,	TN,	sys_getpeername,	"getpeername"	}, /* 1196 */
++	{ 4,	TN,	sys_socketpair,		"socketpair"	}, /* 1197 */
++	{ 4,	TN,	sys_send,		"send"		}, /* 1198 */
++	{ 6,	TN,	sys_sendto,		"sendto"	}, /* 1199 */
++	{ 4,	TN,	sys_recv,		"recv"		}, /* 1200 */
++	{ 6,	TN,	sys_recvfrom,		"recvfrom"	}, /* 1201 */
++	{ 2,	TN,	sys_shutdown,		"shutdown"	}, /* 1202 */
++	{ 5,	TN,	sys_setsockopt,		"setsockopt"	}, /* 1203 */
++	{ 5,	TN,	sys_getsockopt,		"getsockopt"	}, /* 1204 */
++	{ 3,	TN,	sys_sendmsg,		"sendmsg"	}, /* 1205 */
++	{ 3,	TN,	sys_recvmsg,		"recvmsg"	}, /* 1206 */
++	{ 8,	0,	printargs,		"SYS_1207"	}, /* 1207 */
++	{ 8,	0,	printargs,		"SYS_1208"	}, /* 1208 */
++	{ 8,	0,	printargs,		"SYS_1209"	}, /* 1209 */
++	{ 8,	0,	printargs,		"SYS_1210"	}, /* 1210 */
++	{ 8,	0,	printargs,		"SYS_1211"	}, /* 1211 */
++	{ 8,	0,	printargs,		"SYS_1212"	}, /* 1212 */
++	{ 8,	0,	printargs,		"SYS_1213"	}, /* 1213 */
++	{ 8,	0,	printargs,		"SYS_1214"	}, /* 1214 */
++	{ 8,	0,	printargs,		"SYS_1215"	}, /* 1215 */
++	{ 8,	0,	printargs,		"SYS_1216"	}, /* 1216 */
++	{ 8,	0,	printargs,		"SYS_1217"	}, /* 1217 */
++	{ 8,	0,	printargs,		"SYS_1218"	}, /* 1218 */
++	{ 8,	0,	printargs,		"SYS_1219"	}, /* 1219 */
++	{ 8,	0,	printargs,		"SYS_1220"	}, /* 1220 */
++	{ 8,	0,	printargs,		"SYS_1221"	}, /* 1221 */
++	{ 8,	0,	printargs,		"SYS_1222"	}, /* 1222 */
++	{ 8,	0,	printargs,		"SYS_1223"	}, /* 1223 */
++	{ 8,	0,	printargs,		"SYS_1224"	}, /* 1224 */
++	{ 8,	0,	printargs,		"SYS_1225"	}, /* 1225 */
++	{ 8,	0,	printargs,		"SYS_1226"	}, /* 1226 */
++	{ 8,	0,	printargs,		"SYS_1227"	}, /* 1227 */
++	{ 8,	0,	printargs,		"SYS_1228"	}, /* 1228 */
++	{ 8,	0,	printargs,		"SYS_1229"	}, /* 1229 */
++	{ 8,	0,	printargs,		"SYS_1230"	}, /* 1230 */
++	{ 8,	0,	printargs,		"SYS_1231"	}, /* 1231 */
++	{ 8,	0,	printargs,		"SYS_1232"	}, /* 1232 */
++	{ 8,	0,	printargs,		"SYS_1233"	}, /* 1233 */
++	{ 8,	0,	printargs,		"SYS_1234"	}, /* 1234 */
++	{ 8,	0,	printargs,		"SYS_1235"	}, /* 1235 */
++	{ 8,	0,	printargs,		"SYS_1236"	}, /* 1236 */
++	{ 8,	0,	printargs,		"SYS_1237"	}, /* 1237 */
++	{ 8,	0,	printargs,		"SYS_1238"	}, /* 1238 */
++	{ 8,	0,	printargs,		"SYS_1239"	}, /* 1239 */
++	{ 8,	0,	printargs,		"SYS_1240"	}, /* 1240 */
++	{ 8,	0,	printargs,		"SYS_1241"	}, /* 1241 */
++	{ 8,	0,	printargs,		"SYS_1242"	}, /* 1242 */
++	{ 8,	0,	printargs,		"SYS_1243"	}, /* 1243 */
++	{ 8,	0,	printargs,		"SYS_1244"	}, /* 1244 */
++	{ 8,	0,	printargs,		"SYS_1245"	}, /* 1245 */
++	{ 8,	0,	printargs,		"SYS_1246"	}, /* 1246 */
++	{ 8,	0,	printargs,		"SYS_1247"	}, /* 1247 */
++	{ 8,	0,	printargs,		"SYS_1248"	}, /* 1248 */
++	{ 8,	0,	printargs,		"SYS_1249"	}, /* 1249 */
++	{ 8,	0,	printargs,		"SYS_1250"	}, /* 1250 */
++	{ 8,	0,	printargs,		"SYS_1251"	}, /* 1251 */
++	{ 8,	0,	printargs,		"SYS_1252"	}, /* 1252 */
++	{ 8,	0,	printargs,		"SYS_1253"	}, /* 1253 */
++	{ 8,	0,	printargs,		"SYS_1254"	}, /* 1254 */
++	{ 8,	0,	printargs,		"SYS_1255"	}, /* 1255 */
++	{ 8,	0,	printargs,		"SYS_1256"	}, /* 1256 */
++	{ 8,	0,	printargs,		"SYS_1257"	}, /* 1257 */
++	{ 8,	0,	printargs,		"SYS_1258"	}, /* 1258 */
++	{ 8,	0,	printargs,		"SYS_1259"	}, /* 1259 */
++	{ 8,	0,	printargs,		"SYS_1260"	}, /* 1260 */
++	{ 8,	0,	printargs,		"SYS_1261"	}, /* 1261 */
++	{ 8,	0,	printargs,		"SYS_1262"	}, /* 1262 */
++	{ 8,	0,	printargs,		"SYS_1263"	}, /* 1263 */
++	{ 8,	0,	printargs,		"SYS_1264"	}, /* 1264 */
++	{ 8,	0,	printargs,		"SYS_1265"	}, /* 1265 */
++	{ 8,	0,	printargs,		"SYS_1266"	}, /* 1266 */
++	{ 8,	0,	printargs,		"SYS_1267"	}, /* 1267 */
++	{ 8,	0,	printargs,		"SYS_1268"	}, /* 1268 */
++	{ 8,	0,	printargs,		"SYS_1269"	}, /* 1269 */
++	{ 8,	0,	printargs,		"SYS_1270"	}, /* 1270 */
++	{ 8,	0,	printargs,		"SYS_1271"	}, /* 1271 */
++	{ 8,	0,	printargs,		"SYS_1272"	}, /* 1272 */
++	{ 8,	0,	printargs,		"SYS_1273"	}, /* 1273 */
++	{ 8,	0,	printargs,		"SYS_1274"	}, /* 1274 */
++	{ 8,	0,	printargs,		"SYS_1275"	}, /* 1275 */
++	{ 8,	0,	printargs,		"SYS_1276"	}, /* 1276 */
++	{ 8,	0,	printargs,		"SYS_1277"	}, /* 1277 */
++	{ 8,	0,	printargs,		"SYS_1278"	}, /* 1278 */
++	{ 8,	0,	printargs,		"SYS_1279"	}, /* 1279 */
++	{ 8,	0,	printargs,		"SYS_1280"	}, /* 1280 */
++	{ 8,	0,	printargs,		"SYS_1281"	}, /* 1281 */
++	{ 8,	0,	printargs,		"SYS_1282"	}, /* 1282 */
++	{ 8,	0,	printargs,		"SYS_1283"	}, /* 1283 */
++	{ 8,	0,	printargs,		"SYS_1284"	}, /* 1284 */
++	{ 8,	0,	printargs,		"SYS_1285"	}, /* 1285 */
++	{ 8,	0,	printargs,		"SYS_1286"	}, /* 1286 */
++	{ 8,	0,	printargs,		"SYS_1287"	}, /* 1287 */
++	{ 8,	0,	printargs,		"SYS_1288"	}, /* 1288 */
++	{ 8,	0,	printargs,		"SYS_1289"	}, /* 1289 */
++	{ 8,	0,	printargs,		"SYS_1290"	}, /* 1290 */
++	{ 8,	0,	printargs,		"SYS_1291"	}, /* 1291 */
++	{ 8,	0,	printargs,		"SYS_1292"	}, /* 1292 */
++	{ 8,	0,	printargs,		"SYS_1293"	}, /* 1293 */
++	{ 8,	0,	printargs,		"SYS_1294"	}, /* 1294 */
++	{ 8,	0,	printargs,		"SYS_1295"	}, /* 1295 */
++	{ 8,	0,	printargs,		"SYS_1296"	}, /* 1296 */
++	{ 8,	0,	printargs,		"SYS_1297"	}, /* 1297 */
++	{ 8,	0,	printargs,		"SYS_1298"	}, /* 1298 */
++	{ 8,	0,	printargs,		"SYS_1299"	}, /* 1299 */
++	{ 8,	0,	printargs,		"SYS_1300"	}, /* 1300 */
++	{ 8,	0,	printargs,		"SYS_1301"	}, /* 1301 */
++	{ 8,	0,	printargs,		"SYS_1302"	}, /* 1302 */
++	{ 8,	0,	printargs,		"SYS_1303"	}, /* 1303 */
++	{ 8,	0,	printargs,		"SYS_1304"	}, /* 1304 */
++	{ 8,	0,	printargs,		"SYS_1305"	}, /* 1305 */
+--- strace-4.2/linux/syscall.h.ia64	Fri Dec 24 02:59:50 1999
++++ strace-4.2/linux/syscall.h	Tue Mar 21 15:04:51 2000
+@@ -109,7 +109,7 @@
+ #endif
+ 
+ 
+-#if !defined(ALPHA) && !defined(MIPS)
++#if !defined(ALPHA) && !defined(IA64) && !defined(MIPS)
+ #ifdef POWERPC
+ #  define SYS_socket_subcall	256
+ #else
+@@ -134,7 +134,7 @@
+ #define SYS_recvmsg		(SYS_socket_subcall + 17)
+ 
+ #define SYS_socket_nsubcalls	18
+-#endif /* !ALPHA */
++#endif /* !(ALPHA || IA64 || MIPS) */
+ 
+ /* sys_ipc subcalls */
+ 
+@@ -142,7 +142,7 @@
+ int sys_msgsnd(), sys_msgrcv(), sys_msgget(), sys_msgctl();
+ int sys_shmat(), sys_shmdt(), sys_shmget(), sys_shmctl();
+ 
+-#if !defined(ALPHA) && !defined(MIPS)
++#if !defined(ALPHA) && !defined(IA64) && !defined(MIPS)
+ #ifdef POWERPC
+ #  define SYS_ipc_subcall		((SYS_socket_subcall)+(SYS_socket_nsubcalls))
+ #else
+@@ -161,10 +161,18 @@
+ #define SYS_shmctl		(SYS_ipc_subcall + 24)
+ 
+ #define SYS_ipc_nsubcalls	25
+-#endif /* ALPHA */
++#endif /* !(ALPHA || IA64 || MIPS) */
++
++#if defined(ALPHA) || defined(IA64)
++int sys_getpagesize();
++#endif
+ 
+ #ifdef ALPHA
+-int osf_statfs(), osf_fstatfs(), sys_getpagesize(), sys_madvise();
++int osf_statfs(), osf_fstatfs(), sys_madvise();
++#endif
++
++#ifdef IA64
++int sys_getpmsg(), sys_putpmsg();	/* STREAMS stuff */
+ #endif
+ 
+ int sys_setpgrp(), sys_gethostname(), sys_getdtablesize(), sys_utimes();
+--- strace-4.2/bjm.c.ia64	Thu Dec 23 09:20:15 1999
++++ strace-4.2/bjm.c	Tue Mar 21 15:04:51 2000
+@@ -80,7 +80,7 @@
+ 		} else if (tcp->u_rval!=0) {
+ 			size_t	ret;
+ 			umove(tcp, tcp->u_arg[4], &ret);
+-			tprintf("%#lx, %lu, %d", tcp->u_arg[2], tcp->u_arg[3], ret);
++			tprintf("%#lx, %lu, %Zu", tcp->u_arg[2], tcp->u_arg[3], ret);
+ 		} else if (tcp->u_arg[1]==QM_INFO) {
+ 			struct module_info	mi;
+ 			size_t			ret;
+@@ -89,7 +89,7 @@
+ 			printflags(modflags, mi.flags);
+ 			tprintf(", usecount=%lu}", mi.usecount);
+ 			umove(tcp, tcp->u_arg[4], &ret);
+-			tprintf(", %d", ret);
++			tprintf(", %Zu", ret);
+ 		} else if ((tcp->u_arg[1]==QM_MODULES) ||
+ 			       	(tcp->u_arg[1]==QM_DEPS) ||
+ 			       	(tcp->u_arg[1]==QM_REFS)) {
+@@ -111,8 +111,8 @@
+ 				}
+ 				free(data);
+ 			} else 
+-				tprintf(" /* %d entries */ ", ret);
+-			tprintf("}, %d", ret);
++				tprintf(" /* %Zu entries */ ", ret);
++			tprintf("}, %Zu", ret);
+ 		} else if (tcp->u_arg[1]==QM_SYMBOLS) {
+ 			size_t	ret;
+ 			umove(tcp, tcp->u_arg[4], &ret);
+@@ -129,8 +129,8 @@
+ 				}
+ 				free(data);
+ 			} else
+-				tprintf(" /* %d entries */ ", ret);
+-			tprintf("}, %d", ret);
++				tprintf(" /* %Zu entries */ ", ret);
++			tprintf("}, %Zd", ret);
+ 		} else {
+ 			printstr(tcp, tcp->u_arg[2], tcp->u_arg[3]);
+ 			tprintf(", %#lx", tcp->u_arg[4]);
+--- strace-4.2/config.h.in.ia64	Fri Jan 21 15:33:32 2000
++++ strace-4.2/config.h.in	Tue Mar 21 15:04:51 2000
+@@ -66,6 +66,9 @@
+ /* Define if this is an i386, i486 or pentium architecture.  */
+ #undef I386
+ 
++/* Define if this is an IA-64 architecture.  */
++#undef IA64
++
+ /* Define if this is an m68k architecture.  */
+ #undef M68K
+ 
+--- strace-4.2/config.sub.ia64	Thu Dec 23 09:20:15 1999
++++ strace-4.2/config.sub	Tue Mar 21 15:04:54 2000
+@@ -1,6 +1,6 @@
+ #! /bin/sh
+ # Configuration validation subroutine script, version 1.1.
+-#   Copyright (C) 1991, 92-97, 1998 Free Software Foundation, Inc.
++#   Copyright (C) 1991, 92-97, 1998, 1999 Free Software Foundation, Inc.
+ # This file is (in principle) common to ALL GNU software.
+ # The presence of a machine in this file suggests that SOME GNU software
+ # can handle that machine.  It does not imply ALL GNU software can.
+@@ -98,11 +98,21 @@
+ 		os=
+ 		basic_machine=$1
+ 		;;
++	-sim | -cisco | -oki | -wec | -winbond)
++		os=
++		basic_machine=$1
++		;;
++	-scout)
++		;;
++	-wrs)
++		os=-vxworks
++		basic_machine=$1
++		;;
+ 	-hiux*)
+ 		os=-hiuxwe2
+ 		;;
+ 	-sco5)
+-		os=sco3.2v5
++		os=-sco3.2v5
+ 		basic_machine=`echo $1 | sed -e 's/86-.*/86-pc/'`
+ 		;;
+ 	-sco4)
+@@ -121,6 +131,9 @@
+ 		os=-sco3.2v2
+ 		basic_machine=`echo $1 | sed -e 's/86-.*/86-pc/'`
+ 		;;
++	-udk*)
++		basic_machine=`echo $1 | sed -e 's/86-.*/86-pc/'`
++		;;
+ 	-isc)
+ 		os=-isc2.2
+ 		basic_machine=`echo $1 | sed -e 's/86-.*/86-pc/'`
+@@ -143,22 +156,33 @@
+ 	-psos*)
+ 		os=-psos
+ 		;;
++	-mint | -mint[0-9]*)
++		basic_machine=m68k-atari
++		os=-mint
++		;;
+ esac
+ 
+ # Decode aliases for certain CPU-COMPANY combinations.
+ case $basic_machine in
+ 	# Recognize the basic CPU types without company name.
+ 	# Some are omitted here because they have special meanings below.
+-	tahoe | i860 | m32r | m68k | m68000 | m88k | ns32k | arc | arm \
++	tahoe | i860 | ia64 | m32r | m68k | m68000 | m88k | ns32k | arc | arm \
+ 		| arme[lb] | pyramid | mn10200 | mn10300 | tron | a29k \
+-		| 580 | i960 | h8300 | hppa | hppa1.0 | hppa1.1 | hppa2.0 \
+-		| alpha | alphaev5 | alphaev56 | alphapca56 | we32k | ns16k | clipper \
+-		| i370 | sh | powerpc | powerpcle | 1750a | dsp16xx | pdp11 \
+-		| mips64 | mipsel | mips64el | mips64orion | mips64orionel \
+-		| mipstx39 | mipstx39el | s390 \
+-		| sparc | sparclet | sparclite | sparc64 | v850)
++		| 580 | i960 | h8300 \
++		| hppa | hppa1.0 | hppa1.1 | hppa2.0 | hppa2.0w | hppa2.0n \
++		| alpha | alphaev[4-7] | alphaev56 | alphapca5[67] \
++		| we32k | ns16k | clipper | i370 | sh | powerpc | powerpcle \
++		| 1750a | dsp16xx | pdp11 | mips16 | mips64 | mipsel | mips64el \
++		| mips64orion | mips64orionel | mipstx39 | mipstx39el \
++		| mips64vr4300 | mips64vr4300el | mips64vr4100 | mips64vr4100el \
++		| mips64vr5000 | miprs64vr5000el | mcore \
++		| sparc | sparclet | sparclite | sparc64 | sparcv9 | v850 | c4x \
++		| thumb | d10v | fr30)
+ 		basic_machine=$basic_machine-unknown
+ 		;;
++	m88110 | m680[12346]0 | m683?2 | m68360 | m5200 | z8k | v70 | h8500 | w65 | pj | pjl)
++		;;
++
+ 	# We use `pc' rather than `unknown'
+ 	# because (1) that's what they normally are, and
+ 	# (2) the word "unknown" tends to confuse beginning users.
+@@ -171,27 +195,45 @@
+ 		exit 1
+ 		;;
+ 	# Recognize the basic CPU types with company name.
+-	vax-* | tahoe-* | i[34567]86-* | i860-* | m32r-* | m68k-* | m68000-* \
++	# FIXME: clean up the formatting here.
++	vax-* | tahoe-* | i[34567]86-* | i860-* | ia64-* | m32r-* | m68k-* | m68000-* \
+ 	      | m88k-* | sparc-* | ns32k-* | fx80-* | arc-* | arm-* | c[123]* \
+ 	      | mips-* | pyramid-* | tron-* | a29k-* | romp-* | rs6000-* \
+-	      | power-* | none-* | 580-* | cray2-* | h8300-* | i960-* \
+-	      | xmp-* | ymp-* | hppa-* | hppa1.0-* | hppa1.1-* | hppa2.0-* \
+-	      | alpha-* | alphaev5-* | alphaev56-* | alphapca56-* | we32k-* | cydra-* \
+-	      | ns16k-* | pn-* | np1-* | xps100-* | clipper-* | orion-* \
++	      | power-* | none-* | 580-* | cray2-* | h8300-* | h8500-* | i960-* \
++	      | xmp-* | ymp-* \
++	      | hppa-* | hppa1.0-* | hppa1.1-* | hppa2.0-* | hppa2.0w-* | hppa2.0n-* \
++	      | alpha-* | alphaev[4-7]-* | alphaev56-* | alphapca5[67]-* \
++	      | we32k-* | cydra-* | ns16k-* | pn-* | np1-* | xps100-* \
++	      | clipper-* | orion-* \
+ 	      | sparclite-* | pdp11-* | sh-* | powerpc-* | powerpcle-* \
+-	      | sparc64-* | mips64-* | mipsel-* \
+-	      | mips64el-* | mips64orion-* | mips64orionel-*  \
+-	      | mipstx39-* | mipstx39el-* \
+-	      | f301-* | s390-*)
++	      | sparc64-* | sparcv9-* | sparc86x-* | mips16-* | mips64-* | mipsel-* \
++	      | mips64el-* | mips64orion-* | mips64orionel-* \
++	      | mips64vr4100-* | mips64vr4100el-* | mips64vr4300-* | mips64vr4300el-* \
++	      | mipstx39-* | mipstx39el-* | mcore-* \
++	      | f301-* | armv*-* | t3e-* \
++	      | m88110-* | m680[01234]0-* | m683?2-* | m68360-* | z8k-* | d10v-* \
++	      | thumb-* | v850-* | d30v-* | tic30-* | c30-* | fr30-* )
+ 		;;
+ 	# Recognize the various machine names and aliases which stand
+ 	# for a CPU type and a company and sometimes even an OS.
++	386bsd)
++		basic_machine=i386-unknown
++		os=-bsd
++		;;
+ 	3b1 | 7300 | 7300-att | att-7300 | pc7300 | safari | unixpc)
+ 		basic_machine=m68000-att
+ 		;;
+ 	3b*)
+ 		basic_machine=we32k-att
+ 		;;
++	a29khif)
++		basic_machine=a29k-amd
++		os=-udi
++		;;
++	adobe68k)
++		basic_machine=m68010-adobe
++		os=-scout
++		;;
+ 	alliant | fx80)
+ 		basic_machine=fx80-alliant
+ 		;;
+@@ -221,6 +263,10 @@
+ 		basic_machine=m68k-apollo
+ 		os=-sysv
+ 		;;
++	apollo68bsd)
++		basic_machine=m68k-apollo
++		os=-bsd
++		;;
+ 	aux)
+ 		basic_machine=m68k-apple
+ 		os=-aux
+@@ -297,6 +343,10 @@
+ 	encore | umax | mmax)
+ 		basic_machine=ns32k-encore
+ 		;;
++	es1800 | OSE68k | ose68k | ose | OSE)
++		basic_machine=m68k-ericsson
++		os=-ose
++		;;
+ 	fx2800)
+ 		basic_machine=i860-alliant
+ 		;;
+@@ -315,6 +365,14 @@
+ 		basic_machine=h8300-hitachi
+ 		os=-hms
+ 		;;
++	h8300xray)
++		basic_machine=h8300-hitachi
++		os=-xray
++		;;
++	h8500hms)
++		basic_machine=h8500-hitachi
++		os=-hms
++		;;
+ 	harris)
+ 		basic_machine=m88k-harris
+ 		os=-sysv3
+@@ -330,13 +388,30 @@
+ 		basic_machine=m68k-hp
+ 		os=-hpux
+ 		;;
++	hp3k9[0-9][0-9] | hp9[0-9][0-9])
++		basic_machine=hppa1.0-hp
++		;;
+ 	hp9k2[0-9][0-9] | hp9k31[0-9])
+ 		basic_machine=m68000-hp
+ 		;;
+ 	hp9k3[2-9][0-9])
+ 		basic_machine=m68k-hp
+ 		;;
+-	hp9k7[0-9][0-9] | hp7[0-9][0-9] | hp9k8[0-9]7 | hp8[0-9]7)
++	hp9k6[0-9][0-9] | hp6[0-9][0-9])
++		basic_machine=hppa1.0-hp
++		;;
++	hp9k7[0-79][0-9] | hp7[0-79][0-9])
++		basic_machine=hppa1.1-hp
++		;;
++	hp9k78[0-9] | hp78[0-9])
++		# FIXME: really hppa2.0-hp
++		basic_machine=hppa1.1-hp
++		;;
++	hp9k8[67]1 | hp8[67]1 | hp9k80[24] | hp80[24] | hp9k8[78]9 | hp8[78]9 | hp9k893 | hp893)
++		# FIXME: really hppa2.0-hp
++		basic_machine=hppa1.1-hp
++		;;
++	hp9k8[0-9][13679] | hp8[0-9][13679])
+ 		basic_machine=hppa1.1-hp
+ 		;;
+ 	hp9k8[0-9][0-9] | hp8[0-9][0-9])
+@@ -345,9 +420,16 @@
+ 	hppa-next)
+ 		os=-nextstep3
+ 		;;
++	hppaosf)
++		basic_machine=hppa1.1-hp
++		os=-osf
++		;;
++	hppro)
++		basic_machine=hppa1.1-hp
++		os=-proelf
++		;;
+ 	i370-ibm* | ibm*)
+ 		basic_machine=i370-ibm
+-		os=-mvs
+ 		;;
+ # I'm not sure what "Sysv32" means.  Should this be sysv3.2?
+ 	i[34567]86v32)
+@@ -366,6 +448,25 @@
+ 		basic_machine=`echo $1 | sed -e 's/86.*/86-pc/'`
+ 		os=-solaris2
+ 		;;
++	i386mach)
++		basic_machine=i386-mach
++		os=-mach
++		;;
++	i386-vsta | vsta)
++		basic_machine=i386-unknown
++		os=-vsta
++		;;
++	i386-go32 | go32)
++		basic_machine=i386-unknown
++		os=-go32
++		;;
++	i386-mingw32 | mingw32)
++		basic_machine=i386-unknown
++		os=-mingw32
++		;;
++	i386-qnx | qnx)
++		basic_machine=i386-qnx
++		;;
+ 	iris | iris4d)
+ 		basic_machine=mips-sgi
+ 		case $os in
+@@ -394,6 +495,10 @@
+ 	miniframe)
+ 		basic_machine=m68000-convergent
+ 		;;
++	*mint | -mint[0-9]* | *MiNT | *MiNT[0-9]*)
++		basic_machine=m68k-atari
++		os=-mint
++		;;
+ 	mipsel*-linux*)
+ 		basic_machine=mipsel-unknown
+ 		os=-linux-gnu
+@@ -408,10 +513,30 @@
+ 	mips3*)
+ 		basic_machine=`echo $basic_machine | sed -e 's/mips3/mips64/'`-unknown
+ 		;;
++	monitor)
++		basic_machine=m68k-rom68k
++		os=-coff
++		;;
++	msdos)
++		basic_machine=i386-unknown
++		os=-msdos
++		;;
++	mvs)
++		basic_machine=i370-ibm
++		os=-mvs
++		;;
+ 	ncr3000)
+ 		basic_machine=i486-ncr
+ 		os=-sysv4
+ 		;;
++	netbsd386)
++		basic_machine=i386-unknown
++		os=-netbsd
++		;;
++	netwinder)
++		basic_machine=armv4l-rebel
++		os=-linux
++		;;
+ 	news | news700 | news800 | news900)
+ 		basic_machine=m68k-sony
+ 		os=-newsos
+@@ -424,6 +549,10 @@
+ 		basic_machine=mips-sony
+ 		os=-newsos
+ 		;;
++	necv70)
++		basic_machine=v70-nec
++		os=-sysv
++		;;
+ 	next | m*-next )
+ 		basic_machine=m68k-next
+ 		case $os in
+@@ -449,9 +578,25 @@
+ 		basic_machine=i960-intel
+ 		os=-nindy
+ 		;;
++	mon960)
++		basic_machine=i960-intel
++		os=-mon960
++		;;
+ 	np1)
+ 		basic_machine=np1-gould
+ 		;;
++	op50n-* | op60c-*)
++		basic_machine=hppa1.1-oki
++		os=-proelf
++		;;
++	OSE68000 | ose68000)
++		basic_machine=m68000-ericsson
++		os=-ose
++		;;
++	os68k)
++		basic_machine=m68k-none
++		os=-os68k
++		;;
+ 	pa-hitachi)
+ 		basic_machine=hppa1.1-hitachi
+ 		os=-hiuxwe2
+@@ -469,19 +614,19 @@
+         pc532 | pc532-*)
+ 		basic_machine=ns32k-pc532
+ 		;;
+-	pentium | p5 | k5 | nexen)
++	pentium | p5 | k5 | k6 | nexen)
+ 		basic_machine=i586-pc
+ 		;;
+-	pentiumpro | p6 | k6 | 6x86)
++	pentiumpro | p6 | 6x86)
+ 		basic_machine=i686-pc
+ 		;;
+ 	pentiumii | pentium2)
+ 		basic_machine=i786-pc
+ 		;;
+-	pentium-* | p5-* | k5-* | nexen-*)
++	pentium-* | p5-* | k5-* | k6-* | nexen-*)
+ 		basic_machine=i586-`echo $basic_machine | sed 's/^[^-]*-//'`
+ 		;;
+-	pentiumpro-* | p6-* | k6-* | 6x86-*)
++	pentiumpro-* | p6-* | 6x86-*)
+ 		basic_machine=i686-`echo $basic_machine | sed 's/^[^-]*-//'`
+ 		;;
+ 	pentiumii-* | pentium2-*)
+@@ -505,14 +650,19 @@
+ 	ps2)
+ 		basic_machine=i386-ibm
+ 		;;
++	rom68k)
++		basic_machine=m68k-rom68k
++		os=-coff
++		;;
+ 	rm[46]00)
+ 		basic_machine=mips-siemens
+ 		;;
+ 	rtpc | rtpc-*)
+ 		basic_machine=romp-ibm
+ 		;;
+-	s390)
+-		basic_machine=s390-ibm
++	sa29200)
++		basic_machine=a29k-amd
++		os=-udi
+ 		;;
+ 	sequent)
+ 		basic_machine=i386-sequent
+@@ -521,6 +671,10 @@
+ 		basic_machine=sh-hitachi
+ 		os=-hms
+ 		;;
++	sparclite-wrs)
++		basic_machine=sparclite-wrs
++		os=-vxworks
++		;;
+ 	sps7)
+ 		basic_machine=m68k-bull
+ 		os=-sysv2
+@@ -528,6 +682,13 @@
+ 	spur)
+ 		basic_machine=spur-unknown
+ 		;;
++	st2000)
++		basic_machine=m68k-tandem
++		;;
++	stratus)
++		basic_machine=i860-stratus
++		os=-sysv4
++		;;
+ 	sun2)
+ 		basic_machine=m68000-sun
+ 		;;
+@@ -572,6 +733,10 @@
+ 		basic_machine=i386-sequent
+ 		os=-dynix
+ 		;;
++	t3e)
++		basic_machine=t3e-cray
++		os=-unicos
++		;;
+ 	tx39)
+ 		basic_machine=mipstx39-unknown
+ 		;;
+@@ -589,6 +754,10 @@
+ 		basic_machine=a29k-nyu
+ 		os=-sym1
+ 		;;
++	v810 | necv810)
++		basic_machine=v810-nec
++		os=-none
++		;;
+ 	vaxv)
+ 		basic_machine=vax-dec
+ 		os=-sysv
+@@ -612,6 +781,14 @@
+ 		basic_machine=a29k-wrs
+ 		os=-vxworks
+ 		;;
++	w65*)
++		basic_machine=w65-wdc
++		os=-none
++		;;
++	w89k-*)
++		basic_machine=hppa1.1-winbond
++		os=-proelf
++		;;
+ 	xmp)
+ 		basic_machine=xmp-cray
+ 		os=-unicos
+@@ -619,6 +796,10 @@
+         xps | xps100)
+ 		basic_machine=xps100-honeywell
+ 		;;
++	z8k-*-coff)
++		basic_machine=z8k-unknown
++		os=-sim
++		;;
+ 	none)
+ 		basic_machine=none-none
+ 		os=-none
+@@ -626,6 +807,15 @@
+ 
+ # Here we handle the default manufacturer of certain CPU types.  It is in
+ # some cases the only manufacturer, in others, it is the most popular.
++	w89k)
++		basic_machine=hppa1.1-winbond
++		;;
++	op50n)
++		basic_machine=hppa1.1-oki
++		;;
++	op60c)
++		basic_machine=hppa1.1-oki
++		;;
+ 	mips)
+ 		if [ x$os = x-linux-gnu ]; then
+ 			basic_machine=mips-unknown
+@@ -648,7 +838,7 @@
+ 	we32k)
+ 		basic_machine=we32k-att
+ 		;;
+-	sparc)
++	sparc | sparcv9)
+ 		basic_machine=sparc-sun
+ 		;;
+         cydra)
+@@ -660,6 +850,16 @@
+ 	orion105)
+ 		basic_machine=clipper-highlevel
+ 		;;
++	mac | mpw | mac-mpw)
++		basic_machine=m68k-apple
++		;;
++	pmac | pmac-mpw)
++		basic_machine=powerpc-apple
++		;;
++	c4x*)
++		basic_machine=c4x-none
++		os=-coff
++		;;
+ 	*)
+ 		echo Invalid configuration \`$1\': machine \`$basic_machine\' not recognized 1>&2
+ 		exit 1
+@@ -713,14 +913,21 @@
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -netbsd* | -openbsd* | -freebsd* | -riscix* \
+-	      | -lynxos* | -bosx* | -nextstep* | -cxux* | -aout* | -elf* \
++	      | -lynxos* | -bosx* | -nextstep* | -cxux* | -aout* | -elf* | -oabi* \
+ 	      | -ptx* | -coff* | -ecoff* | -winnt* | -domain* | -vsta* \
+ 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
+ 	      | -cygwin* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+-	      | -mingw32* | -linux-gnu* | -uxpv* | -beos* | -rhapsody* \
+-	      | -openstep*)
++	      | -mingw32* | -linux-gnu* | -uxpv* | -beos* | -mpeix* | -udk* \
++	      | -interix* | -uwin* | -rhapsody* | -opened* | -openstep* | -oskit*)
+ 	# Remember, each alternative MUST END IN *, to match a version number.
+ 		;;
++	-sim | -es1800* | -hms* | -xray | -os68k* | -none* | -v88r* \
++	      | -windows* | -osx | -abug | -netware* | -os9* | -beos* \
++	      | -macos* | -mpw* | -magic* | -mon960* | -lnews*)
++		;;
++	-mac*)
++		os=`echo $os | sed -e 's|mac|macos|'`
++		;;
+ 	-linux*)
+ 		os=`echo $os | sed -e 's|linux|linux-gnu|'`
+ 		;;
+@@ -730,6 +937,9 @@
+ 	-sunos6*)
+ 		os=`echo $os | sed -e 's|sunos6|solaris3|'`
+ 		;;
++	-opened*)
++		os=-openedition
++		;;
+ 	-osfrose*)
+ 		os=-osfrose
+ 		;;
+@@ -745,6 +955,9 @@
+ 	-acis*)
+ 		os=-aos
+ 		;;
++	-386bsd)
++		os=-bsd
++		;;
+ 	-ctix* | -uts*)
+ 		os=-sysv
+ 		;;
+@@ -764,6 +977,9 @@
+ 	-oss*)
+ 		os=-sysv3
+ 		;;
++        -qnx)
++		os=-qnx4
++		;;
+ 	-svr4)
+ 		os=-sysv4
+ 		;;
+@@ -776,9 +992,18 @@
+ 	# This must come after -sysvr4.
+ 	-sysv*)
+ 		;;
++	-ose*)
++		os=-ose
++		;;
++	-es1800*)
++		os=-ose
++		;;
+ 	-xenix)
+ 		os=-xenix
+ 		;;
++        -*mint | -*MiNT)
++	        os=-mint
++		;;
+ 	-none)
+ 		;;
+ 	*)
+@@ -804,6 +1029,9 @@
+ 	*-acorn)
+ 		os=-riscix1.2
+ 		;;
++	arm*-rebel)
++		os=-linux
++		;;
+ 	arm*-semi)
+ 		os=-aout
+ 		;;
+@@ -825,6 +1053,15 @@
+ 		# default.
+ 		# os=-sunos4
+ 		;;
++	m68*-cisco)
++		os=-aout
++		;;
++	mips*-cisco)
++		os=-elf
++		;;
++	mips*-*)
++		os=-elf
++		;;
+ 	*-tti)	# must be before sparc entry or we get the wrong os.
+ 		os=-sysv3
+ 		;;
+@@ -837,6 +1074,15 @@
+ 	*-ibm)
+ 		os=-aix
+ 		;;
++	*-wec)
++		os=-proelf
++		;;
++	*-winbond)
++		os=-proelf
++		;;
++	*-oki)
++		os=-proelf
++		;;
+ 	*-hp)
+ 		os=-hpux
+ 		;;
+@@ -900,6 +1146,18 @@
+ 	f301-fujitsu)
+ 		os=-uxpv
+ 		;;
++	*-rom68k)
++		os=-coff
++		;;
++	*-*bug)
++		os=-coff
++		;;
++	*-apple)
++		os=-macos
++		;;
++	*-atari*)
++		os=-mint
++		;;
+ 	*)
+ 		os=-none
+ 		;;
+@@ -921,9 +1179,15 @@
+ 			-aix*)
+ 				vendor=ibm
+ 				;;
++			-beos*)
++				vendor=be
++				;;
+ 			-hpux*)
+ 				vendor=hp
+ 				;;
++			-mpeix*)
++				vendor=hp
++				;;
+ 			-hiux*)
+ 				vendor=hitachi
+ 				;;
+@@ -939,7 +1203,7 @@
+ 			-genix*)
+ 				vendor=ns
+ 				;;
+-			-mvs*)
++			-mvs* | -opened*)
+ 				vendor=ibm
+ 				;;
+ 			-ptx*)
+@@ -950,6 +1214,15 @@
+ 				;;
+ 			-aux*)
+ 				vendor=apple
++				;;
++			-hms*)
++				vendor=hitachi
++				;;
++			-mpw* | -macos*)
++				vendor=apple
++				;;
++			-*mint | -*MiNT)
++				vendor=atari
+ 				;;
+ 		esac
+ 		basic_machine=`echo $basic_machine | sed "s/unknown/$vendor/"`
+--- strace-4.2/configure.ia64	Fri Jan 21 15:33:32 2000
++++ strace-4.2/configure	Tue Mar 21 15:04:53 2000
+@@ -606,6 +606,9 @@
+ i[3456]86|pentium)
+ 	arch=i386
+ 	;;
++ia64)
++	arch=ia64
++	;;
+ m68k)
+ 	arch=m68k
+ 	;;
+@@ -635,7 +638,7 @@
+ 
+ # Autoheader trick.  Heh, heh.
+ arch_list='
+-@@@syms="$syms I386 M68K SPARC MIPS ALPHA ARM POWERPC"@@@
++@@@syms="$syms I386 IA64 M68K SPARC MIPS ALPHA ARM POWERPC"@@@
+ '
+ 
+ osarch="$opsys"
+@@ -676,7 +679,7 @@
+ # Extract the first word of "gcc", so it can be a program name with args.
+ set dummy gcc; ac_word=$2
+ echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+-echo "configure:680: checking for $ac_word" >&5
++echo "configure:683: checking for $ac_word" >&5
+ if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -706,7 +709,7 @@
+   # Extract the first word of "cc", so it can be a program name with args.
+ set dummy cc; ac_word=$2
+ echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+-echo "configure:710: checking for $ac_word" >&5
++echo "configure:713: checking for $ac_word" >&5
+ if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -757,7 +760,7 @@
+       # Extract the first word of "cl", so it can be a program name with args.
+ set dummy cl; ac_word=$2
+ echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+-echo "configure:761: checking for $ac_word" >&5
++echo "configure:764: checking for $ac_word" >&5
+ if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -789,7 +792,7 @@
+ fi
+ 
+ echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
+-echo "configure:793: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
++echo "configure:796: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
+ 
+ ac_ext=c
+ # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
+@@ -800,12 +803,12 @@
+ 
+ cat > conftest.$ac_ext << EOF
+ 
+-#line 804 "configure"
++#line 807 "configure"
+ #include "confdefs.h"
+ 
+ main(){return(0);}
+ EOF
+-if { (eval echo configure:809: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
++if { (eval echo configure:812: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+   ac_cv_prog_cc_works=yes
+   # If we can't run a trivial program, we are probably using a cross compiler.
+   if (./conftest; exit) 2>/dev/null; then
+@@ -831,12 +834,12 @@
+   { echo "configure: error: installation or configuration problem: C compiler cannot create executables." 1>&2; exit 1; }
+ fi
+ echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
+-echo "configure:835: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
++echo "configure:838: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
+ echo "$ac_t""$ac_cv_prog_cc_cross" 1>&6
+ cross_compiling=$ac_cv_prog_cc_cross
+ 
+ echo $ac_n "checking whether we are using GNU C""... $ac_c" 1>&6
+-echo "configure:840: checking whether we are using GNU C" >&5
++echo "configure:843: checking whether we are using GNU C" >&5
+ if eval "test \"`echo '$''{'ac_cv_prog_gcc'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -845,7 +848,7 @@
+   yes;
+ #endif
+ EOF
+-if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:849: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
++if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:852: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
+   ac_cv_prog_gcc=yes
+ else
+   ac_cv_prog_gcc=no
+@@ -864,7 +867,7 @@
+ ac_save_CFLAGS="$CFLAGS"
+ CFLAGS=
+ echo $ac_n "checking whether ${CC-cc} accepts -g""... $ac_c" 1>&6
+-echo "configure:868: checking whether ${CC-cc} accepts -g" >&5
++echo "configure:871: checking whether ${CC-cc} accepts -g" >&5
+ if eval "test \"`echo '$''{'ac_cv_prog_cc_g'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -909,16 +912,16 @@
+ 			last="$i"
+ 			CC="$HOSTCC -b $i"
+ 			echo $ac_n "checking for working $CC""... $ac_c" 1>&6
+-echo "configure:913: checking for working $CC" >&5
++echo "configure:916: checking for working $CC" >&5
+ 			cat > conftest.$ac_ext <<EOF
+-#line 915 "configure"
++#line 918 "configure"
+ #include "confdefs.h"
+ 
+ int main() {
+ 
+ ; return 0; }
+ EOF
+-if { (eval echo configure:922: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
++if { (eval echo configure:925: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+   rm -rf conftest*
+   worked=1
+ 				break
+@@ -940,7 +943,7 @@
+ fi
+ 
+ echo $ac_n "checking for MP procfs""... $ac_c" 1>&6
+-echo "configure:944: checking for MP procfs" >&5
++echo "configure:947: checking for MP procfs" >&5
+ if eval "test \"`echo '$''{'ac_cv_mp_procfs'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -958,7 +961,7 @@
+ 
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 962 "configure"
++#line 965 "configure"
+ #include "confdefs.h"
+ 
+ #include <stdio.h>
+@@ -997,7 +1000,7 @@
+ }
+ 
+ EOF
+-if { (eval echo configure:1001: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
++if { (eval echo configure:1004: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+ then
+   ac_cv_mp_procfs=yes
+ else
+@@ -1021,7 +1024,7 @@
+ fi
+ 
+ echo $ac_n "checking for pollable procfs""... $ac_c" 1>&6
+-echo "configure:1025: checking for pollable procfs" >&5
++echo "configure:1028: checking for pollable procfs" >&5
+ if eval "test \"`echo '$''{'ac_cv_pollable_procfs'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -1039,7 +1042,7 @@
+ 
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1043 "configure"
++#line 1046 "configure"
+ #include "confdefs.h"
+ 
+ #include <stdio.h>
+@@ -1093,7 +1096,7 @@
+ }
+ 
+ EOF
+-if { (eval echo configure:1097: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
++if { (eval echo configure:1100: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+ then
+   ac_cv_pollable_procfs=yes
+ else
+@@ -1117,19 +1120,19 @@
+ fi
+ 
+ echo $ac_n "checking for pr_syscall in struct prstatus""... $ac_c" 1>&6
+-echo "configure:1121: checking for pr_syscall in struct prstatus" >&5
++echo "configure:1124: checking for pr_syscall in struct prstatus" >&5
+ if eval "test \"`echo '$''{'ac_cv_struct_pr_syscall'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1126 "configure"
++#line 1129 "configure"
+ #include "confdefs.h"
+ #include <sys/procfs.h>
+ int main() {
+ struct prstatus s; s.pr_syscall;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1133: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:1136: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_struct_pr_syscall=yes
+ else
+@@ -1151,12 +1154,12 @@
+ fi
+ 
+ echo $ac_n "checking for msg_control in struct msghdr""... $ac_c" 1>&6
+-echo "configure:1155: checking for msg_control in struct msghdr" >&5
++echo "configure:1158: checking for msg_control in struct msghdr" >&5
+ if eval "test \"`echo '$''{'ac_cv_struct_msg_control'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1160 "configure"
++#line 1163 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <sys/socket.h>
+@@ -1165,7 +1168,7 @@
+ struct msghdr m; m.msg_control;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1169: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:1172: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_struct_msg_control=yes
+ else
+@@ -1186,12 +1189,12 @@
+ 
+ fi
+ 
+-for ac_prog in mawk gawk nawk awk
++for ac_prog in gawk mawk nawk awk
+ do
+ # Extract the first word of "$ac_prog", so it can be a program name with args.
+ set dummy $ac_prog; ac_word=$2
+ echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+-echo "configure:1195: checking for $ac_word" >&5
++echo "configure:1198: checking for $ac_word" >&5
+ if eval "test \"`echo '$''{'ac_cv_prog_AWK'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -1222,7 +1225,7 @@
+ 
+ 
+ echo $ac_n "checking for primary include directory""... $ac_c" 1>&6
+-echo "configure:1226: checking for primary include directory" >&5
++echo "configure:1229: checking for primary include directory" >&5
+ includedir=/usr/include
+ if test -n "$GCC"
+ then
+@@ -1244,7 +1247,7 @@
+ if test "x$OPSYS" = "xSUNOS4" && test "x$ARCH" = "xSPARC"
+ then
+ 	echo $ac_n "checking for valid machine include directory""... $ac_c" 1>&6
+-echo "configure:1248: checking for valid machine include directory" >&5
++echo "configure:1251: checking for valid machine include directory" >&5
+ 	if test -d "$includedir/sun4"
+ 	then
+ 		rm -f machine
+@@ -1277,7 +1280,7 @@
+ 	fi
+ fi
+ echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
+-echo "configure:1281: checking how to run the C preprocessor" >&5
++echo "configure:1284: checking how to run the C preprocessor" >&5
+ # On Suns, sometimes $CPP names a directory.
+ if test -n "$CPP" && test -d "$CPP"; then
+   CPP=
+@@ -1292,13 +1295,13 @@
+   # On the NeXT, cc -E runs the code through the compiler's parser,
+   # not just through cpp.
+   cat > conftest.$ac_ext <<EOF
+-#line 1296 "configure"
++#line 1299 "configure"
+ #include "confdefs.h"
+ #include <assert.h>
+ Syntax Error
+ EOF
+ ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+-{ (eval echo configure:1302: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
++{ (eval echo configure:1305: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+ if test -z "$ac_err"; then
+   :
+@@ -1309,13 +1312,13 @@
+   rm -rf conftest*
+   CPP="${CC-cc} -E -traditional-cpp"
+   cat > conftest.$ac_ext <<EOF
+-#line 1313 "configure"
++#line 1316 "configure"
+ #include "confdefs.h"
+ #include <assert.h>
+ Syntax Error
+ EOF
+ ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+-{ (eval echo configure:1319: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
++{ (eval echo configure:1322: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+ if test -z "$ac_err"; then
+   :
+@@ -1326,13 +1329,13 @@
+   rm -rf conftest*
+   CPP="${CC-cc} -nologo -E"
+   cat > conftest.$ac_ext <<EOF
+-#line 1330 "configure"
++#line 1333 "configure"
+ #include "confdefs.h"
+ #include <assert.h>
+ Syntax Error
+ EOF
+ ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+-{ (eval echo configure:1336: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
++{ (eval echo configure:1339: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+ if test -z "$ac_err"; then
+   :
+@@ -1358,13 +1361,13 @@
+ 
+ if test $ac_cv_prog_gcc = yes; then
+     echo $ac_n "checking whether ${CC-cc} needs -traditional""... $ac_c" 1>&6
+-echo "configure:1362: checking whether ${CC-cc} needs -traditional" >&5
++echo "configure:1365: checking whether ${CC-cc} needs -traditional" >&5
+ if eval "test \"`echo '$''{'ac_cv_prog_gcc_traditional'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+     ac_pattern="Autoconf.*'x'"
+   cat > conftest.$ac_ext <<EOF
+-#line 1368 "configure"
++#line 1371 "configure"
+ #include "confdefs.h"
+ #include <sgtty.h>
+ Autoconf TIOCGETP
+@@ -1382,7 +1385,7 @@
+ 
+   if test $ac_cv_prog_gcc_traditional = no; then
+     cat > conftest.$ac_ext <<EOF
+-#line 1386 "configure"
++#line 1389 "configure"
+ #include "confdefs.h"
+ #include <termio.h>
+ Autoconf TCGETA
+@@ -1415,7 +1418,7 @@
+ # SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
+ # ./install, which can be erroneously created by make from ./install.sh.
+ echo $ac_n "checking for a BSD compatible install""... $ac_c" 1>&6
+-echo "configure:1419: checking for a BSD compatible install" >&5
++echo "configure:1422: checking for a BSD compatible install" >&5
+ if test -z "$INSTALL"; then
+ if eval "test \"`echo '$''{'ac_cv_path_install'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+@@ -1468,18 +1471,18 @@
+ test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
+ 
+ echo $ac_n "checking for working const""... $ac_c" 1>&6
+-echo "configure:1472: checking for working const" >&5
++echo "configure:1475: checking for working const" >&5
+ if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1477 "configure"
++#line 1480 "configure"
+ #include "confdefs.h"
+ 
+ int main() {
+ 
+ /* Ultrix mips cc rejects this.  */
+-typedef int charset[2]; const charset x = {0,0};
++typedef int charset[2]; const charset x;
+ /* SunOS 4.1.1 cc rejects this.  */
+ char const *const *ccp;
+ char **p;
+@@ -1522,7 +1525,7 @@
+ 
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1526: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:1529: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_c_const=yes
+ else
+@@ -1543,12 +1546,12 @@
+ fi
+ 
+ echo $ac_n "checking for ANSI C header files""... $ac_c" 1>&6
+-echo "configure:1547: checking for ANSI C header files" >&5
++echo "configure:1550: checking for ANSI C header files" >&5
+ if eval "test \"`echo '$''{'ac_cv_header_stdc'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1552 "configure"
++#line 1555 "configure"
+ #include "confdefs.h"
+ #include <stdlib.h>
+ #include <stdarg.h>
+@@ -1556,7 +1559,7 @@
+ #include <float.h>
+ EOF
+ ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+-{ (eval echo configure:1560: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
++{ (eval echo configure:1563: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+ if test -z "$ac_err"; then
+   rm -rf conftest*
+@@ -1573,7 +1576,7 @@
+ if test $ac_cv_header_stdc = yes; then
+   # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
+ cat > conftest.$ac_ext <<EOF
+-#line 1577 "configure"
++#line 1580 "configure"
+ #include "confdefs.h"
+ #include <string.h>
+ EOF
+@@ -1591,7 +1594,7 @@
+ if test $ac_cv_header_stdc = yes; then
+   # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
+ cat > conftest.$ac_ext <<EOF
+-#line 1595 "configure"
++#line 1598 "configure"
+ #include "confdefs.h"
+ #include <stdlib.h>
+ EOF
+@@ -1612,7 +1615,7 @@
+   :
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1616 "configure"
++#line 1619 "configure"
+ #include "confdefs.h"
+ #include <ctype.h>
+ #define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
+@@ -1623,7 +1626,7 @@
+ exit (0); }
+ 
+ EOF
+-if { (eval echo configure:1627: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
++if { (eval echo configure:1630: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+ then
+   :
+ else
+@@ -1651,12 +1654,12 @@
+ do
+ ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
+ echo $ac_n "checking for $ac_hdr that defines DIR""... $ac_c" 1>&6
+-echo "configure:1655: checking for $ac_hdr that defines DIR" >&5
++echo "configure:1658: checking for $ac_hdr that defines DIR" >&5
+ if eval "test \"`echo '$''{'ac_cv_header_dirent_$ac_safe'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1660 "configure"
++#line 1663 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <$ac_hdr>
+@@ -1664,7 +1667,7 @@
+ DIR *dirp = 0;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1668: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:1671: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   eval "ac_cv_header_dirent_$ac_safe=yes"
+ else
+@@ -1689,7 +1692,7 @@
+ # Two versions of opendir et al. are in -ldir and -lx on SCO Xenix.
+ if test $ac_header_dirent = dirent.h; then
+ echo $ac_n "checking for opendir in -ldir""... $ac_c" 1>&6
+-echo "configure:1693: checking for opendir in -ldir" >&5
++echo "configure:1696: checking for opendir in -ldir" >&5
+ ac_lib_var=`echo dir'_'opendir | sed 'y%./+-%__p_%'`
+ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+@@ -1697,7 +1700,7 @@
+   ac_save_LIBS="$LIBS"
+ LIBS="-ldir  $LIBS"
+ cat > conftest.$ac_ext <<EOF
+-#line 1701 "configure"
++#line 1704 "configure"
+ #include "confdefs.h"
+ /* Override any gcc2 internal prototype to avoid an error.  */
+ /* We use char because int might match the return type of a gcc2
+@@ -1708,7 +1711,7 @@
+ opendir()
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1712: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
++if { (eval echo configure:1715: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+   rm -rf conftest*
+   eval "ac_cv_lib_$ac_lib_var=yes"
+ else
+@@ -1730,7 +1733,7 @@
+ 
+ else
+ echo $ac_n "checking for opendir in -lx""... $ac_c" 1>&6
+-echo "configure:1734: checking for opendir in -lx" >&5
++echo "configure:1737: checking for opendir in -lx" >&5
+ ac_lib_var=`echo x'_'opendir | sed 'y%./+-%__p_%'`
+ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+@@ -1738,7 +1741,7 @@
+   ac_save_LIBS="$LIBS"
+ LIBS="-lx  $LIBS"
+ cat > conftest.$ac_ext <<EOF
+-#line 1742 "configure"
++#line 1745 "configure"
+ #include "confdefs.h"
+ /* Override any gcc2 internal prototype to avoid an error.  */
+ /* We use char because int might match the return type of a gcc2
+@@ -1749,7 +1752,7 @@
+ opendir()
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1753: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
++if { (eval echo configure:1756: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+   rm -rf conftest*
+   eval "ac_cv_lib_$ac_lib_var=yes"
+ else
+@@ -1772,12 +1775,12 @@
+ fi
+ 
+ echo $ac_n "checking return type of signal handlers""... $ac_c" 1>&6
+-echo "configure:1776: checking return type of signal handlers" >&5
++echo "configure:1779: checking return type of signal handlers" >&5
+ if eval "test \"`echo '$''{'ac_cv_type_signal'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1781 "configure"
++#line 1784 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <signal.h>
+@@ -1794,7 +1797,7 @@
+ int i;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1798: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:1801: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_type_signal=void
+ else
+@@ -1813,12 +1816,12 @@
+ 
+ 
+ echo $ac_n "checking for st_blksize in struct stat""... $ac_c" 1>&6
+-echo "configure:1817: checking for st_blksize in struct stat" >&5
++echo "configure:1820: checking for st_blksize in struct stat" >&5
+ if eval "test \"`echo '$''{'ac_cv_struct_st_blksize'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1822 "configure"
++#line 1825 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -1826,7 +1829,7 @@
+ struct stat s; s.st_blksize;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1830: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:1833: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_struct_st_blksize=yes
+ else
+@@ -1847,12 +1850,12 @@
+ fi
+ 
+ echo $ac_n "checking for st_blocks in struct stat""... $ac_c" 1>&6
+-echo "configure:1851: checking for st_blocks in struct stat" >&5
++echo "configure:1854: checking for st_blocks in struct stat" >&5
+ if eval "test \"`echo '$''{'ac_cv_struct_st_blocks'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1856 "configure"
++#line 1859 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -1860,7 +1863,7 @@
+ struct stat s; s.st_blocks;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1864: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:1867: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_struct_st_blocks=yes
+ else
+@@ -1883,12 +1886,12 @@
+ fi
+ 
+ echo $ac_n "checking for st_rdev in struct stat""... $ac_c" 1>&6
+-echo "configure:1887: checking for st_rdev in struct stat" >&5
++echo "configure:1890: checking for st_rdev in struct stat" >&5
+ if eval "test \"`echo '$''{'ac_cv_struct_st_rdev'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1892 "configure"
++#line 1895 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -1896,7 +1899,7 @@
+ struct stat s; s.st_rdev;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:1900: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:1903: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_struct_st_rdev=yes
+ else
+@@ -1917,12 +1920,12 @@
+ fi
+ 
+ echo $ac_n "checking whether stat file-mode macros are broken""... $ac_c" 1>&6
+-echo "configure:1921: checking whether stat file-mode macros are broken" >&5
++echo "configure:1924: checking whether stat file-mode macros are broken" >&5
+ if eval "test \"`echo '$''{'ac_cv_header_stat_broken'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1926 "configure"
++#line 1929 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -1973,12 +1976,12 @@
+ fi
+ 
+ echo $ac_n "checking for uid_t in sys/types.h""... $ac_c" 1>&6
+-echo "configure:1977: checking for uid_t in sys/types.h" >&5
++echo "configure:1980: checking for uid_t in sys/types.h" >&5
+ if eval "test \"`echo '$''{'ac_cv_type_uid_t'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 1982 "configure"
++#line 1985 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ EOF
+@@ -2007,12 +2010,12 @@
+ fi
+ 
+ echo $ac_n "checking for mode_t""... $ac_c" 1>&6
+-echo "configure:2011: checking for mode_t" >&5
++echo "configure:2014: checking for mode_t" >&5
+ if eval "test \"`echo '$''{'ac_cv_type_mode_t'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2016 "configure"
++#line 2019 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #if STDC_HEADERS
+@@ -2040,7 +2043,7 @@
+ fi
+ 
+ echo $ac_n "checking type of array argument to getgroups""... $ac_c" 1>&6
+-echo "configure:2044: checking type of array argument to getgroups" >&5
++echo "configure:2047: checking type of array argument to getgroups" >&5
+ if eval "test \"`echo '$''{'ac_cv_type_getgroups'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+@@ -2048,7 +2051,7 @@
+   ac_cv_type_getgroups=cross
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2052 "configure"
++#line 2055 "configure"
+ #include "confdefs.h"
+ 
+ /* Thanks to Mike Rendell for this test.  */
+@@ -2073,7 +2076,7 @@
+ }
+ 
+ EOF
+-if { (eval echo configure:2077: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
++if { (eval echo configure:2080: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+ then
+     ac_cv_type_getgroups=gid_t
+ else
+@@ -2087,7 +2090,7 @@
+ 
+ if test $ac_cv_type_getgroups = cross; then
+         cat > conftest.$ac_ext <<EOF
+-#line 2091 "configure"
++#line 2094 "configure"
+ #include "confdefs.h"
+ #include <unistd.h>
+ EOF
+@@ -2111,19 +2114,19 @@
+ 
+ 
+ echo $ac_n "checking whether sys/types.h defines makedev""... $ac_c" 1>&6
+-echo "configure:2115: checking whether sys/types.h defines makedev" >&5
++echo "configure:2118: checking whether sys/types.h defines makedev" >&5
+ if eval "test \"`echo '$''{'ac_cv_header_sys_types_h_makedev'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2120 "configure"
++#line 2123 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ int main() {
+ return makedev(0, 0);
+ ; return 0; }
+ EOF
+-if { (eval echo configure:2127: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
++if { (eval echo configure:2130: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+   rm -rf conftest*
+   ac_cv_header_sys_types_h_makedev=yes
+ else
+@@ -2141,17 +2144,17 @@
+ if test $ac_cv_header_sys_types_h_makedev = no; then
+ ac_safe=`echo "sys/mkdev.h" | sed 'y%./+-%__p_%'`
+ echo $ac_n "checking for sys/mkdev.h""... $ac_c" 1>&6
+-echo "configure:2145: checking for sys/mkdev.h" >&5
++echo "configure:2148: checking for sys/mkdev.h" >&5
+ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2150 "configure"
++#line 2153 "configure"
+ #include "confdefs.h"
+ #include <sys/mkdev.h>
+ EOF
+ ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+-{ (eval echo configure:2155: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
++{ (eval echo configure:2158: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+ if test -z "$ac_err"; then
+   rm -rf conftest*
+@@ -2179,17 +2182,17 @@
+   if test $ac_cv_header_sys_mkdev_h = no; then
+ ac_safe=`echo "sys/sysmacros.h" | sed 'y%./+-%__p_%'`
+ echo $ac_n "checking for sys/sysmacros.h""... $ac_c" 1>&6
+-echo "configure:2183: checking for sys/sysmacros.h" >&5
++echo "configure:2186: checking for sys/sysmacros.h" >&5
+ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2188 "configure"
++#line 2191 "configure"
+ #include "confdefs.h"
+ #include <sys/sysmacros.h>
+ EOF
+ ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+-{ (eval echo configure:2193: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
++{ (eval echo configure:2196: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+ if test -z "$ac_err"; then
+   rm -rf conftest*
+@@ -2217,19 +2220,19 @@
+ fi
+ 
+ echo $ac_n "checking for sig_atomic_t in signal.h""... $ac_c" 1>&6
+-echo "configure:2221: checking for sig_atomic_t in signal.h" >&5
++echo "configure:2224: checking for sig_atomic_t in signal.h" >&5
+ if eval "test \"`echo '$''{'ac_cv_sig_atomic_t'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2226 "configure"
++#line 2229 "configure"
+ #include "confdefs.h"
+ #include <signal.h>
+ int main() {
+ sig_atomic_t x;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:2233: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:2236: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_sig_atomic_t=yes
+ else
+@@ -2251,19 +2254,19 @@
+ fi
+ 
+ echo $ac_n "checking for stat64 in asm/stat.h""... $ac_c" 1>&6
+-echo "configure:2255: checking for stat64 in asm/stat.h" >&5
++echo "configure:2258: checking for stat64 in asm/stat.h" >&5
+ if eval "test \"`echo '$''{'ac_cv_type_stat64'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2260 "configure"
++#line 2263 "configure"
+ #include "confdefs.h"
+ #include <asm/stat.h>
+ int main() {
+ struct stat64 st;
+ ; return 0; }
+ EOF
+-if { (eval echo configure:2267: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:2270: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_type_stat64=yes
+ else
+@@ -2285,7 +2288,7 @@
+ fi
+ 
+ echo $ac_n "checking for main in -lnsl""... $ac_c" 1>&6
+-echo "configure:2289: checking for main in -lnsl" >&5
++echo "configure:2292: checking for main in -lnsl" >&5
+ ac_lib_var=`echo nsl'_'main | sed 'y%./+-%__p_%'`
+ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+@@ -2293,14 +2296,14 @@
+   ac_save_LIBS="$LIBS"
+ LIBS="-lnsl  $LIBS"
+ cat > conftest.$ac_ext <<EOF
+-#line 2297 "configure"
++#line 2300 "configure"
+ #include "confdefs.h"
+ 
+ int main() {
+ main()
+ ; return 0; }
+ EOF
+-if { (eval echo configure:2304: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
++if { (eval echo configure:2307: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+   rm -rf conftest*
+   eval "ac_cv_lib_$ac_lib_var=yes"
+ else
+@@ -2330,12 +2333,12 @@
+ for ac_func in sigaction strerror strsignal pread sys_siglist _sys_siglist getdents mctl putpmsg prctl sendmsg inet_ntop
+ do
+ echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
+-echo "configure:2334: checking for $ac_func" >&5
++echo "configure:2337: checking for $ac_func" >&5
+ if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2339 "configure"
++#line 2342 "configure"
+ #include "confdefs.h"
+ /* System header to define __stub macros and hopefully few prototypes,
+     which can conflict with char $ac_func(); below.  */
+@@ -2358,7 +2361,7 @@
+ 
+ ; return 0; }
+ EOF
+-if { (eval echo configure:2362: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
++if { (eval echo configure:2365: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+   rm -rf conftest*
+   eval "ac_cv_func_$ac_func=yes"
+ else
+@@ -2386,17 +2389,17 @@
+ do
+ ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
+ echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
+-echo "configure:2390: checking for $ac_hdr" >&5
++echo "configure:2393: checking for $ac_hdr" >&5
+ if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2395 "configure"
++#line 2398 "configure"
+ #include "confdefs.h"
+ #include <$ac_hdr>
+ EOF
+ ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+-{ (eval echo configure:2400: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
++{ (eval echo configure:2403: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+ if test -z "$ac_err"; then
+   rm -rf conftest*
+@@ -2423,12 +2426,12 @@
+ done
+ 
+ echo $ac_n "checking for sys_errlist declaration""... $ac_c" 1>&6
+-echo "configure:2427: checking for sys_errlist declaration" >&5
++echo "configure:2430: checking for sys_errlist declaration" >&5
+ if eval "test \"`echo '$''{'ac_cv_decl_sys_errlist'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2432 "configure"
++#line 2435 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <errno.h>
+@@ -2441,7 +2444,7 @@
+ char *msg = *(sys_errlist + 1);
+ ; return 0; }
+ EOF
+-if { (eval echo configure:2445: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:2448: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_decl_sys_errlist=yes
+ else
+@@ -2461,12 +2464,12 @@
+ fi
+ 
+ echo $ac_n "checking for sys_siglist declaration in signal.h or unistd.h""... $ac_c" 1>&6
+-echo "configure:2465: checking for sys_siglist declaration in signal.h or unistd.h" >&5
++echo "configure:2468: checking for sys_siglist declaration in signal.h or unistd.h" >&5
+ if eval "test \"`echo '$''{'ac_cv_decl_sys_siglist'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2470 "configure"
++#line 2473 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <signal.h>
+@@ -2478,7 +2481,7 @@
+ char *msg = *(sys_siglist + 1);
+ ; return 0; }
+ EOF
+-if { (eval echo configure:2482: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:2485: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_decl_sys_siglist=yes
+ else
+@@ -2499,12 +2502,12 @@
+ fi
+ 
+ echo $ac_n "checking for _sys_siglist declaration""... $ac_c" 1>&6
+-echo "configure:2503: checking for _sys_siglist declaration" >&5
++echo "configure:2506: checking for _sys_siglist declaration" >&5
+ if eval "test \"`echo '$''{'ac_cv_decl__sys_siglist'+set}'`\" = set"; then
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   cat > conftest.$ac_ext <<EOF
+-#line 2508 "configure"
++#line 2511 "configure"
+ #include "confdefs.h"
+ #include <sys/types.h>
+ #include <signal.h>
+@@ -2516,7 +2519,7 @@
+ char *msg = *(_sys_siglist + 1);
+ ; return 0; }
+ EOF
+-if { (eval echo configure:2520: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
++if { (eval echo configure:2523: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+   rm -rf conftest*
+   ac_cv_decl__sys_siglist=yes
+ else
+--- strace-4.2/configure.in.ia64	Fri Dec 24 03:03:15 1999
++++ strace-4.2/configure.in	Tue Mar 21 15:04:51 2000
+@@ -38,6 +38,9 @@
+ i[3456]86|pentium)
+ 	arch=i386
+ 	;;
++ia64)
++	arch=ia64
++	;;
+ m68k)
+ 	arch=m68k
+ 	;;
+@@ -67,7 +70,7 @@
+ 
+ # Autoheader trick.  Heh, heh.
+ arch_list='
+-@@@syms="$syms I386 M68K SPARC MIPS ALPHA ARM POWERPC"@@@
++@@@syms="$syms I386 IA64 M68K SPARC MIPS ALPHA ARM POWERPC"@@@
+ '
+ 
+ osarch="$opsys"
+--- strace-4.2/defs.h.ia64	Thu Dec 23 10:08:17 1999
++++ strace-4.2/defs.h	Tue Mar 21 15:04:51 2000
+@@ -39,7 +39,7 @@
+ 
+ /* configuration section */
+ #ifndef MAX_QUALS
+-#define MAX_QUALS	1024	/* maximum number of syscalls, signals, etc. */
++#define MAX_QUALS	2048	/* maximum number of syscalls, signals, etc. */
+ #endif
+ #ifndef MAX_PROCS
+ #define MAX_PROCS	32	/* maximum number of processes tracable */
+--- strace-4.2/desc.c.ia64	Thu Dec 23 09:20:15 1999
++++ strace-4.2/desc.c	Tue Mar 21 15:04:51 2000
+@@ -104,7 +104,7 @@
+ static void
+ printflock(tcp, addr, getlk)
+ struct tcb *tcp;
+-int addr;
++long addr;
+ int getlk;
+ {
+ 	struct flock fl;
+--- strace-4.2/file.c.ia64	Tue Jan 11 09:41:10 2000
++++ strace-4.2/file.c	Tue Mar 21 15:04:51 2000
+@@ -480,7 +480,7 @@
+ static void
+ printstatsol(tcp, addr)
+ struct tcb *tcp;
+-int addr;
++long addr;
+ {
+ 	struct solstat statbuf;
+ 
+@@ -489,7 +489,7 @@
+ 		return;
+ 	}
+ 	if (syserror(tcp) || !verbose(tcp)) {
+-		tprintf("%#x", addr);
++		tprintf("%#lx", addr);
+ 		return;
+ 	}
+ 	if (umove(tcp, addr, &statbuf) < 0) {
+@@ -584,7 +584,7 @@
+ static void
+ printstat(tcp, addr)
+ struct tcb *tcp;
+-int addr;
++long addr;
+ {
+ 	struct stat statbuf;
+ 
+@@ -600,7 +600,7 @@
+ 		return;
+ 	}
+ 	if (syserror(tcp) || !verbose(tcp)) {
+-		tprintf("%#x", addr);
++		tprintf("%#lx", addr);
+ 		return;
+ 	}
+ 	if (umove(tcp, addr, &statbuf) < 0) {
+@@ -615,7 +615,7 @@
+ static void
+ printstat64(tcp, addr)
+ struct tcb *tcp;
+-int addr;
++long addr;
+ {
+ 	struct stat64 statbuf;
+ 
+@@ -631,7 +631,7 @@
+ 		return;
+ 	}
+ 	if (syserror(tcp) || !verbose(tcp)) {
+-		tprintf("%#x", addr);
++		tprintf("%#lx", addr);
+ 		return;
+ 	}
+ 	if (umove(tcp, addr, &statbuf) < 0) {
+@@ -685,7 +685,7 @@
+ }
+ #endif /* STAT64 */
+ 
+-#ifdef linux
++#if defined(linux) && !defined(IA64)
+ static void
+ convertoldstat(oldbuf, newbuf)
+ const struct __old_kernel_stat *oldbuf;
+@@ -710,7 +710,7 @@
+ static void
+ printoldstat(tcp, addr)
+ struct tcb *tcp;
+-int addr;
++long addr;
+ {
+ 	struct __old_kernel_stat statbuf;
+ 	struct stat newstatbuf;
+@@ -727,7 +727,7 @@
+ 		return;
+ 	}
+ 	if (syserror(tcp) || !verbose(tcp)) {
+-		tprintf("%#x", addr);
++		tprintf("%#lx", addr);
+ 		return;
+ 	}
+ 	if (umove(tcp, addr, &statbuf) < 0) {
+@@ -738,7 +738,7 @@
+ 	convertoldstat(&statbuf, &newstatbuf);
+ 	realprintstat(tcp, &newstatbuf);
+ }
+-#endif
++#endif /* linux && !IA64 */
+ 
+ 
+ int
+@@ -772,6 +772,7 @@
+ #endif
+ }
+ 
++# if !defined(IA64)
+ int
+ sys_oldstat(tcp)
+ struct tcb *tcp;
+@@ -784,7 +785,8 @@
+ 	}
+ 	return 0;
+ }
+-#endif
++# endif /* !IA64 */
++#endif /* linux */
+ 
+ int
+ sys_fstat(tcp)
+@@ -815,6 +817,7 @@
+ #endif
+ }
+ 
++# if !defined(IA64)
+ int
+ sys_oldfstat(tcp)
+ struct tcb *tcp;
+@@ -826,6 +829,7 @@
+ 	}
+ 	return 0;
+ }
++# endif /* !IA64 */
+ #endif
+ 
+ int
+@@ -859,6 +863,7 @@
+ #endif
+ }
+ 
++# if !defined(IA64)
+ int
+ sys_oldlstat(tcp)
+ struct tcb *tcp;
+@@ -871,6 +876,7 @@
+ 	}
+ 	return 0;
+ }
++# endif /* !IA64 */
+ #endif
+ 
+ 
+--- strace-4.2/mem.c.ia64	Thu Dec 23 09:20:15 1999
++++ strace-4.2/mem.c	Tue Mar 21 15:04:51 2000
+@@ -170,9 +170,28 @@
+ struct tcb *tcp;
+ {
+     long u_arg[6];
++    int i, v;
+ 
++#if	defined(IA64)
++    /*
++     *  IA64 processes never call this routine, they only use the
++     *  new `sys_mmap' interface.  This code converts the integer
++     *  arguments that the IA32 process pushed onto the stack into
++     *  longs.
++     *
++     *  Note that addresses with bit 31 set will be sign extended.
++     *  Fortunately, those addresses are not currently being generated
++     *  for IA32 processes so it's not a problem.
++     */
++    for (i = 0; i < 6; i++)
++	if (umove(tcp, tcp->u_arg[0] + (i * sizeof(int)), &v) == -1)
++		return 0;
++	else
++		u_arg[i] = v;
++#else	// defined(IA64)
+     if (umoven(tcp, tcp->u_arg[0], sizeof u_arg, (char *) u_arg) == -1)
+ 	    return 0;
++#endif	// defined(IA64)
+     return print_mmap(tcp, u_arg);
+    
+ }
+--- strace-4.2/process.c.ia64	Fri Dec 24 02:22:25 1999
++++ strace-4.2/process.c	Tue Mar 21 15:16:03 2000
+@@ -70,6 +70,11 @@
+ #define GETGROUPS_T __kernel_gid_t
+ #endif /* LINUX */
+ 
++#if defined(LINUX) && defined(IA64)
++# include <asm/ptrace_offsets.h>
++# include <asm/rse.h>
++#endif
++
+ #ifdef HAVE_PRCTL
+ #include <sys/prctl.h>
+ #endif
+@@ -343,6 +348,18 @@
+     { 0,		NULL		},
+ };
+ 
++int
++sys_clone(tcp)
++struct tcb *tcp;
++{
++	if (exiting(tcp)) {
++		tprintf("child_stack=%#lx, flags=", tcp->u_arg[1]);
++		if (printflags(clone_flags, tcp->u_arg[0]) == 0)
++			tprintf("0");
++	}
++	return 0;
++}
++
+ #endif
+ 
+ int
+@@ -354,6 +371,31 @@
+ 	return 0;
+ }
+ 
++int
++setarg(tcp, argnum)
++	struct tcb *tcp;
++	int argnum;
++{
++#if defined (IA64)
++	{
++		unsigned long *bsp, *ap;
++
++		if (upeek(tcp->pid, PT_AR_BSP, (long *) &bsp) , 0)
++			return -1;
++
++		ap = ia64_rse_skip_regs(bsp, argnum);
++		errno = 0;
++		ptrace(PTRACE_POKEDATA, tcp->pid, ap, tcp->u_arg[argnum]);
++		if (errno)
++			return -1;
++
++	}
++#else
++	/* TODO */
++#endif
++	return 0;
++}
++
+ #ifdef SYS_clone
+ int
+ internal_clone(tcp)
+@@ -361,18 +403,8 @@
+ {
+ 	struct tcb *tcpchild;
+ 	int pid;
+-	int dont_follow = 0;
+ 	if (entering(tcp)) {
+-		tprintf("fn=%#lx, child_stack=%#lx, flags=",
+-				tcp->u_arg[0], tcp->u_arg[1]);
+-		if (printflags(clone_flags, tcp->u_arg[2]) == 0)
+-			tprintf("0");
+-		tprintf(", args=%#lx", tcp->u_arg[3]);
+-
+-		/* For now we don't follow clone yet.. we're just preparing the code */
+-		dont_follow = 1;
+-
+-		if (!followfork || dont_follow)
++		if (!followfork)
+ 			return 0;
+ 		if (nprocs == MAX_PROCS) {
+ 			tcp->flags &= ~TCB_FOLLOWFORK;
+@@ -381,15 +413,8 @@
+ 		}
+ 		tcp->flags |= TCB_FOLLOWFORK;
+ 
+-		/* XXX 
+-		 * We will take the simple approach and add CLONE_PTRACE to the clone
+-		 * options. This only works on Linux 2.2.x and later. This means that
+-		 * we break all programs using clone on older kernels..
+-		 * We should try to fallback to the bpt-trick if this fails, but right
+-		 * now we don't.
+-		 */
+-
+-		/* TODO: actually change the flags */
++		tcp->u_arg[0] |= CLONE_PTRACE;
++		setarg(tcp, 0);
+ 	} else {
+ 		if (!(tcp->flags & TCB_FOLLOWFORK))
+ 			return 0;
+@@ -439,20 +464,6 @@
+ #endif
+ 	}
+ #endif
+-#ifdef SYS_clone
+-	/* clone can do many things, not all of which we know how to handle.
+-	   Don't do much for now. */
+-	if (tcp->scno == SYS_clone) {
+-	    	if (entering(tcp)) {
+-			tprintf("fn=%#lx, child_stack=%#lx, flags=",
+-					tcp->u_arg[0], tcp->u_arg[1]);
+-			if (printflags(clone_flags, tcp->u_arg[2]) == 0)
+-			    tprintf("0");
+-			tprintf(", args=%#lx", tcp->u_arg[3]);
+-		}
+-		dont_follow = 1;
+-	}
+-#endif
+ 	if (entering(tcp)) {
+ 		if (!followfork || dont_follow)
+ 			return 0;
+@@ -1710,6 +1721,76 @@
+ 	{ 63,			"fp31"					},
+ 	{ 64,			"pc"					},
+ #else /* !ALPHA */
++#ifdef IA64
++	{ PT_F32, "f32" }, { PT_F33, "f33" }, { PT_F34, "f34" },
++	{ PT_F35, "f35" }, { PT_F36, "f36" }, { PT_F37, "f37" },
++	{ PT_F38, "f38" }, { PT_F39, "f39" }, { PT_F40, "f40" },
++	{ PT_F41, "f41" }, { PT_F42, "f42" }, { PT_F43, "f43" },
++	{ PT_F44, "f44" }, { PT_F45, "f45" }, { PT_F46, "f46" },
++	{ PT_F47, "f47" }, { PT_F48, "f48" }, { PT_F49, "f49" },
++	{ PT_F50, "f50" }, { PT_F51, "f51" }, { PT_F52, "f52" },
++	{ PT_F53, "f53" }, { PT_F54, "f54" }, { PT_F55, "f55" },
++	{ PT_F56, "f56" }, { PT_F57, "f57" }, { PT_F58, "f58" },
++	{ PT_F59, "f59" }, { PT_F60, "f60" }, { PT_F61, "f61" },
++	{ PT_F62, "f62" }, { PT_F63, "f63" }, { PT_F64, "f64" },
++	{ PT_F65, "f65" }, { PT_F66, "f66" }, { PT_F67, "f67" },
++	{ PT_F68, "f68" }, { PT_F69, "f69" }, { PT_F70, "f70" },
++	{ PT_F71, "f71" }, { PT_F72, "f72" }, { PT_F73, "f73" },
++	{ PT_F74, "f74" }, { PT_F75, "f75" }, { PT_F76, "f76" },
++	{ PT_F77, "f77" }, { PT_F78, "f78" }, { PT_F79, "f79" },
++	{ PT_F80, "f80" }, { PT_F81, "f81" }, { PT_F82, "f82" },
++	{ PT_F83, "f83" }, { PT_F84, "f84" }, { PT_F85, "f85" },
++	{ PT_F86, "f86" }, { PT_F87, "f87" }, { PT_F88, "f88" },
++	{ PT_F89, "f89" }, { PT_F90, "f90" }, { PT_F91, "f91" },
++	{ PT_F92, "f92" }, { PT_F93, "f93" }, { PT_F94, "f94" },
++	{ PT_F95, "f95" }, { PT_F96, "f96" }, { PT_F97, "f97" },
++	{ PT_F98, "f98" }, { PT_F99, "f99" }, { PT_F100, "f100" },
++	{ PT_F101, "f101" }, { PT_F102, "f102" }, { PT_F103, "f103" },
++	{ PT_F104, "f104" }, { PT_F105, "f105" }, { PT_F106, "f106" },
++	{ PT_F107, "f107" }, { PT_F108, "f108" }, { PT_F109, "f109" },
++	{ PT_F110, "f110" }, { PT_F111, "f111" }, { PT_F112, "f112" },
++	{ PT_F113, "f113" }, { PT_F114, "f114" }, { PT_F115, "f115" },
++	{ PT_F116, "f116" }, { PT_F117, "f117" }, { PT_F118, "f118" },
++	{ PT_F119, "f119" }, { PT_F120, "f120" }, { PT_F121, "f121" },
++	{ PT_F122, "f122" }, { PT_F123, "f123" }, { PT_F124, "f124" },
++	{ PT_F125, "f125" }, { PT_F126, "f126" }, { PT_F127, "f127" },
++	/* switch stack: */
++	{ PT_F2, "f2" }, { PT_F3, "f3" }, { PT_F4, "f4" },
++	{ PT_F5, "f5" }, { PT_F10, "f10" }, { PT_F11, "f11" },
++	{ PT_F12, "f12" }, { PT_F13, "f13" }, { PT_F14, "f14" },
++	{ PT_F15, "f15" }, { PT_F16, "f16" }, { PT_F17, "f17" },
++	{ PT_F18, "f18" }, { PT_F19, "f19" }, { PT_F20, "f20" },
++	{ PT_F21, "f21" }, { PT_F22, "f22" }, { PT_F23, "f23" },
++	{ PT_F24, "f24" }, { PT_F25, "f25" }, { PT_F26, "f26" },
++	{ PT_F27, "f27" }, { PT_F28, "f28" }, { PT_F29, "f29" },
++	{ PT_F30, "f30" }, { PT_F31, "f31" }, { PT_R4, "r4" },
++	{ PT_R5, "r5" }, { PT_R6, "r6" }, { PT_R7, "r7" },
++	{ PT_K_B0, "kb0" },
++	{ PT_B1, "b1" }, { PT_B2, "b2" }, { PT_B3, "b3" },
++	{ PT_B4, "b4" }, { PT_B5, "b5" },
++	{ PT_K_AR_PFS, "kar.pfs" },
++	{ PT_AR_LC, "ar.lc" }, { PT_K_AR_UNAT, "kar.unat" },
++	{ PT_K_AR_RNAT, "kar.rnat" }, { PT_K_AR_BSPSTORE, "kar.bspstore" },
++	{ PT_K_PR, "k.pr" },
++	/* pt_regs */
++	{ PT_CR_IPSR, "cr.ipsr" }, { PT_CR_IIP, "cr.iip" },
++	{ PT_CR_IFS, "cr.ifs" }, { PT_AR_UNAT, "ar.unat" },
++	{ PT_AR_PFS, "ar.pfs" }, { PT_AR_RSC, "ar.rsc" },
++	{ PT_AR_RNAT, "ar.rnat" }, { PT_AR_BSPSTORE, "ar.bspstore" },
++	{ PT_PR, "pr" }, { PT_B6, "b6" }, { PT_AR_BSP, "ar.bsp" },
++	{ PT_R1, "r1" }, { PT_R2, "r2" }, { PT_R3, "r3" },
++	{ PT_R12, "r12" }, { PT_R13, "r13" }, { PT_R14, "r14" },
++	{ PT_R15, "r15" }, { PT_R8, "r8" }, { PT_R9, "r9" },
++	{ PT_R10, "r10" }, { PT_R11, "r11" }, { PT_R16, "r16" },
++	{ PT_R17, "r17" }, { PT_R18, "r18" }, { PT_R19, "r19" },
++	{ PT_R20, "r20" }, { PT_R21, "r21" }, { PT_R22, "r22" },
++	{ PT_R23, "r23" }, { PT_R24, "r24" }, { PT_R25, "r25" },
++	{ PT_R26, "r26" }, { PT_R27, "r27" }, { PT_R28, "r28" },
++	{ PT_R29, "r29" }, { PT_R30, "r30" }, { PT_R31, "r31" },
++	{ PT_AR_CCV, "ar.ccv" }, { PT_AR_FPSR, "ar.fpsr" },
++	{ PT_B0, "b0" }, { PT_B7, "b7" }, { PT_F6, "f6" },
++	{ PT_F7, "f7" }, { PT_F8, "f8" }, { PT_F9, "f9" },
++#else /* !IA64 */
+ #ifdef I386
+ 	{ 4*EBX,		"4*EBX"					},
+ 	{ 4*ECX,		"4*ECX"					},
+@@ -1782,6 +1863,7 @@
+ #ifdef I386
+ 	{ uoff(u_debugreg),	"offsetof(struct user, u_debugreg)"	},
+ #endif /* I386 */
++#endif /* !IA64 */
+ #endif /* !ALPHA */
+ #endif /* !POWERPC/!SPARC */
+ #endif /* LINUX */
+--- strace-4.2/signal.c.ia64	Thu Dec 23 09:20:15 1999
++++ strace-4.2/signal.c	Tue Mar 21 15:04:51 2000
+@@ -60,6 +60,10 @@
+ 
+ #ifdef LINUX
+ 
++#ifdef IA64
++# include <asm/ptrace_offsets.h>
++#endif /* !IA64 */
++
+ #ifdef HAVE_ASM_SIGCONTEXT_H
+ #include <asm/sigcontext.h>
+ #ifdef SPARC
+@@ -251,7 +255,7 @@
+ static int
+ copy_sigset_len(tcp, addr, s, len)
+ struct tcb *tcp;
+-int addr;
++long addr;
+ sigset_t *s;
+ int len;
+ {
+@@ -741,6 +745,28 @@
+ 	}
+ 	return 0;
+ #else /* !I386 */
++#ifdef IA64
++	struct sigcontext sc;
++	long sp;
++
++	if (entering(tcp)) {
++		tcp->u_arg[0] = 0;
++		if (upeek(tcp->pid, PT_R12, &sp) < 0)
++			return 0;
++		if (umove(tcp, sp + 16, &sc) < 0)
++			return 0;
++		tcp->u_arg[0] = 1;
++		memcpy(tcp->u_arg + 1, &sc.sc_mask, sizeof(tcp->u_arg[1]));
++	}
++	else {
++		tcp->u_rval = tcp->u_error = 0;
++		if (tcp->u_arg[0] == 0)
++			return 0;
++		tcp->auxstr = sprintsigmask("mask now ", tcp->u_arg[1]);
++		return RVAL_NONE | RVAL_STR;
++	}
++	return 0;
++#else /* !IA64 */
+ #ifdef POWERPC
+        long esp;
+        struct sigcontext_struct sc;
+@@ -867,6 +893,7 @@
+ #endif /* ALPHA */
+ #endif /* !M68K */
+ #endif /* !POWERPC */
++#endif /* !IA64 */
+ #endif /* !I386 */
+ #endif /* S390 */
+ }
+--- strace-4.2/strace.c.ia64	Thu Dec 23 09:20:15 1999
++++ strace-4.2/strace.c	Tue Mar 21 15:04:51 2000
+@@ -1481,10 +1481,25 @@
+ 
+ 		/* Look up `pid' in our table. */
+ 		if ((tcp = pid2tcb(pid)) == NULL) {
++#if 1 /* XXX davidm */
++			struct tcb *tcpchild;
++
++			if ((tcpchild = alloctcb(pid)) == NULL) {
++				fprintf(stderr, " [tcb table full]\n");
++				kill(pid, SIGKILL); /* XXX */
++				return 0;
++			}
++			tcpchild->flags |= TCB_ATTACHED;
++			newoutf(tcpchild);
++			tcp->nchildren++;
++			if (!qflag)
++				fprintf(stderr, "Process %d attached\n", pid);
++#else
+ 			fprintf(stderr, "unknown pid: %u\n", pid);
+ 			if (WIFSTOPPED(status))
+ 				ptrace(PTRACE_CONT, pid, (char *) 1, 0);
+ 			exit(1);
++#endif
+ 		}
+ 		/* set current output file */
+ 		outf = tcp->outf;
+--- strace-4.2/syscall.c.ia64	Tue Mar 21 15:04:51 2000
++++ strace-4.2/syscall.c	Tue Mar 21 15:04:51 2000
+@@ -58,6 +58,11 @@
+ #endif
+ #endif
+ 
++#if defined(LINUX) && defined(IA64)
++# include <asm/ptrace_offsets.h>
++# include <asm/rse.h>
++#endif
++
+ #ifndef SYS_ERRLIST_DECLARED
+ extern int sys_nerr;
+ extern char *sys_errlist[];
+@@ -410,7 +415,7 @@
+ 
+ enum subcall_style { shift_style, deref_style, mask_style, door_style };
+ 
+-#if !(defined(LINUX) && ( defined(ALPHA) || defined(MIPS) ))
++#if !(defined(LINUX) && ( defined(ALPHA) || defined(IA64) || defined(MIPS) ))
+ 
+ static void
+ decode_subcall(tcp, subcall, nsubcalls, style)
+@@ -489,8 +494,10 @@
+ #ifdef SYS_vfork
+ 	case SYS_vfork:
+ #endif
++#if defined(SYS_fork) || defined(SYS_vfork)
+ 		internal_fork(tcp);
+ 		break;
++#endif
+ #ifdef SYS_clone
+ 	case SYS_clone:
+ 		internal_clone(tcp);
+@@ -539,6 +546,9 @@
+ #ifdef LINUX
+ #if defined (I386)
+ 	long eax;
++#elif defined (IA64)
++	long r8, r10, psr;
++	long ia32 = 0;
+ #elif defined (POWERPC)
+ 	long result,flags;
+ #elif defined (M68K)
+@@ -587,6 +597,25 @@
+ #elif defined (I386)
+ 	if (upeek(pid, 4*ORIG_EAX, &scno) < 0)
+ 		return -1;
++#elif defined(IA64)
++#define IA64_PSR_IS	((long)1 << 34)
++	if (upeek (pid, PT_CR_IPSR, &psr) >= 0)
++		ia32 = (psr & IA64_PSR_IS);
++	if (!(tcp->flags & TCB_INSYSCALL)) {
++		if (ia32) {
++			if (upeek(pid, PT_R8, &scno) < 0)
++				return -1;
++		} else {
++			if (upeek (pid, PT_R15, &scno) < 0)
++				return -1;
++		}
++	} else {
++		/* syscall in progress */
++		if (upeek (pid, PT_R8, &r8) < 0)
++			return -1;
++		if (upeek (pid, PT_R10, &r10) < 0)
++			return -1;
++	}
+ #elif defined (ARM)
+ 	{ 
+ 	    long pc;
+@@ -815,6 +844,29 @@
+ 			u_error = 0;
+ 		}
+ #else /* !I386 */
++#ifdef IA64
++		if (ia32) {
++			int err;
++
++			err = (int)r8;
++			if (err < 0 && -err < nerrnos) {
++				tcp->u_rval = -1;
++				u_error = -err;
++			}
++			else {
++				tcp->u_rval = err;
++				u_error = 0;
++			}
++		} else {
++			if (r10) {
++				tcp->u_rval = -1;
++				u_error = r8;
++			} else {
++				tcp->u_rval = r8;
++				u_error = 0;
++			}
++		}
++#else /* !IA64 */
+ #ifdef MIPS
+ 		if (a3) {
+ 		  	tcp->u_rval = -1;
+@@ -879,6 +931,7 @@
+ #endif /* M68K */
+ #endif /* POWERPC */
+ #endif /* MIPS */
++#endif /* IA64 */
+ #endif /* I386 */
+ #endif /* LINUX */
+ #ifdef SUNOS4
+@@ -1080,6 +1133,21 @@
+ 				return -1;
+ 		}
+ 	}
++#elif defined (IA64)
++	{
++		unsigned long *bsp, i;
++
++		if (upeek(pid, PT_AR_BSP, (long *) &bsp) < 0)
++			return -1;
++
++		tcp->u_nargs = sysent[tcp->scno].nargs;
++		for (i = 0; i < tcp->u_nargs; ++i) {
++			if (umoven(tcp, (unsigned long) ia64_rse_skip_regs(bsp, i), sizeof(long),
++				   (char *) &tcp->u_arg[i])
++			    < 0)
++				return -1;
++		}
++	}
+ #elif defined (MIPS)
+ 	{
+ 	  	long sp;
+@@ -1196,13 +1264,13 @@
+ 	switch (tcp->scno) {
+ #endif
+ #ifdef LINUX
+-#if !defined (ALPHA) && !defined(MIPS)
++#if !defined (ALPHA) && !defined(MIPS) && !defined(IA64)
+ 	case SYS_socketcall:
+ 		decode_subcall(tcp, SYS_socket_subcall,
+ 			SYS_socket_nsubcalls, deref_style);
+ 		break;
+ #endif /* !ALPHA && !MIPS */
+-#if !defined (ALPHA) && !defined(SPARC) && !defined(MIPS)
++#if !defined (ALPHA) && !defined(SPARC) && !defined(MIPS) && !defined(IA64)
+ 	case SYS_ipc:
+ 		decode_subcall(tcp, SYS_ipc_subcall,
+ 			SYS_ipc_nsubcalls, shift_style);
+--- strace-4.2/system.c.ia64	Thu Dec 23 09:20:15 1999
++++ strace-4.2/system.c	Tue Mar 21 15:04:51 2000
+@@ -1734,7 +1734,7 @@
+ #endif
+ 				 )))) {
+ 			printpath(tcp, (size_t)info.oldval);
+-			tprintf(", %d, ", oldlen);
++			tprintf(", %Zu, ", oldlen);
+ 			if (info.newval == 0)
+ 				tprintf("NULL");
+ 			else if (syserror(tcp))
+@@ -1743,7 +1743,7 @@
+ 				printpath(tcp, (size_t)info.newval);
+ 			tprintf(", %Zd", info.newlen);
+ 		} else {
+-			tprintf("%p, %d, %p, %Zd", info.oldval, oldlen,
++			tprintf("%p, %Zd, %p, %Zd", info.oldval, oldlen,
+ 				info.newval, info.newlen);
+ 		}
+ 		tprintf("}");
+--- strace-4.2/util.c.ia64	Fri Dec 24 18:19:31 1999
++++ strace-4.2/util.c	Tue Mar 21 15:04:51 2000
+@@ -48,6 +48,10 @@
+ #include <linux/ptrace.h>
+ #endif 
+ 
++#if defined(LINUX) && defined(IA64)
++#include <asm/ptrace_offsets.h>
++#endif
++
+ #ifdef HAVE_SYS_REG_H
+ #include <sys/reg.h>
+ # define PTRACE_PEEKUSR PTRACE_PEEKUSER
+@@ -874,6 +878,9 @@
+ #if defined(I386)
+ 	if (upeek(tcp->pid, 4*EIP, &pc) < 0)
+ 		return -1;
++#elif defined(IA64)
++	if (upeek(tcp->pid, PT_B0, &pc) < 0)
++		return -1;
+ #elif defined(ARM)
+ 	if (upeek(tcp->pid, 4*15, &pc) < 0)
+ 		return -1;
+@@ -936,6 +943,15 @@
+ 	}
+ 	tprintf("[%08lx] ", eip);
+ #else /* !I386K */
++#ifdef IA64
++	long ip;
++
++	if (upeek(tcp->pid, PT_B0, &ip) < 0) {
++		tprintf("[????????] ");
++		return;
++	}
++	tprintf("[%08lx] ", ip);
++#else /* !IA64 */
+ #ifdef POWERPC
+ 	long pc;
+ 
+@@ -974,6 +990,7 @@
+ #endif /* ALPHA */
+ #endif /* !M68K */
+ #endif /* !POWERPC */
++#endif /* !IA64 */
+ #endif /* !I386 */
+ #endif /* LINUX */
+ 
+@@ -1044,6 +1061,47 @@
+ 	tcp->flags |= TCB_BPTSET;
+ 
+ #else /* !SPARC */
++#ifdef IA64
++	/*
++	 * Our strategy here is to replace the bundle that contained
++	 * the clone() syscall with a bundle of the form:
++	 *
++	 *	{ 1: br 1b; br 1b; br 1b }
++	 *
++	 * This ensures that the newly forked child will loop
++	 * endlessly until we've got a chance to attach to it.
++	 */
++	{
++#		define LOOP0	0x0000100000000017
++#		define LOOP1	0x4000000000200000
++		unsigned long addr, ipsr;
++		pid_t pid;
++
++		pid = tcp->pid;
++		if (upeek(pid, PT_CR_IPSR, &ipsr) < 0)
++			return -1;
++		if (upeek(pid, PT_CR_IIP, &addr) < 0)
++			return -1;
++		tcp->baddr = addr | ((ipsr >> 41) & 0x3);	/* store "ri" in low two bits */
++
++		errno = 0;
++		tcp->inst[0] = ptrace(PTRACE_PEEKTEXT, pid, (char *) addr + 0, 0);
++		tcp->inst[1] = ptrace(PTRACE_PEEKTEXT, pid, (char *) addr + 8, 0);
++		if (errno) {
++			perror("setbpt: ptrace(PTRACE_PEEKTEXT, ...)");
++			return -1;
++		}
++
++		errno = 0;
++		ptrace(PTRACE_POKETEXT, pid, (char *) addr + 0, LOOP0);
++		ptrace(PTRACE_POKETEXT, pid, (char *) addr + 8, LOOP1);
++		if (errno) {
++			perror("setbpt: ptrace(PTRACE_POKETEXT, ...)");
++			return -1;
++		}
++		tcp->flags |= TCB_BPTSET;
++	}
++#else /* !IA64 */
+ 
+ #if defined (I386)
+ #define LOOP	0x0000feeb
+@@ -1102,6 +1160,7 @@
+ 	}
+ 	tcp->flags |= TCB_BPTSET;
+ 
++#endif /* !IA64 */
+ #endif /* SPARC */
+ #endif /* LINUX */
+ 
+@@ -1193,6 +1252,47 @@
+ 	}
+ 	tcp->flags &= ~TCB_BPTSET;
+ #else /* !SPARC */
++#ifdef IA64
++	{
++		unsigned long addr, ipsr;
++		pid_t pid;
++
++		pid = tcp->pid;
++
++		if (upeek(pid, PT_CR_IPSR, &ipsr) < 0)
++			return -1;
++		if (upeek(pid, PT_CR_IIP, &addr) < 0)
++			return -1;
++
++		/* restore original bundle: */
++		errno = 0;
++		ptrace(PTRACE_POKETEXT, pid, (char *) addr + 0, tcp->inst[0]);
++		ptrace(PTRACE_POKETEXT, pid, (char *) addr + 8, tcp->inst[1]);
++		if (errno) {
++			perror("clearbpt: ptrace(PTRACE_POKETEXT, ...)");
++			return -1;
++		}
++
++		/* restore original "ri" in ipsr: */
++		ipsr = (ipsr & ~(0x3ul << 41)) | ((tcp->baddr & 0x3) << 41);
++		errno = 0;
++		ptrace(PTRACE_POKEUSER, pid, (char *) PT_CR_IPSR, ipsr);
++		if (errno) {
++			perror("clrbpt: ptrace(PTRACE_POKEUSER, ...)");
++			return -1;
++		}
++
++		tcp->flags &= ~TCB_BPTSET;
++
++		if (addr != (tcp->baddr & ~0x3)) {
++			/* the breakpoint has not been reached yet.  */
++			if (debug)
++				fprintf(stderr, "NOTE: PC not at bpt (pc %#lx baddr %#lx)\n",
++					addr, tcp->baddr);
++			return 0;
++		}
++	}
++#else /* !IA64 */
+ 
+ 	if (debug)
+ 		fprintf(stderr, "[%d] clearing bpt\n", tcp->pid);
+@@ -1256,6 +1356,7 @@
+ #endif /* !M68K */
+ #endif /* !POWERPC */
+ #endif /* !I386 */
++#endif /* !IA64 */
+ #endif /* !SPARC */
+ #endif /* LINUX */
+ 
+--- strace-4.2/acconfig.h.ia64	Fri Dec 24 03:02:40 1999
++++ strace-4.2/acconfig.h	Tue Mar 21 15:04:51 2000
+@@ -15,6 +15,9 @@
+ /* Define if this is an i386, i486 or pentium architecture.  */
+ #undef I386
+ 
++/* Define if this is an IA-64 architecture.  */
++#undef IA64
++
+ /* Define if this is an m68k architecture.  */
+ #undef M68K
+ 
+--- strace-4.2/ipc.c.ia64	Thu Dec 23 09:20:15 1999
++++ strace-4.2/ipc.c	Tue Mar 21 15:04:51 2000
+@@ -121,7 +121,7 @@
+ 
+ static struct xlat msg_flags[] = {
+ 	{ MSG_NOERROR,	"MSG_NOERROR"	},
+-#ifdef LINUX
++#if defined(LINUX) && !defined(IA64)
+ 	{ MSG_EXCEPT,	"MSG_EXCEPT"	},
+ #endif /* LINUX */
+ 	{ IPC_NOWAIT,	"IPC_NOWAIT"	},

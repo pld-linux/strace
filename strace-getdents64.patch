@@ -1,0 +1,209 @@
+--- strace-4.2/linux/alpha/syscallent.h.jj	Sat Aug 19 16:51:50 2000
++++ strace-4.2/linux/alpha/syscallent.h	Sat Aug 19 16:53:00 2000
+@@ -406,3 +406,4 @@
+ 	{ 2,	TF,	sys_pivot_root,		"pivot_root"	}, /* 374 */
+ 	{ 3,	0,	sys_mincore,		"mincore"	}, /* 375 */
+ 	{ 3,	0,	printargs,		"pciconfig_iobase"}, /* 376 */
++	{ 3,	0,	sys_getdents64,		"getdents64"	}, /* 377 */
+--- strace-4.2/linux/sparc/syscall.h.jj	Sat Aug 19 16:51:50 2000
++++ strace-4.2/linux/sparc/syscall.h	Sat Aug 19 16:56:43 2000
+@@ -87,7 +87,7 @@ int	sys_aioread(), sys_aiowrite(), sys_a
+ /* 2.2 file system */
+ int	sys_chdir(),sys_chroot();
+ int	sys_fchdir(),sys_fchroot();
+-int	sys_mkdir(),sys_rmdir(),sys_getdirentries(), sys_getdents(),sys_readdir();
++int	sys_mkdir(),sys_rmdir(),sys_getdirentries(), sys_getdents(),sys_getdents64(),sys_readdir();
+ int	sys_creat(),sys_open(),sys_mknod(),sys_unlink(),sys_stat(),sys_fstat(),sys_lstat();
+ int	sys_chown(),sys_fchown(),sys_chmod(),sys_fchmod(),sys_utimes();
+ int	sys_link(),sys_symlink(),sys_readlink(),sys_rename();
+--- strace-4.2/linux/sparc/syscallent.h.jj	Sat Aug 19 16:51:50 2000
++++ strace-4.2/linux/sparc/syscallent.h	Sat Aug 19 16:58:29 2000
+@@ -152,8 +152,8 @@
+ 	{ 4,	TN,	sys_getmsg,	"getmsg" },		/* 151 */
+ 	{ 4,	TN,	sys_putmsg,	"putmsg" },		/* 152 */
+ 	{ 3,	0,	sys_poll,	"poll" },		/* 153 */
+-	{ 0,	0,	printargs,	"SYS_154" },		/* 154 */
+-	{ 1,	0,	printargs,	"nfssvc" },		/* 155 */
++	{ 3,	0,	sys_getdents64,	"getdents64" },		/* 154 */
++	{ 3,	0,	sys_fcntl,	"fcntl64" },		/* 155 */
+ 	{ 4,	0,	printargs,	"getdirentries" },	/* 156 */
+ 	{ 2,	TF,	sys_statfs,	"statfs" },		/* 157 */
+ 	{ 2,	0,	sys_fstatfs,	"fstatfs" },		/* 158 */
+--- strace-4.2/linux/ia64/syscallent.h.jj	Sat Aug 19 02:31:27 2000
++++ strace-4.2/linux/ia64/syscallent.h	Sat Aug 19 16:54:25 2000
+@@ -1243,7 +1243,7 @@
+ 	{ 8,	0,	printargs,		"SYS_1211"	}, /* 1211 */
+ 	{ 8,	0,	printargs,		"SYS_1212"	}, /* 1212 */
+ 	{ 8,	0,	printargs,		"SYS_1213"	}, /* 1213 */
+-	{ 8,	0,	printargs,		"SYS_1214"	}, /* 1214 */
++	{ 3,	0,	sys_getdents64,		"getdents64"	}, /* 1214 */
+ 	{ 8,	0,	printargs,		"SYS_1215"	}, /* 1215 */
+ 	{ 8,	0,	printargs,		"SYS_1216"	}, /* 1216 */
+ 	{ 8,	0,	printargs,		"SYS_1217"	}, /* 1217 */
+--- strace-4.2/linux/syscall.h.jj	Sat Aug 19 16:51:50 2000
++++ strace-4.2/linux/syscall.h	Sat Aug 19 16:52:00 2000
+@@ -69,7 +69,7 @@ int sys_delete_module(), sys_get_kernel_
+ int sys_getpgid(), sys_fchdir(), sys_bdflush();
+ int sys_sysfs(), sys_personality(), sys_afs_syscall();
+ int sys_setfsuid(), sys_setfsgid(), sys_llseek();
+-int sys_getdents(), sys_flock(), sys_msync();
++int sys_getdents(), sys_getdents64(), sys_flock(), sys_msync();
+ int sys_readv(), sys_writev(), sys_select();
+ int sys_getsid(), sys_fdatasync(), sys_sysctl();
+ int sys_mlock(), sys_munlock(), sys_mlockall(), sys_munlockall();
+--- strace-4.2/linux/syscallent.h.jj	Sat Aug 19 16:51:50 2000
++++ strace-4.2/linux/syscallent.h	Sat Aug 19 16:56:16 2000
+@@ -266,8 +266,8 @@
+ 	{ 3,	0,	sys_mincore,		"mincore"	}, /* 218 */
+ 	{ 3,	0,	sys_madvise,		"madvise"	}, /* 219 */
+ 
+-	{ 5,	0,	printargs,		"SYS_220"	}, /* 220 */
+-	{ 5,	0,	printargs,		"SYS_221"	}, /* 221 */
++	{ 3,	0,	sys_getdents64,		"getdents64"	}, /* 220 */
++	{ 3,	0,	sys_fcntl,		"fcntl64"	}, /* 221 */
+ 	{ 5,	0,	printargs,		"SYS_222"	}, /* 222 */
+ 	{ 5,	0,	printargs,		"SYS_223"	}, /* 223 */
+ 	{ 5,	0,	printargs,		"SYS_224"	}, /* 224 */
+--- strace-4.2/file.c.jj	Sat Aug 19 16:51:50 2000
++++ strace-4.2/file.c	Sat Aug 19 16:52:00 2000
+@@ -35,11 +35,14 @@
+ #include <dirent.h>
+ #ifdef linux
+ #define dirent kernel_dirent
++#define dirent64 kernel_dirent64
+ #include <linux/types.h>
+ #include <linux/dirent.h>
+ #undef dirent
++#undef dirent64
+ #else
+ #define kernel_dirent dirent
++#define kernel_dirent64 dirent64
+ #endif
+ 
+ #ifdef linux
+@@ -1622,6 +1625,53 @@ struct tcb *tcp;
+ }
+ 
+ #ifdef linux
++
++int
++sys_getdents64(tcp)
++struct tcb *tcp;
++{
++	int i, len, dents = 0;
++	char *buf;
++
++	if (entering(tcp)) {
++		tprintf("%lu, ", tcp->u_arg[0]);
++		return 0;
++	}
++	if (syserror(tcp) || !verbose(tcp)) {
++		tprintf("%#lx, %lu", tcp->u_arg[1], tcp->u_arg[2]);
++		return 0;
++	}
++	len = tcp->u_rval;
++	if ((buf = malloc(len)) == NULL) {
++		tprintf("out of memory\n");
++		return 0;
++	}
++	if (umoven(tcp, tcp->u_arg[1], len, buf) < 0) {
++		tprintf("{...}, %lu", tcp->u_arg[2]);
++		free(buf);
++		return 0;
++	}
++	if (!abbrev(tcp))
++		tprintf("{");
++	for (i = 0; i < len;) {
++		struct kernel_dirent64 *d = (struct kernel_dirent64 *) &buf[i];
++		if (!abbrev(tcp)) {
++			tprintf("%s{d_ino=%llu, d_off=%llu, ",
++				i ? " " : "", d->d_ino, d->d_off);
++			tprintf("d_reclen=%u, d_type=%u, d_name=\"%s\"}",
++				d->d_reclen, d->d_type, d->d_name);
++		}
++		i += d->d_reclen;
++		dents++;
++	}
++	if (!abbrev(tcp))
++		tprintf("}");
++	else
++		tprintf("/* %u entries */", dents);
++	tprintf(", %lu", tcp->u_arg[2]);
++	free(buf);
++	return 0;
++}
+ 
+ int
+ sys_getcwd(tcp)
+--- strace-4.2/desc.c.jj	Sat Aug 19 02:31:27 2000
++++ strace-4.2/desc.c	Sat Aug 19 16:52:00 2000
+@@ -58,6 +58,11 @@ static struct xlat fcntlcmds[] = {
+ #ifdef F_CNVT
+ 	{ F_CNVT,	"F_CNVT"	},
+ #endif
++#if defined(F_GETLK64) && F_GETLK64 != F_GETLK
++	{ F_GETLK64,	"F_GETLK64"	},
++	{ F_SETLK64,	"F_SETLK64"	},
++	{ F_SETLKW64,	"F_SETLKW64"	},
++#endif
+ 	{ 0,		NULL		},
+ };
+ 
+@@ -124,6 +129,31 @@ int getlk;
+ 		tprintf("}");
+ }
+ 
++#if defined(F_GETLK64) && F_GETLK64 != F_GETLK
++static void
++printflock64(tcp, addr, getlk)
++struct tcb *tcp;
++long addr;
++int getlk;
++{
++	struct flock64 fl;
++
++	if (umove(tcp, addr, &fl) < 0) {
++		tprintf("{...}");
++		return;
++	}
++	tprintf("{type=");
++	printxval(lockfcmds, fl.l_type, "F_???");
++	tprintf(", whence=");
++	printxval(whence, fl.l_whence, "SEEK_???");
++	tprintf(", start=%lld, len=%lld", fl.l_start, fl.l_len);
++	if (getlk)
++		tprintf(", pid=%lu}", (unsigned long) fl.l_pid);
++	else
++		tprintf("}");
++}
++#endif
++
+ static char *
+ sprintflags(xlat, flags)
+ struct xlat *xlat;
+@@ -175,6 +205,12 @@ struct tcb *tcp;
+ 			tprintf(", ");
+ 			printflock(tcp, tcp->u_arg[2], 0);
+ 			break;
++#if defined(F_GETLK64) && F_GETLK64 != F_GETLK
++		case F_SETLK64: case F_SETLKW64:
++			tprintf(", ");
++			printflock64(tcp, tcp->u_arg[2], 0);
++#endif
++			break;
+ 		}
+ 	}
+ 	else {
+@@ -196,6 +232,12 @@ struct tcb *tcp;
+ 			tprintf(", ");
+ 			printflock(tcp, tcp->u_arg[2], 1);
+ 			break;
++#if defined(F_GETLK64) && F_GETLK64 != F_GETLK
++		case F_GETLK64:
++			tprintf(", ");
++			printflock64(tcp, tcp->u_arg[2], 1);
++			break;
++#endif
+ 		default:
+ 			tprintf(", %#lx", tcp->u_arg[2]);
+ 			break;
