@@ -125,7 +125,7 @@ diff -Nur strace-4.5.1.orig/linux/sparc/syscallent.h strace-4.5.1/linux/sparc/sy
  	{ 3,	TN,	sys_recvmsg,	"recvmsg" },		/* 113 */
  	{ 3,	TN,	sys_sendmsg,	"sendmsg" },		/* 114 */
 -	{ 3,	0,	printargs,	"vtrace" },		/* 115 */
-+	{ 2,	0,	getgroups32,	"getgroups32" },	/* 115 */
++	{ 2,	0,	sys_getgroups32,"getgroups32" },	/* 115 */
  	{ 2,	0,	sys_gettimeofday,"gettimeofday" },	/* 116 */
  	{ 2,	0,	sys_getrusage,	"getrusage" },		/* 117 */
  	{ 5,	TN,	sys_getsockopt,	"getsockopt" },		/* 118 */
@@ -141,3 +141,13 @@ diff -Nur strace-4.5.1.orig/linux/syscallent.h strace-4.5.1/linux/syscallent.h
  	{ 2,	0,	sys_setreuid,		"setreuid32"	}, /* 203 */
  	{ 2,	0,	sys_setregid,		"setregid32"	}, /* 204 */
  	{ 2,	0,	sys_getgroups32,	"getgroups32"	}, /* 205 */
+--- strace-4.5.1/linux/sparc/syscall.h.orig	2003-01-30 20:15:20.000000000 +0000
++++ strace-4.5.1/linux/sparc/syscall.h	2003-11-19 21:15:24.000000000 +0000
+@@ -105,6 +105,7 @@
+ int sys_rt_sigtimedwait(), sys_prctl(), sys_poll();
+ int sys_sendfile(), sys_query_module(), sys_capget(), sys_capset();
+ int sys_create_module(), sys_init_module();
++int sys_setgroups32(), sys_getgroups32();
+ 
+ int	sys_umask();		/* XXX */
+ 
