@@ -59,7 +59,7 @@ birlikte döker.
 
 %build
 %{__autoconf}
-autoheader
+%{__autoheader}
 # for 2.4 you can and even should remove these two kernel_Xid32_t definitions
 CFLAGS="%{rpmcflags} -D__kernel_uid32_t=uid_t -D__kernel_gid32_t=gid_t"
 export CFLAGS
