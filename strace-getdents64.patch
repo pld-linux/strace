@@ -26,20 +26,6 @@ diff -Nur strace-4.4.orig/desc.c strace-4.4/desc.c
  		}
  	}
  	return 0;
-diff -Nur strace-4.4.orig/file.c strace-4.4/file.c
---- strace-4.4.orig/file.c	Fri Oct 19 16:35:06 2001
-+++ strace-4.4/file.c	Fri Oct 19 16:35:23 2001
-@@ -40,8 +40,10 @@
- #include <linux/types.h>
- #include <linux/dirent.h>
- #undef dirent
-+#undef dirent64
- #else
- #define kernel_dirent dirent
-+#define kernel_dirent64 dirent64
- #endif
- 
- #ifdef linux
 diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscallent.h
 --- strace-4.4.orig/linux/alpha/syscallent.h	Fri Oct 19 16:35:06 2001
 +++ strace-4.4/linux/alpha/syscallent.h	Fri Oct 19 16:35:23 2001
@@ -48,18 +34,6 @@ diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscal
  	{ 3,	0,	sys_mincore,		"mincore"		}, /* 375 */
  	{ 3,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
 +	{ 3,    0,      sys_getdents64,         "getdents64"            }, /* 377 */  
-diff -Nur strace-4.4.orig/linux/ia64/syscallent.h strace-4.4/linux/ia64/syscallent.h
---- strace-4.4.orig/linux/ia64/syscallent.h	Mon May  1 03:54:00 2000
-+++ strace-4.4/linux/ia64/syscallent.h	Fri Oct 19 16:35:23 2001
-@@ -1243,7 +1243,7 @@
- 	{ 8,	0,	printargs,		"SYS_1211"	}, /* 1211 */
- 	{ 8,	0,	printargs,		"SYS_1212"	}, /* 1212 */
- 	{ 8,	0,	printargs,		"SYS_1213"	}, /* 1213 */
--	{ 8,	0,	printargs,		"SYS_1214"	}, /* 1214 */
-+	{ 3,	0,	sys_getdents64,		"getdents64"	}, /* 1214 */
- 	{ 8,	0,	printargs,		"SYS_1215"	}, /* 1215 */
- 	{ 8,	0,	printargs,		"SYS_1216"	}, /* 1216 */
- 	{ 8,	0,	printargs,		"SYS_1217"	}, /* 1217 */
 diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
 --- strace-4.4.orig/linux/sparc/syscall.h	Fri Oct 19 16:35:06 2001
 +++ strace-4.4/linux/sparc/syscall.h	Fri Oct 19 16:35:23 2001
