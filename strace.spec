@@ -8,8 +8,6 @@ Version:	4.4
 Release:	2
 License:	distributable
 Group:		Development/Debuggers
-Group(de):	Entwicklung/Debugger
-Group(pl):	Programowanie/Odpluskwiacze
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/strace/%{name}_%{version}-1.tar.gz
 Source1:	%{name}.1.pl
 Patch0:		%{name}-sparc.patch
