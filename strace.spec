@@ -8,12 +8,12 @@ Summary(ru):	Отслеживает и показывает системные вызовы, связанные с запущенным п
 Summary(tr):	гalЩЧan bir sЭrecin yaptЩПЩ sistem ГaПrЩlarЩnЩ listeler
 Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним процесом
 Name:		strace
-Version:	4.5.2
+Version:	4.5.3
 Release:	1
-License:	distributable
+License:	BSD-like
 Group:		Development/Debuggers
-Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
-# Source0-md5:	e976c609669cf7ac84724af0fdf7dad8
+Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
+# Source0-md5:	a29028424cd365c9e19b5625342d3f63
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
 Patch1:		%{name}-getdents64.patch
@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog README-linux
+%doc COPYRIGHT CREDITS ChangeLog NEWS README-linux TODO
 %attr(755,root,root) %{_bindir}/strace*
 %{_mandir}/man1/*
 %lang(pl) %{_mandir}/pl/man1/*
