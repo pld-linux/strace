@@ -24,6 +24,7 @@ Patch10:     	strace-sparc5.patch
 Patch11:     	strace-jbj.patch
 Patch12:	strace-glibc-2.1.patch
 Patch13:	strace-prctl.patch
+Patch14:	strace-fork.patch
 Buildroot:   	/tmp/%{name}-%{version}-root
 
 %description
@@ -65,6 +66,7 @@ gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
+%patch14 -p1
 
 
 %build
