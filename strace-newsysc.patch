@@ -10,7 +10,7 @@ diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscal
  	{ 0,	0,	sys_vhangup,		"vhangup"		}, /* 76 */
  	{ 5,	0,	printargs,		"osf_kmodcall"		}, /* 77, not implemented */
  	{ 5,	0,	printargs,		"osf_mincore"		}, /* 78, not implemented */
-@@ -400,9 +400,9 @@
+@@ -399,12 +399,12 @@
  	{ 2,	0,	sys_capget,		"capget"		}, /* 368 */
  	{ 2,	0,	sys_capset,		"capset"		}, /* 369 */
  	{ 4,	TF,	sys_sendfile,		"sendfile"		}, /* 370 */
@@ -26,6 +26,9 @@ diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscal
 +	{ 2,	TF,	sys_pivotroot,		"pivot_root"		}, /* 374 */
 +	{ 3,	0,	sys_mincore,		"mincore"		}, /* 375 */
 +	{ 3,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
+ 	{ 4,	0,	sys_getdents64,		"getdents64"		}, /* 377 */
+ 	{ 0,	0,	printargs,		"gettid"		}, /* 378 */
+ 	{ 4,	0,	sys_readahead,		"readahead"		}, /* 379 */
 diff -Nur strace-4.4.orig/linux/dummy.h strace-4.4/linux/dummy.h
 --- strace-4.4.orig/linux/dummy.h	Mon May  1 03:54:00 2000
 +++ strace-4.4/linux/dummy.h	Fri Oct 19 15:28:02 2001

@@ -17,11 +17,15 @@ diff -Nur strace-4.4.orig/desc.c strace-4.4/desc.c
 diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscallent.h
 --- strace-4.4.orig/linux/alpha/syscallent.h	Fri Oct 19 16:35:06 2001
 +++ strace-4.4/linux/alpha/syscallent.h	Fri Oct 19 16:35:23 2001
-@@ -406,3 +406,4 @@
+@@ -405,7 +405,7 @@
  	{ 2,	TF,	sys_pivot_root,		"pivot_root"		}, /* 374 */
  	{ 3,	0,	sys_mincore,		"mincore"		}, /* 375 */
  	{ 3,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
-+	{ 3,    0,      sys_getdents64,         "getdents64"            }, /* 377 */  
+-	{ 4,	0,	sys_getdents64,		"getdents64"		}, /* 377 */
++	{ 3,	0,	sys_getdents64,		"getdents64"		}, /* 377 */
+ 	{ 0,	0,	printargs,		"gettid"		}, /* 378 */
+ 	{ 4,	0,	sys_readahead,		"readahead"		}, /* 379 */
+ 	{ 5,	0,	printargs,		"SYS_380"		}, /* 380 */
 --- strace-4.4.94/linux/sparc/syscallent.h.orig	Fri Apr  4 09:08:08 2003
 +++ strace-4.4.94/linux/sparc/syscallent.h	Fri Apr  4 09:09:57 2003
 @@ -152,8 +152,8 @@
