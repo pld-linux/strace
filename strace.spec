@@ -1,28 +1,30 @@
-Summary:     prints system call strace of a running process
-Summary(de): druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses. 
-Summary(fr): affiche l'appel système strace d'un processus en exécution.
-Summary(pl): strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony proces
-Summary(tr): Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
-Name:        strace
-Version:     3.1
-Release:     13
-Copyright:   distributable
-Group:       Development/Debuggers
-Group(pl):   Programowanie/Odpluskwiacze
-Source:      ftp://ftp.std.com/pub/jrs/%{name}-%{version}.tar.gz
-Patch0:      strace-3.0.14elf.patch
-Patch1:      ftp://ftp.azstarnet.com/pub/linux/axp/glibc/strace-3.1-glibc.patch
-Patch2:      strace-3.1-sparc.patch
-Patch3:      strace-3.1-sparcglibc.patch
-Patch4:      strace-3.1-sparc2.patch
-Patch5:      strace-3.1-sparc3.patch
-Patch6:      strace-3.1-sparc4.patch
-Patch7:      strace-3.1-prctldomainname.patch
-Patch8:      strace-3.1-alpha.patch
-Patch9:      strace-3.1-gafton.patch
-Patch10:     strace-3.1-sparc5.patch
-Patch11:     strace-3.1-jbj.patch
-Buildroot:   /tmp/%{name}-%{version}-root
+Summary:     	prints system call strace of a running process
+Summary(de): 	druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses. 
+Summary(fr): 	affiche l'appel système strace d'un processus en exécution.
+Summary(pl): 	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony proces
+Summary(tr): 	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
+Name:        	strace
+Version:     	3.1
+Release:     	14
+Copyright:   	distributable
+Group:       	Development/Debuggers
+Group(pl):   	Programowanie/Odpluskwiacze
+Source:      	ftp://ftp.std.com/pub/jrs/%{name}-%{version}.tar.gz
+Patch0:      	strace-elf.patch
+Patch1:      	ftp://ftp.azstarnet.com/pub/linux/axp/glibc/strace-3.1-glibc.patch
+Patch2:      	strace-sparc.patch
+Patch3:      	strace-sparcglibc.patch
+Patch4:      	strace-sparc2.patch
+Patch5:      	strace-sparc3.patch
+Patch6:      	strace-sparc4.patch
+Patch7:      	strace-domainname.patch
+Patch8:      	strace-alpha.patch
+Patch9:      	strace-gafton.patch
+Patch10:     	strace-sparc5.patch
+Patch11:     	strace-jbj.patch
+Patch12:	strace-glibc-2.1.patch
+Patch13:	strace-prctl.patch
+Buildroot:   	/tmp/%{name}-%{version}-root
 
 %description
 Strace prints a record of each system call another program makes, including
@@ -48,25 +50,26 @@ strace bir programýn çalýþtýðý sürece yaptýðý bütün sistem çaðrýlarýný,
 gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 
 %prep
-%setup -q
-%patch0 -p1 -b .elf
-%patch1 -p1 -b .glibc
-%patch2 -p1 -b .sparc
-%patch3 -p1 -b .sparcglibc
-%patch4 -p1 -b .sparc2
-%patch5 -p1 -b .sparc3
-%patch6 -p1 -b .sparc4
-%patch7 -p1 -b .misc
-%patch8 -p1 -b .alpha
-%patch9 -p1 -b .gafton
-%patch10 -p1 -b .sparc5
-%patch11 -p1 -b .jbj
+%setup   -q
+%patch0  -p1 
+%patch1  -p1 
+%patch2  -p1
+%patch3  -p1 
+%patch4  -p1 
+%patch5  -p1 
+%patch6  -p1
+%patch7  -p1
+%patch8  -p1
+%patch9  -p1 
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
 
 
 %build
 autoconf
-OS=`echo ${RPM_OS} | tr '[A-Z]' '[a-z]'`
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=/usr ${RPM_ARCH}-pld-${OS}
+%configure
 make
 
 %install
@@ -83,10 +86,16 @@ gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/*
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%attr(755, root, root) /usr/bin/strace
-%attr(644, root,  man) /usr/man/man1/*
+%defattr(644,root,root,755)
+%attr(755,root,root) /usr/bin/strace
+/usr/man/man1/*
 
 %changelog
+* Thu Apr 22 1999 Artur Frysiak <wiget@pld.org.pl>
+  [3.1-14]
+- removed man group from man pages
+- compiled on rpm 3
+
 * Wed Feb 17 1999 Micha³ Kuratczyk <kura@wroclaw.art.pl>
   [3.1-13]
 - added Group(pl)
