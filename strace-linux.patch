@@ -1,40 +1,6 @@
-From misiek@pld.org.pl Tue Sep 19 23:59:05 2000
-Date: Tue, 19 Sep 2000 23:59:05 +0200
-From: Arkadiusz Miskiewicz <misiek@pld.org.pl>
-To: Wichert Akkerman <wakkerma@debian.org>
-Cc: strace@lists.wiggy.net
-Subject: modified v6 support in strace again
-Message-ID: <20000919235905.B15844@ikar.t17.ds.pwr.wroc.pl>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="4Ckj6UjgE2iN1+kY"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.2.4i
-X-URL: http://www.misiek.eu.org/ipv6/
-X-Operating-System: Linux sunsite 4.0.20 #119 Tue Jan 16 12:21:53 MET 2001 i986 pld
-Status: RO
-Content-Length: 4493
-Lines: 115
-
-
---4Ckj6UjgE2iN1+kY
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-
-Hi,
-
-I modified ipv6 patch for strace again. Now it supports 
-link-local scope id as interface name:
-20761 connect(8, {sin_family=AF_INET6, sin6_port=htons(79),
-      inet_pton(AF_INET6, "fe80::260:52ff:fe0b:ff81", &sin6_addr),
-      sin6_flowinfo=0, sin6_scope_id=if_nametoindex("lo")}, 28) = 0
-(see attachmnt); and small patch:
-
 diff -urN strace-4.2.org/Makefile.in strace-4.2/Makefile.in
---- strace-4.2.org/Makefile.in	Tue Sep 19 12:55:54 2000
-+++ strace-4.2/Makefile.in	Tue Sep 19 12:56:03 2000
+--- strace-4.2.org/Makefile.in	Sun Nov  5 17:56:54 2000
++++ strace-4.2/Makefile.in	Sun Nov  5 17:57:02 2000
 @@ -39,8 +39,9 @@
  prefix = @prefix@
  exec_prefix = @exec_prefix@
@@ -48,8 +14,8 @@ diff -urN strace-4.2.org/Makefile.in strace-4.2/Makefile.in
  
  SHELL = /bin/sh
 diff -urN strace-4.2.org/file.c strace-4.2/file.c
---- strace-4.2.org/file.c	Tue Sep 19 12:55:54 2000
-+++ strace-4.2/file.c	Tue Sep 19 12:56:15 2000
+--- strace-4.2.org/file.c	Sun Nov  5 17:56:54 2000
++++ strace-4.2/file.c	Sun Nov  5 17:57:02 2000
 @@ -35,11 +35,14 @@
  #include <dirent.h>
  #ifdef linux
@@ -75,8 +41,8 @@ diff -urN strace-4.2.org/file.c strace-4.2/file.c
  printstat64(tcp, addr)
  struct tcb *tcp;
 diff -urN strace-4.2.org/system.c strace-4.2/system.c
---- strace-4.2.org/system.c	Tue Sep 19 12:55:54 2000
-+++ strace-4.2/system.c	Tue Sep 19 12:56:03 2000
+--- strace-4.2.org/system.c	Sun Nov  5 17:56:54 2000
++++ strace-4.2/system.c	Sun Nov  5 17:57:02 2000
 @@ -1435,6 +1435,9 @@
  	{ KERN_PROF, "KERN_PROF" },
  	{ KERN_NODENAME, "KERN_NODENAME" },
@@ -87,48 +53,15 @@ diff -urN strace-4.2.org/system.c strace-4.2/system.c
  #ifdef KERN_SECURELVL
  	{ KERN_SECURELVL, "KERN_SECURELVL" },
  #endif
-
--- 
-Arkadiusz Mi¶kiewicz         http://www.misiek.eu.org/ipv6/
-PLD GNU/Linux [IPv6 enabled]    http://www.pld.org.pl/
-
---4Ckj6UjgE2iN1+kY
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="strace-4.2-ipv6-20000919.patch.gz"
-Content-Transfer-Encoding: base64
-
-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
-
---4Ckj6UjgE2iN1+kY--
-
+diff -urN strace-4.2.org/time.c strace-4.2/time.c
+--- strace-4.2.org/time.c	Sun Nov  5 17:56:54 2000
++++ strace-4.2/time.c	Sun Nov  5 17:57:15 2000
+@@ -33,7 +33,7 @@
+ 
+ #ifdef LINUX
+ #include <linux/version.h>
+-#include <linux/timex.h>
++#include <sys/timex.h>
+ #endif /* LINUX */
+ 
+ void
