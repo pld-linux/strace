@@ -1,9 +1,0 @@
---- strace-4.5.8/linux/sparc/syscall.h.orig	2005-02-27 16:32:11.277843000 +0000
-+++ strace-4.5.8/linux/sparc/syscall.h	2005-02-27 16:38:09.265412147 +0000
-@@ -201,5 +201,6 @@
- int	sys_fstatfs64(), sys_clock_settime(), sys_clock_gettime();
- int	sys_clock_getres(), sys_clock_nanosleep();
- int	sys_timer_create(), sys_timer_settime(), sys_timer_gettime();
-+int sys_epoll_create(), sys_epoll_ctl(), sys_epoll_wait();
- 
- #include "syscall1.h"
