@@ -5,12 +5,13 @@ Summary(pl):	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony pro
 Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:		strace
 Version:	4.4
-Release:	1
+Release:	2
 License:	distributable
 Group:		Development/Debuggers
 Group(de):	Entwicklung/Debugger
 Group(pl):	Programowanie/Odpluskwiacze
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/strace/%{name}_%{version}-1.tar.gz
+Source1:	%{name}.1.pl
 Patch0:		%{name}-sparc.patch
 Patch1:		%{name}-sparc2.patch
 Patch2:		%{name}-sparc3.patch
@@ -67,12 +68,14 @@ export CFLAGS
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/{man1,pl/man1}}
 
 %{__make} install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
 	bindir=$RPM_BUILD_ROOT%{_bindir}
+
+install %{SOURCE1} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
 gzip -9nf ChangeLog README-linux
 
@@ -84,3 +87,4 @@ rm -rf $RPM_BUILD_ROOT
 %doc *.gz
 %attr(755,root,root) %{_bindir}/strace
 %{_mandir}/man1/*
+%lang(pl) %{_mandir}/pl/man1/*
