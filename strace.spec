@@ -4,30 +4,14 @@ Summary(fr): 	affiche l'appel système strace d'un processus en exécution.
 Summary(pl): 	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony proces
 Summary(tr): 	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:        	strace
-Version:     	3.1
-Release:     	18
+Version:     	3.99.1
+Release:     	1
 Copyright:   	distributable
 Group:       	Development/Debuggers
 Group(pl):   	Programowanie/Odpluskwiacze
 Source:      	ftp://ftp.std.com/pub/jrs/%{name}-%{version}.tar.gz
-Patch0:      	strace-elf.patch.gz
-Patch1:      	ftp://ftp.azstarnet.com/pub/linux/axp/glibc/strace-3.1-glibc.patch
-Patch2:      	strace-sparc.patch.gz
-Patch3:      	strace-sparcglibc.patch
-Patch4:      	strace-sparc2.patch
-Patch5:      	strace-sparc3.patch
-Patch6:      	strace-sparc4.patch
-Patch7:      	strace-domainname.patch
-Patch8:      	strace-alpha.patch
-Patch9:      	strace-gafton.patch.gz
-Patch10:     	strace-sparc5.patch
-Patch11:     	strace-jbj.patch
-Patch12:	strace-glibc-2.1.patch
-Patch13:	strace-prctl.patch
-Patch14:	strace-fork.patch
-Patch15:	strace-arm.patch
-Patch16:	strace-clone.patch
-Patch17:	strace-AC_C_CROSS.patch
+Patch0:      	%{name}-debian.patch
+Patch1:      	%{name}-fhs.patch
 BuildRoot:	/tmp/%{name}-%{version}-root
 
 %description
@@ -54,44 +38,34 @@ strace bir programýn çalýþtýðý sürece yaptýðý bütün sistem çaðrýlarýný,
 gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 
 %prep
-%setup   -q
-%patch0  -p1 
-%patch1  -p1 
-%patch2  -p1
-%patch3  -p1 
-%patch4  -p1 
-%patch5  -p1 
-%patch6  -p1
-%patch7  -p1
-%patch8  -p1
-%patch9  -p1 
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p0
-%patch17 -p1
+%setup  -q -n %{name}
+%patch0 -p1 
+%patch1 -p1
 
 %build
-autoconf
-%configure
+aclocal && autoconf && %configure
 make LDFLAGS="-s"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/usr/{bin,man/man1}
 
-make install prefix=$RPM_BUILD_ROOT/usr
+install -d $RPM_BUILD_ROOT%{_prefix}/{bin,share/man/man1}
 
-gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/*
+make \
+    prefix=$RPM_BUILD_ROOT%{_prefix} \
+    mandir=$RPM_BUILD_ROOT%{_mandir} \
+    bindir=$RPM_BUILD_ROOT%{_bindir} \
+    install
+
+gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* ChangeLog README-linux
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%doc {ChangeLog,README-linux}.gz
+
 %attr(755,root,root) %{_bindir}/strace
 %{_mandir}/man1/*
 
@@ -115,19 +89,4 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Oct 08 1998 Marcin Korzonek <mkorz@shadow.eu.org>
   [3.1-12]
 - added translation pl.
-
-* Wed Sep 30 1998 Jeff Johnson <jbj@redhat.com>
-- fix typo (printf, not tprintf).
-
-* Sat Sep 19 1998 Jeff Johnson <jbj@redhat.com>
-- fix compile problem on sparc.
-
-* Tue Aug 18 1998 Cristian Gafton <gafton@redhat.com>
-- buildroot
-
-* Mon Jul 20 1998 Cristian Gafton <gafton@redhat.com>
-- added the umoven patch from James Youngman <jay@gnu.org>
-- fixed build problems on newer glibc releases
-
-* Mon Jun 08 1998 Prospector System <bugs@redhat.com>
-- translations modified for de, fr, tr
+- build against GNU libc-2.1
