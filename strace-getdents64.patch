@@ -1,19 +1,7 @@
 diff -Nur strace-4.4.orig/desc.c strace-4.4/desc.c
 --- strace-4.4.orig/desc.c	Tue Mar 13 00:29:05 2001
 +++ strace-4.4/desc.c	Fri Oct 19 16:35:23 2001
-@@ -139,6 +139,11 @@
- #ifdef F_UNSHARE
- 	{ F_UNSHARE,	"F_UNSHARE"	},
- #endif
-+#if defined(F_GETLK64) && F_GETLK64 != F_GETLK
-+	{ F_GETLK64,	"F_GETLK64"	},
-+	{ F_SETLK64,	"F_SETLK64"	},
-+	{ F_SETLKW64,	"F_SETLKW64"	},
-+#endif
- 	{ 0,		NULL		},
- };
- 
-@@ -335,6 +340,12 @@
+@@ -335,6 +335,12 @@
   		default:
  			tprintf(", %#lx", tcp->u_arg[2]);
  			break;
@@ -34,18 +22,6 @@ diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscal
  	{ 3,	0,	sys_mincore,		"mincore"		}, /* 375 */
  	{ 3,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
 +	{ 3,    0,      sys_getdents64,         "getdents64"            }, /* 377 */  
-diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
---- strace-4.4.orig/linux/sparc/syscall.h	Fri Oct 19 16:35:06 2001
-+++ strace-4.4/linux/sparc/syscall.h	Fri Oct 19 16:35:23 2001
-@@ -87,7 +87,7 @@
- /* 2.2 file system */
- int	sys_chdir(),sys_chroot();
- int	sys_fchdir(),sys_fchroot();
--int	sys_mkdir(),sys_rmdir(),sys_getdirentries(), sys_getdents(),sys_readdir();
-+int	sys_mkdir(),sys_rmdir(),sys_getdirentries(), sys_getdents(),sys_getdents64(),sys_readdir();
- int	sys_creat(),sys_open(),sys_mknod(),sys_unlink(),sys_stat(),sys_fstat(),sys_lstat();
- int	sys_chown(),sys_fchown(),sys_chmod(),sys_fchmod(),sys_utimes();
- int	sys_link(),sys_symlink(),sys_readlink(),sys_rename();
 diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscallent.h
 --- strace-4.4.orig/linux/sparc/syscallent.h	Fri Oct 19 16:35:06 2001
 +++ strace-4.4/linux/sparc/syscallent.h	Fri Oct 19 16:37:21 2001
@@ -60,18 +36,6 @@ diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscal
  	{ 4,	0,	printargs,	"getdirentries" },	/* 156 */
  	{ 2,	TF,	sys_statfs,	"statfs" },		/* 157 */
  	{ 2,	0,	sys_fstatfs,	"fstatfs" },		/* 158 */
-diff -Nur strace-4.4.orig/linux/syscall.h strace-4.4/linux/syscall.h
---- strace-4.4.orig/linux/syscall.h	Fri Oct 19 16:35:06 2001
-+++ strace-4.4/linux/syscall.h	Fri Oct 19 16:35:23 2001
-@@ -69,7 +69,7 @@
- int sys_getpgid(), sys_fchdir(), sys_bdflush();
- int sys_sysfs(), sys_personality(), sys_afs_syscall();
- int sys_setfsuid(), sys_setfsgid(), sys_llseek();
--int sys_getdents(), sys_flock(), sys_msync();
-+int sys_getdents(), sys_getdents64(), sys_flock(), sys_msync();
- int sys_readv(), sys_writev(), sys_select();
- int sys_getsid(), sys_fdatasync(), sys_sysctl();
- int sys_mlock(), sys_munlock(), sys_mlockall(), sys_munlockall(), sys_madvise();
 diff -Nur strace-4.4.orig/linux/syscallent.h strace-4.4/linux/syscallent.h
 --- strace-4.4.orig/linux/syscallent.h	Fri Oct 19 16:35:06 2001
 +++ strace-4.4/linux/syscallent.h	Fri Oct 19 16:36:24 2001

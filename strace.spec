@@ -12,9 +12,9 @@ Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/strace/%{name}_%{version}-1.t
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
 Patch1:		%{name}-getdents64.patch
-Patch2:		%{name}-threads.patch
 URL:		http://www.liacs.nl/~wichert/strace/
 BuildRequires:	autoconf >= 2.54
+BuildRequires:	automake
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -46,7 +46,6 @@ birlikte döker.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-#%patch2 -p1
 
 %build
 rm -f missing

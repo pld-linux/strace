@@ -1,27 +1,3 @@
-diff -Nur strace-4.4.orig/file.c strace-4.4/file.c
---- strace-4.4.orig/file.c	Tue Mar 27 14:17:17 2001
-+++ strace-4.4/file.c	Fri Oct 19 15:28:02 2001
-@@ -1545,6 +1545,20 @@
- 	return 0;
- }
- 
-+#ifdef linux
-+int
-+sys_pivot_root(tcp)
-+struct tcb *tcp;
-+{
-+	if (entering(tcp)) {
-+		printpath(tcp, tcp->u_arg[0]);
-+		tprintf(", ");
-+		printpath(tcp, tcp->u_arg[1]);
-+	}
-+	return 0;
-+}
-+#endif
-+
- int
- sys_link(tcp)
- struct tcb *tcp;
 diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscallent.h
 --- strace-4.4.orig/linux/alpha/syscallent.h	Mon May  1 03:54:00 2000
 +++ strace-4.4/linux/alpha/syscallent.h	Fri Oct 19 15:28:02 2001
@@ -47,7 +23,7 @@ diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscal
 +	{ 3,	0,	sys_setresgid,		"setresgid"		}, /* 371 */
 +	{ 3,	0,	sys_getresgid,		"getresgid"		}, /* 372 */
 +	{ 5,	0,	printargs,		"dipc"			}, /* 373, not implemented */
-+	{ 2,	TF,	sys_pivot_root,		"pivot_root"		}, /* 374 */
++	{ 2,	TF,	sys_pivotroot,		"pivot_root"		}, /* 374 */
 +	{ 3,	0,	sys_mincore,		"mincore"		}, /* 375 */
 +	{ 3,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
 diff -Nur strace-4.4.orig/linux/dummy.h strace-4.4/linux/dummy.h
@@ -76,8 +52,8 @@ diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
 +/* 32bit uids */
 +int sys_getuid32(), sys_getgid32(), sys_geteuid32(), sys_getegid32();
 +int sys_setreuid32(), sys_setregid32(), sys_getgroups32(), sys_setgroups32();
-+int sys_fchown(), sys_setresuid32(), sys_getresuid32(), sys_setresgid32();
-+int sys_getresgid32(), sys_chown(), sys_setuid32(), sys_setgid32();
++int sys_setresuid32(), sys_getresuid32(), sys_setresgid32();
++int sys_getresgid32(), sys_setuid32(), sys_setgid32();
 +int sys_setfsuid32(), sys_setfsgid32();
 +
  /* 1.2 memory management */
@@ -189,36 +165,19 @@ diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscal
 diff -Nur strace-4.4.orig/linux/syscall.h strace-4.4/linux/syscall.h
 --- strace-4.4.orig/linux/syscall.h	Sun Apr  8 21:14:05 2001
 +++ strace-4.4/linux/syscall.h	Fri Oct 19 15:28:02 2001
-@@ -37,6 +37,7 @@
- int sys_unlink(), sys_execve(), sys_chdir(), sys_time(), sys_mknod();
- int sys_chmod(), sys_chown(), sys_break(), sys_oldstat();
- int sys_lseek(), sys_getpid(), sys_mount(), sys_umount(), sys_umount2();
-+int sys_pivot_root();
- int sys_setuid(), sys_getuid(), sys_stime(), sys_ptrace();
- int sys_alarm(), sys_oldfstat(), sys_pause(), sys_utime();
- int sys_stty(), sys_gtty(), sys_access(), sys_nice(), sys_ftime();
-@@ -84,6 +85,12 @@
+@@ -84,6 +84,12 @@
  int sys_sendfile(), sys_old_mmap(), sys_stat64(), sys_lstat64(), sys_fstat64();
  int sys_truncate64(), sys_ftruncate64(), sys_pivotroot();
  
 +/* 32bit uids */
 +int sys_getuid32(), sys_getgid32(), sys_geteuid32(), sys_getegid32();
 +int sys_setreuid32(), sys_setregid32(), sys_getgroups32(), sys_setgroups32();
-+int sys_fchown(), sys_setresuid32(), sys_getresuid32(), sys_setresgid32();
-+int sys_getresgid32(), sys_chown(), sys_setuid32(), sys_setgid32();
++int sys_setresuid32(), sys_getresuid32(), sys_setresgid32();
++int sys_getresgid32(), sys_setuid32(), sys_setgid32();
 +int sys_setfsuid32(), sys_setfsgid32();
  
  /* sys_socketcall subcalls */
  
-@@ -171,6 +178,8 @@
- int osf_statfs(), osf_fstatfs();
- #endif
- 
-+int sys_madvise(), sys_mincore();
-+
- #ifdef IA64
- int sys_getpmsg(), sys_putpmsg();	/* STREAMS stuff */
- #endif
 diff -Nur strace-4.4.orig/process.c strace-4.4/process.c
 --- strace-4.4.orig/process.c	Fri Oct 19 15:27:34 2001
 +++ strace-4.4/process.c	Fri Oct 19 15:28:02 2001
@@ -458,3 +417,46 @@ diff -Nur strace-4.4.orig/process.c strace-4.4/process.c
  int
  sys_setpgrp(tcp)
  struct tcb *tcp;
+--- strace-4.4.91/linux/syscallent.h.orig	Tue Jan 14 20:02:35 2003
++++ strace-4.4.91/linux/syscallent.h	Tue Jan 14 21:03:13 2003
+@@ -246,23 +246,23 @@
+ 	{ 3,	TF,	sys_chown,		"lchown32"	}, /* 198 */
+ 	{ 0,	0,	sys_getuid,		"getuid32"	}, /* 199 */
+ 
+-	{ 0,	0,	printargs,		"getgid32"	}, /* 200 */
+-	{ 0,	0,	printargs,		"geteuid32"	}, /* 201 */
+-	{ 0,	0,	printargs,		"getegid32"	}, /* 202 */
+-	{ 2,	0,	printargs,		"setreuid32"	}, /* 203 */
+-	{ 2,	0,	printargs,		"setregid32"	}, /* 204 */
+-	{ 2,	0,	printargs,		"getgroups32"	}, /* 205 */
+-	{ 2,	0,	printargs,		"setgroups32"	}, /* 206 */
+-	{ 3,	0,	printargs,		"fchown32"	}, /* 207 */
+-	{ 3,	0,	printargs,		"setresuid32"	}, /* 208 */
+-	{ 3,	0,	printargs,		"getresuid32"	}, /* 209 */
+-	{ 3,	0,	printargs,		"setresgid32"	}, /* 210 */
+-	{ 3,	0,	printargs,		"getresgid32"	}, /* 211 */
+-	{ 3,	TF,	printargs,		"chown32"	}, /* 212 */
+-	{ 1,	0,	printargs,		"setuid32"	}, /* 213 */
+-	{ 1,	0,	printargs,		"setgid32"	}, /* 214 */
+-	{ 1,	0,	printargs,		"setfsuid32"	}, /* 215 */
+-	{ 1,	0,	printargs,		"setfsgid32"	}, /* 216 */
++	{ 0,	0,	sys_getgid32,		"getgid32"	}, /* 200 */
++	{ 0,	0,	sys_geteuid32,		"geteuid32"	}, /* 201 */
++	{ 0,	0,	sys_getegid32,		"getegid32"	}, /* 202 */
++	{ 2,	0,	sys_setreuid32,		"setreuid32"	}, /* 203 */
++	{ 2,	0,	sys_setregid32,		"setregid32"	}, /* 204 */
++	{ 2,	0,	sys_getgroups32,	"getgroups32"	}, /* 205 */
++	{ 2,	0,	sys_setgroups32,	"setgroups32"	}, /* 206 */
++	{ 3,	0,	sys_fchown,		"fchown32"	}, /* 207 */
++	{ 3,	0,	sys_setresuid32,	"setresuid32"	}, /* 208 */
++	{ 3,	0,	sys_getresuid32,	"getresuid32"	}, /* 209 */
++	{ 3,	0,	sys_setresgid32,	"setresgid32"	}, /* 210 */
++	{ 3,	0,	sys_getresgid32,	"getresgid32"	}, /* 211 */
++	{ 3,	TF,	sys_chown,		"chown32"	}, /* 212 */
++	{ 1,	0,	sys_setuid32,		"setuid32"	}, /* 213 */
++	{ 1,	0,	sys_setgid32,		"setgid32"	}, /* 214 */
++	{ 1,	0,	sys_setfsuid32,		"setfsuid32"	}, /* 215 */
++	{ 1,	0,	sys_setfsgid32,		"setfsgid32"	}, /* 216 */
+ 	{ 2,	TF,	sys_pivotroot,		"pivot_root"	}, /* 217 */
+ 	{ 3,	0,	printargs,		"mincore"	}, /* 218 */
+ 	{ 3,	0,	sys_madvise,		"madvise"	}, /* 219 */
