@@ -5,7 +5,7 @@ Summary(pl):	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony pro
 Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:		strace
 Version:	4.4
-Release:	2
+Release:	3
 License:	distributable
 Group:		Development/Debuggers
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/strace/%{name}_%{version}-1.tar.gz
@@ -16,6 +16,7 @@ Patch2:		%{name}-sparc3.patch
 Patch3:		%{name}-newsysc.patch
 Patch4:		%{name}-getdents64.patch
 Patch5:		%{name}-acfix.patch
+Patch6:		%{name}-threads.patch
 URL:		http://www.liacs.nl/~wichert/strace/
 BuildRequires:	autoconf
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -54,6 +55,7 @@ birlikte döker.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 %{__autoconf}
@@ -75,14 +77,12 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/{man1,pl/man1}}
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
-gzip -9nf ChangeLog README-linux
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz
+%doc ChangeLog README-linux
 %attr(755,root,root) %{_bindir}/strace
 %{_mandir}/man1/*
 %lang(pl) %{_mandir}/pl/man1/*
