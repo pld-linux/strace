@@ -13,7 +13,7 @@ Source:      	http://www.wi.leidenuniv.nl/~wichert/strace/%{name}-%{version}.tar
 Patch0:      	strace-fhs.patch
 Patch1:		strace-linux.patch
 Patch2:		strace-ipv6.patch
-BuildRoot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 Strace prints a record of each system call another program makes, including
