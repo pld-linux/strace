@@ -1,8 +1,12 @@
 Summary:	prints system call strace of a running process
 Summary(de):	druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
+Summary(es):	EnseЯa las llamadas de sistema de un proceso en ejecuciСn
 Summary(fr):	affiche l'appel systХme strace d'un processus en exИcution
 Summary(pl):	strace wy╤wietla funkcje systemowe wywoЁywane przez uruchomiony proces
+Summary(pt_BR):	Mostra as chamadas de sistema de um processo rodando
+Summary(ru):	Отслеживает и показывает системные вызовы, связанные с запущенным процессом
 Summary(tr):	гalЩЧan bir sЭrecin yaptЩПЩ sistem ГaПrЩlarЩnЩ listeler
+Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним процесом
 Name:		strace
 Version:	4.4.92
 Release:	1
@@ -27,6 +31,11 @@ Strace druckt ein Protokoll aller von einem anderen Programm
 ausgegebenen Systemaufrufe, einschlieъlich aller weitergeleiteten
 Argumente und dem Ausgabewert des Systemaufrufs.
 
+%description -l es
+Strace imprime una "grabaciСn" de cada llamada de sistema que el
+programa hace, incluyendo todos los argumentos pasados para Иl, si la
+vuelta de cada llamada de sistema es verdadera, o si hay creado error.
+
 %description -l fr
 strace affiche l'enregistrement de chaque appel systХme que fait un
 programme ainsi que tous les arguments qui lui ont ИtИ passИs et la
@@ -37,10 +46,27 @@ Strace wy╤wietla informacje o ka©dym wywoЁaniu funkcji systemowych
 przez uruchamiany program, w tym rСwnie© wszystkie argumenty wywoЁania
 i zwrСcon╠ warto╤Ф.
 
+%description -l pt_BR
+Strace imprime uma "gravaГЦo" de cada chamada de sistema que o
+programa faz, incluindo todos os argumentos passados para ele e se o
+retorno de cada chamada de sistema И verdadeiro ou gerou erro.
+
+%description -l ru
+Программа strace перехватывает и регистрирует системные вызовы,
+произведенные и полученные исполняющимся процессом. Strace может
+вывести список всех системных вызовов, их аргументов и возвращаемые
+ими значения. Strace полезна для диагностики проблем и отладки.
+
 %description -l tr
 strace bir programЩn ГalЩЧtЩПЩ sЭrece yaptЩПЩ bЭtЭn sistem
 ГaПrЩlarЩnЩ, gЖnderdiПi parametreler ve geri dЖnЭЧ deПerleriyle
 birlikte dЖker.
+
+%description -l uk
+Програма strace перехоплю╓ та рег╕стру╓ системн╕ визови, зроблен╕ та
+отриман╕ процесом, який викону╓ться. Strace може вивести список ус╕х
+системних визов╕в, ╖х аргумент╕в та значень, як╕ вони повернули.
+Strace корисний для д╕агностики проблем та в╕дладки.
 
 %prep
 %setup -q
