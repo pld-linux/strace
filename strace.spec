@@ -47,14 +47,14 @@ gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 %build
 autoconf && autoheader
 %configure
-make LDFLAGS="-s"
+%{__make} LDFLAGS="-s"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 
-make install \
+%{__make} install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
 	bindir=$RPM_BUILD_ROOT%{_bindir}
