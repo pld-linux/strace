@@ -6,7 +6,7 @@ Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:		strace
 Version:	4.4
 Release:	1
-License:	Distributable
+License:	distributable
 Group:		Development/Debuggers
 Group(de):	Entwicklung/Debugger
 Group(pl):	Programowanie/Odpluskwiacze
