@@ -59,9 +59,8 @@ diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
  /* 1.2 memory management */
  int	sys_brk(),sys_sbrk(),sys_sstk();
  int	sys_getpagesize(),sys_mmap(),sys_mctl(),sys_munmap(),sys_mprotect(),sys_mincore(), sys_mremap();
-diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscallent.h
---- strace-4.4.orig/linux/sparc/syscallent.h	Fri Oct 19 15:27:34 2001
-+++ strace-4.4/linux/sparc/syscallent.h	Fri Oct 19 16:30:54 2001
+--- strace-4.4.94/linux/sparc/syscallent.h.orig	Tue Jan 14 23:29:43 2003
++++ strace-4.4.94/linux/sparc/syscallent.h	Fri Apr  4 09:03:24 2003
 @@ -29,11 +29,11 @@
  	{ 2,	TS,	sys_sigaltstack,"sigaltstack" },	/* 28 */
  	{ 0,	TS,	sys_pause,	"pause" },		/* 29 */
@@ -99,50 +98,50 @@ diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscal
  	{ 2,	TF,	sys_symlink,	"symlink" },		/* 57 */
  	{ 3,	TF,	sys_readlink,	"readlink" },		/* 58 */
  	{ 3,	TF|TP,	sys_execve,	"execve" },		/* 59 */
-@@ -67,32 +67,32 @@
+@@ -67,32 +67,31 @@
  	{ 0,	TP,	sys_vfork,	"vfork" },		/* 66 */
  	{ 5,	TF,	sys_pread,	"pread" },		/* 67 */
  	{ 5,	TF,	sys_pwrite,	"pwrite" },		/* 68 */
 -	{ 1,    0,	sys_sbrk,	"sbrk" },		/* 69 */
 -	{ 1,	0,	printargs,	"sstk" },		/* 70 */
-+	{ 0,    0,	sys_geteuid32,	"geteuid32" },		/* 69 */
-+	{ 0,	0,	sys_getegid32,	"getegid32" },		/* 70 */
++	{ 0,    0,      sys_geteuid32,  "geteuid32" },          /* 69 */
++	{ 0,    0,      sys_getegid32,  "getegid32" },          /* 70 */
  	{ 6,	0,	sys_mmap,	"mmap" },		/* 71 */
 -	{ 1,	0,	printargs,	"vadvise" },		/* 72 */
-+	{ 2,	0,	sys_setreuid32,	"setreuid32" },		/* 72 */
++	{ 2,    0,      sys_setreuid32, "setreuid32" },         /* 72 */
  	{ 2,	0,	sys_munmap,	"munmap" },		/* 73 */
  	{ 3,	0,	sys_mprotect,	"mprotect" },		/* 74 */
  	{ 3,	0,	sys_madvise,	"madvise" },		/* 75 */
  	{ 1,	0,	sys_vhangup,	"vhangup" },		/* 76 */
--	{ 2,	TF,	printargs,	"truncate64" },		/* 77 */
-+	{ 2,	TF,	sys_truncate64,	"truncate64" },		/* 77 */
+-	{ 2,	TF,	sys_truncate64,	"truncate64" },		/* 77 */
++	{ 2,    TF,     sys_truncate64, "truncate64" },         /* 77 */
  	{ 3,	0,	sys_mincore,	"mincore" },		/* 78 */
  	{ 2,	0,	sys_getgroups,	"getgroups" },		/* 79 */
  	{ 2,	0,	sys_setgroups,	"setgroups" },		/* 80 */
  	{ 1,	0,	sys_getpgrp,	"getpgrp" },		/* 81 */
 -	{ 2,	0,	sys_setpgrp,	"setpgrp" },		/* 82 */
-+	{ 2,	0,	sys_setgroups32,"setgroups32" },	/* 82 */
++	{ 2,    0,      sys_setgroups32,"setgroups32" },        /* 82 */
  	{ 3,	0,	sys_setitimer,	"setitimer" },		/* 83 */
 -	{ 0,	0,	printargs,	"SYS_84" },		/* 84 */
-+	{ 2,	0,	sys_ftruncate64,"ftruncate64" },	/* 84 */
++	{ 2,    0,      sys_ftruncate64,"ftruncate64" },        /* 84 */
  	{ 1,	TF,	sys_swapon,	"swapon" },		/* 85 */
  	{ 2,	0,	sys_getitimer,	"getitimer" },		/* 86 */
 -	{ 2,	0,	sys_gethostname,"gethostname" },	/* 87 */
-+	{ 1,	0,	sys_setuid32,	"setuid32" },		/* 87 */
- 	{ 2,	0,	sys_sethostname,"sethostname" },	 /* 88 */
+-	{ 2,	0,	sys_sethostname,"sethostname" },	 /* 88 */
 -	{ 0,	0,	sys_getdtablesize,"getdtablesize" },	 /* 89 */
-+	{ 1,	0,	sys_setgid32,	"setgid32" },		 /* 89 */
++	{ 1,    0,      sys_setuid32,   "setuid32" },           /* 87 */	
++	{ 1,    0,      sys_setgid32,   "setgid32" },           /* 89 */	
  	{ 2,	0,	sys_dup2,	"dup2" },		/* 90 */
 -	{ 2,	0,	printargs,	"getdopt" },		/* 91 */
-+	{ 1,	0,	sys_setfsuid32,	"setfsuid32" },		/* 91 */
++	{ 1,    0,      sys_setfsuid32, "setfsuid32" },         /* 91 */
  	{ 3,	0,	sys_fcntl,	"fcntl" },		/* 92 */
  	{ 5,	0,	sys_oldselect,	"select" },		/* 93 */
 -	{ 2,	0,	printargs,	"setdopt" },		/* 94 */
-+	{ 1,	0,	sys_setfsgid32,	"setfsgid32" },		/* 94 */
++	{ 1,    0,      sys_setfsgid32, "setfsgid32" },         /* 94 */
  	{ 1,	0,	sys_fsync,	"fsync" },		/* 95 */
  	{ 3,	0,	sys_setpriority,"setpriority" },	/* 96 */
  	{ 3,	TN,	sys_socket,	"socket" },		/* 97 */
-@@ -106,14 +106,14 @@
+@@ -106,14 +105,14 @@
  	{ 4,	TS,	sys_rt_sigtimedwait,"rt_sigtimedwait" },/* 105 */
  	{ 3,	TS,	sys_rt_sigqueueinfo,"rt_sigqueueinfo" },/* 106 */
  	{ 2,	TS,	sys_rt_sigsuspend,"rt_sigsuspend" },	/* 107 */
