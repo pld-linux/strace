@@ -1,0 +1,24 @@
+diff -urN strace-4.0.orig/system.c strace-4.0/system.c
+--- strace-4.0.orig/system.c	Mon Aug 16 16:10:53 1999
++++ strace-4.0/system.c	Mon Aug 16 16:23:37 1999
+@@ -70,6 +70,8 @@
+ #include <linux/sysctl.h>
+ #endif
+ 
++#include <linux/version.h>
++
+ static struct xlat mount_flags[] = {
+ 	{ MS_RDONLY,	"MS_RDONLY"	},
+ 	{ MS_NOSUID,	"MS_NOSUID"	},
+@@ -1278,7 +1280,11 @@
+ 	{ KERN_PROF, "KERN_PROF" },
+ 	{ KERN_NODENAME, "KERN_NODENAME" },
+ 	{ KERN_DOMAINNAME, "KERN_DOMAINNAME" },
++#if LINUX_VERSION_CODE >= 131595
++	{ KERN_CAP_BSET, "KERN_CAP_BSET" },
++#else
+ 	{ KERN_SECURELVL, "KERN_SECURELVL" },
++#endif
+ 	{ KERN_PANIC, "KERN_PANIC" },
+ 	{ KERN_REALROOTDEV, "KERN_REALROOTDEV" },
+ 	{ KERN_JAVA_INTERPRETER, "KERN_JAVA_INTERPRETER" },
