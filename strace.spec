@@ -5,7 +5,7 @@ Summary(pl): 	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony pr
 Summary(tr): 	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:        	strace
 Version:     	3.1
-Release:     	14
+Release:     	18
 Copyright:   	distributable
 Group:       	Development/Debuggers
 Group(pl):   	Programowanie/Odpluskwiacze
