@@ -25,6 +25,9 @@ Patch11:     	strace-jbj.patch
 Patch12:	strace-glibc-2.1.patch
 Patch13:	strace-prctl.patch
 Patch14:	strace-fork.patch
+Patch15:	strace-arm.patch
+Patch16:	strace-clone.patch
+Patch17:	strace-AC_C_CROSS.patch
 Buildroot:   	/tmp/%{name}-%{version}-root
 
 %description
@@ -67,20 +70,20 @@ gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-
+%patch15 -p1
+%patch16 -p0
+%patch17 -p1
 
 %build
 autoconf
 %configure
-make
+make LDFLAGS="-s"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/usr/{bin,man/man1}
 
 make install prefix=$RPM_BUILD_ROOT/usr
-
-strip $RPM_BUILD_ROOT/usr/bin/*
 
 gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/*
 
