@@ -12,6 +12,7 @@ Version:	4.4.94
 Release:	1
 License:	distributable
 Group:		Development/Debuggers
+#Source0-md5:	483890e6ea930f8c09ccae55121ca7ac
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
