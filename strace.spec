@@ -9,18 +9,19 @@ Summary(tr):	гalЩЧan bir sЭrecin yaptЩПЩ sistem ГaПrЩlarЩnЩ listeler
 Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним процесом
 Name:		strace
 Version:	4.5.8
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Development/Debuggers
-Source0:	http://osdn.dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
+Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
 # Source0-md5:	9320ac849890b8e2cc623193bd5733ba
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
 Patch1:		%{name}-getdents64.patch
 Patch2:		%{name}-kernel26_userspace.patch
 Patch3:		%{name}-stat64.patch
+Patch4:		%{name}-sparc.patch
 URL:		http://www.liacs.nl/~wichert/strace/
-BuildRequires:	autoconf >= 2.54
+BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -77,6 +78,7 @@ Strace корисний для д╕агностики проблем та в╕дладки.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__aclocal}
@@ -88,14 +90,11 @@ Strace корисний для д╕агностики проблем та в╕дладки.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/{man1,pl/man1}}
 
 %{__make} install \
-	prefix=$RPM_BUILD_ROOT%{_prefix} \
-	mandir=$RPM_BUILD_ROOT%{_mandir} \
-	bindir=$RPM_BUILD_ROOT%{_bindir}
+	DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_mandir}/pl/man1
+install -D %{SOURCE1} $RPM_BUILD_ROOT%{_mandir}/pl/man1/strace.1
 
 %clean
 rm -rf $RPM_BUILD_ROOT
