@@ -52,7 +52,7 @@ make LDFLAGS="-s"
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT%{_prefix}/{bin,share/man/man1}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 
 make install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
