@@ -96,6 +96,12 @@ rm -rf $RPM_BUILD_ROOT
 /usr/man/man1/*
 
 %changelog
+* Sat Apr 24 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [3.1-18]
+- added patches for arm arch and clone() (from rawhide),
+- removed obsolete AC_C_CROSS macro from configure.in
+  (strace-AC_C_CROSS.patch).
+
 * Thu Apr 22 1999 Artur Frysiak <wiget@pld.org.pl>
   [3.1-14]
 - removed man group from man pages
