@@ -41,7 +41,7 @@ gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 %patch -p1 
 
 %build
-aclocal && autoconf && %configure
+%configure
 make LDFLAGS="-s"
 
 %install
@@ -49,11 +49,10 @@ rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_prefix}/{bin,share/man/man1}
 
-make \
-    prefix=$RPM_BUILD_ROOT%{_prefix} \
-    mandir=$RPM_BUILD_ROOT%{_mandir} \
-    bindir=$RPM_BUILD_ROOT%{_bindir} \
-    install
+make install \
+	prefix=$RPM_BUILD_ROOT%{_prefix} \
+	mandir=$RPM_BUILD_ROOT%{_mandir} \
+	bindir=$RPM_BUILD_ROOT%{_bindir}
 
 gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* ChangeLog README-linux
 
