@@ -4,18 +4,17 @@ Summary(fr):	affiche l'appel système strace d'un processus en exécution
 Summary(pl):	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony proces
 Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:		strace
-Version:	4.4
-Release:	4
+Version:	4.4.91
+Release:	1
 License:	distributable
 Group:		Development/Debuggers
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/strace/%{name}_%{version}-1.tar.gz
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
 Patch1:		%{name}-getdents64.patch
-Patch2:		%{name}-acfix.patch
-Patch3:		%{name}-threads.patch
+Patch2:		%{name}-threads.patch
 URL:		http://www.liacs.nl/~wichert/strace/
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.54
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -47,15 +46,14 @@ birlikte döker.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
+#%patch2 -p1
 
 %build
+rm -f missing
+%{__aclocal}
 %{__autoconf}
 %{__autoheader}
-# for 2.4 you can and even should remove these two kernel_Xid32_t definitions
-CFLAGS="%{rpmcflags} -D__kernel_uid32_t=uid_t -D__kernel_gid32_t=gid_t"
-export CFLAGS
+%{__automake}
 %configure
 %{__make}
 
@@ -76,6 +74,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog README-linux
-%attr(755,root,root) %{_bindir}/strace
+%attr(755,root,root) %{_bindir}/strace*
 %{_mandir}/man1/*
 %lang(pl) %{_mandir}/pl/man1/*
