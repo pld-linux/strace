@@ -10,7 +10,9 @@ Copyright:   	distributable
 Group:       	Development/Debuggers
 Group(pl):   	Programowanie/Odpluskwiacze
 Source:      	http://www.wi.leidenuniv.nl/~wichert/strace/%{name}-%{version}.tar.gz
-Patch:      	%{name}-fhs.patch
+Patch0:      	strace-fhs.patch
+Patch1:		strace-linux.patch
+Patch2:		strace-ipv6.patch
 BuildRoot:	/tmp/%{name}-%{version}-root
 
 %description
@@ -38,9 +40,12 @@ gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 
 %prep
 %setup  -q 
-%patch -p1 
+%patch0 -p1 
+%patch1 -p1
+%patch2 -p1
 
 %build
+autoconf && autoheader
 %configure
 make LDFLAGS="-s"
 
