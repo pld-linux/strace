@@ -46,8 +46,8 @@ strace bir programýn çalýþtýðý sürece yaptýðý bütün sistem
 birlikte döker.
 
 %prep
-%setup -q 
-%patch0 -p1 
+%setup -q
+%patch0 -p1
 %patch1 -p1
 # Temporary not used (problems on sparc/2.2?)
 #%patch2 -p1
@@ -62,7 +62,7 @@ autoheader
 CFLAGS="%{rpmcflags} -D__kernel_uid32_t=uid_t -D__kernel_gid32_t=gid_t"
 export CFLAGS
 %configure
-%{__make} 
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
