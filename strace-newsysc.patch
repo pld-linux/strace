@@ -92,7 +92,7 @@ diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscal
  	{ 2,	TF,	sys_utime,	"utime" },		/* 30 */
 -	{ 2,	0,	sys_stty,	"stty" },		/* 31 */
 -	{ 2,	0,	sys_gtty,	"gtty" },		/* 32 */
-+	{ 3,	TF,	sys_lchown,	"lchown32" },		/* 31 */
++	{ 3,	TF,	printargs,	"lchown32" },		/* 31 */
 +	{ 3,	0,	sys_fchown,	"fchown32" },		/* 32 */
  	{ 2,	TF,	sys_access,	"access" },		/* 33 */
  	{ 1,	0,	sys_nice,	"nice" },		/* 34 */
