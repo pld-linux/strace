@@ -4,19 +4,19 @@ Summary(fr):	affiche l'appel système strace d'un processus en exécution
 Summary(pl):	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony proces
 Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:		strace
-Version:	4.3
+Version:	4.4
 Release:	1
 License:	Distributable
 Group:		Development/Debuggers
 Group(de):	Entwicklung/Debugger
 Group(pl):	Programowanie/Odpluskwiacze
-Source0:	http://download.sourceforge.net/strace/%{name}-%{version}.tar.bz2
+Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/strace/%{name}_%{version}-1.tar.gz
 Patch0:		%{name}-sparc.patch
 Patch1:		%{name}-sparc2.patch
 Patch2:		%{name}-sparc3.patch
-Patch3:		%{name}-putmsg.patch
-Patch4:		%{name}-newsysc.patch
-Patch5:		%{name}-getdents64.patch
+Patch3:		%{name}-newsysc.patch
+Patch4:		%{name}-getdents64.patch
+Patch5:		%{name}-acfix.patch
 URL:		http://www.liacs.nl/~wichert/strace/
 BuildRequires:	autoconf
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -47,7 +47,7 @@ strace bir programýn çalýþtýðý sürece yaptýðý bütün sistem
 birlikte döker.
 
 %prep
-%setup  -q 
+%setup -q 
 %patch0 -p1 
 %patch1 -p1
 # Temporary not used (problems on sparc/2.2?)
