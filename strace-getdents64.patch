@@ -10,16 +10,14 @@ diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscal
  	{ 0,	0,	printargs,		"gettid"		}, /* 378 */
  	{ 4,	0,	sys_readahead,		"readahead"		}, /* 379 */
  	{ 5,	0,	printargs,		"SYS_380"		}, /* 380 */
---- strace-4.4.94/linux/sparc/syscallent.h.orig	Fri Apr  4 09:08:08 2003
-+++ strace-4.4.94/linux/sparc/syscallent.h	Fri Apr  4 09:09:57 2003
-@@ -152,8 +152,8 @@
+--- strace-4.5.6/linux/sparc/syscallent.h.orig	2004-07-26 08:24:07.836003360 +0200
++++ strace-4.5.6/linux/sparc/syscallent.h	2004-07-26 08:26:53.960748560 +0200
+@@ -152,7 +152,7 @@
  	{ 4,	TN,	sys_getmsg,	"getmsg" },		/* 151 */
  	{ 4,	TN,	sys_putmsg,	"putmsg" },		/* 152 */
  	{ 3,	0,	sys_poll,	"poll" },		/* 153 */
 -	{ 4,	0,	sys_getdents64,	"getdents64" },		/* 154 */
--	{ 1,	0,	printargs,	"nfssvc" },		/* 155 */
-+	{ 3,    0,      sys_getdents64, "getdents64" },         /* 154 */
-+	{ 3,    0,      sys_fcntl,      "fcntl64" },            /* 155 */
++	{ 3,	0,	sys_getdents64,	"getdents64" },		/* 154 */
+ 	{ 3,	0,	sys_fcntl,	"fcntl64" },		/* 155 */
  	{ 4,	0,	printargs,	"getdirentries" },	/* 156 */
  	{ 2,	TF,	sys_statfs,	"statfs" },		/* 157 */
- 	{ 2,	0,	sys_fstatfs,	"fstatfs" },		/* 158 */

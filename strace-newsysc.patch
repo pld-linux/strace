@@ -29,102 +29,22 @@ diff -Nur strace-4.5.1.orig/linux/alpha/syscallent.h strace-4.5.1/linux/alpha/sy
  	{ 4,	0,	sys_getdents64,		"getdents64"		}, /* 377 */
  	{ 0,	0,	printargs,		"gettid"		}, /* 378 */
  	{ 4,	0,	sys_readahead,		"readahead"		}, /* 379 */
-diff -Nur strace-4.5.1.orig/linux/sparc/syscallent.h strace-4.5.1/linux/sparc/syscallent.h
---- strace-4.5.1.orig/linux/sparc/syscallent.h	2003-08-21 12:05:40.000000000 +0200
-+++ strace-4.5.1/linux/sparc/syscallent.h	2003-11-18 21:41:54.142886408 +0100
-@@ -29,11 +29,11 @@
- 	{ 2,	TS,	sys_sigaltstack,"sigaltstack" },	/* 28 */
- 	{ 0,	TS,	sys_pause,	"pause" },		/* 29 */
- 	{ 2,	TF,	sys_utime,	"utime" },		/* 30 */
--	{ 2,	0,	sys_stty,	"stty" },		/* 31 */
--	{ 2,	0,	sys_gtty,	"gtty" },		/* 32 */
-+	{ 3,	TF,	printargs,	"lchown32" },		/* 31 */
-+	{ 3,	0,	sys_fchown,	"fchown32" },		/* 32 */
- 	{ 2,	TF,	sys_access,	"access" },		/* 33 */
- 	{ 1,	0,	sys_nice,	"nice" },		/* 34 */
--	{ 1,	0,	sys_ftime,	"ftime" },		/* 35 */
-+	{ 3,	TF,	sys_chown,	"chown32" },		/* 35 */
- 	{ 0,	0,	sys_sync,	"sync" },		/* 36 */
- 	{ 2,	TS,	sys_kill,	"kill" },		/* 37 */
- 	{ 2,	TF,	sys_stat,	"stat" },		/* 38 */
-@@ -42,7 +42,7 @@
- 	{ 2,	0,	sys_dup,	"dup" },		/* 41 */
- 	{ 0,	0,	sys_pipe,	"pipe" },		/* 42 */
- 	{ 1,	0,	sys_times,	"times" },		/* 43 */
--	{ 4,	0,	sys_profil,	"profil" },		/* 44 */
-+	{ 0,	0,	sys_getuid,	"getuid32" },		/* 44 */
- 	{ 2,	TF,	sys_umount2,	"umount" },		/* 45 */
- 	{ 1,	0,	sys_setgid,	"setgid" },		/* 46 */
- 	{ 0,	0,	sys_getgid,	"getgid" },		/* 47 */
-@@ -51,10 +51,10 @@
- 	{ 0,	0,	sys_getegid,	"getegid" },		/* 50 */
- 	{ 1,	0,	sys_acct,	"acct" },		/* 51 */
- 	{ 0,	0,	printargs,	"SYS_52" },		/* 52 */
--	{ 4,	0,	sys_mctl,	"mctl" },		/* 53 */
-+	{ 0,	0,	sys_getgid,	"getgid32" },		/* 53 */
- 	{ 3,	0,	sys_ioctl,	"ioctl" },		/* 54 */
- 	{ 2,	0,	sys_reboot,	"reboot" },		/* 55 */
--	{ 3,	0,	printargs,	"SYS_56" },		/* 56 */
-+	{ 6,	0,	sys_mmap,	"mmap2" },		/* 56 */
- 	{ 2,	TF,	sys_symlink,	"symlink" },		/* 57 */
- 	{ 3,	TF,	sys_readlink,	"readlink" },		/* 58 */
- 	{ 3,	TF|TP,	sys_execve,	"execve" },		/* 59 */
-@@ -67,10 +67,10 @@
- 	{ 0,	TP,	sys_vfork,	"vfork" },		/* 66 */
- 	{ 5,	TF,	sys_pread,	"pread" },		/* 67 */
- 	{ 5,	TF,	sys_pwrite,	"pwrite" },		/* 68 */
--	{ 1,    0,	sys_sbrk,	"sbrk" },		/* 69 */
--	{ 1,	0,	printargs,	"sstk" },		/* 70 */
-+	{ 0,    0,	sys_geteuid,	"geteuid32" },		/* 69 */
-+	{ 0,	0,	sys_getegid,	"getegid32" },		/* 70 */
- 	{ 6,	0,	sys_mmap,	"mmap" },		/* 71 */
--	{ 1,	0,	printargs,	"vadvise" },		/* 72 */
-+	{ 2,	0,	sys_setreuid,	"setreuid32" },		/* 72 */
- 	{ 2,	0,	sys_munmap,	"munmap" },		/* 73 */
- 	{ 3,	0,	sys_mprotect,	"mprotect" },		/* 74 */
- 	{ 3,	0,	sys_madvise,	"madvise" },		/* 75 */
-@@ -80,19 +80,19 @@
+--- strace-4.5.6/linux/sparc/syscallent.h.orig	2004-07-12 09:41:05.000000000 +0200
++++ strace-4.5.6/linux/sparc/syscallent.h	2004-07-26 08:21:58.496665928 +0200
+@@ -80,7 +80,7 @@
  	{ 2,	0,	sys_getgroups,	"getgroups" },		/* 79 */
  	{ 2,	0,	sys_setgroups,	"setgroups" },		/* 80 */
- 	{ 1,	0,	sys_getpgrp,	"getpgrp" },		/* 81 */
--	{ 2,	0,	sys_setpgrp,	"setpgrp" },		/* 82 */
+ 	{ 0,	0,	sys_getpgrp,	"getpgrp" },		/* 81 */
+-	{ 2,	0,	sys_setgroups,	"setgroups32" },	/* 82 */
 +	{ 2,	0,	sys_setgroups32,"setgroups32" },	/* 82 */
  	{ 3,	0,	sys_setitimer,	"setitimer" },		/* 83 */
--	{ 0,	0,	printargs,	"SYS_84" },		/* 84 */
-+	{ 2,	0,	sys_ftruncate64,"ftruncate64" },	/* 84 */
+ 	{ 2,	0,	sys_ftruncate,	"ftruncate64" },	/* 84 */
  	{ 1,	TF,	sys_swapon,	"swapon" },		/* 85 */
- 	{ 2,	0,	sys_getitimer,	"getitimer" },		/* 86 */
--	{ 2,	0,	sys_gethostname,"gethostname" },	/* 87 */
-+	{ 1,	0,	sys_setuid,	"setuid32" },		/* 87 */
- 	{ 2,	0,	sys_sethostname,"sethostname" },	 /* 88 */
--	{ 0,	0,	sys_getdtablesize,"getdtablesize" },	 /* 89 */
-+	{ 1,	0,	sys_getgid,	"getgid32" },		 /* 89 */
- 	{ 2,	0,	sys_dup2,	"dup2" },		/* 90 */
--	{ 2,	0,	printargs,	"getdopt" },		/* 91 */
-+	{ 1,	0,	sys_setfsuid,	"setfduid32" },		/* 91 */
- 	{ 3,	0,	sys_fcntl,	"fcntl" },		/* 92 */
- 	{ 5,	0,	sys_oldselect,	"select" },		/* 93 */
--	{ 2,	0,	printargs,	"setdopt" },		/* 94 */
-+	{ 1,	0,	sys_setfsgid,	"setfsgid32" },		/* 94 */
- 	{ 1,	0,	sys_fsync,	"fsync" },		/* 95 */
- 	{ 3,	0,	sys_setpriority,"setpriority" },	/* 96 */
- 	{ 3,	TN,	sys_socket,	"socket" },		/* 97 */
-@@ -106,14 +106,14 @@
- 	{ 4,	TS,	sys_rt_sigtimedwait,"rt_sigtimedwait" },/* 105 */
- 	{ 3,	TS,	sys_rt_sigqueueinfo,"rt_sigqueueinfo" },/* 106 */
- 	{ 2,	TS,	sys_rt_sigsuspend,"rt_sigsuspend" },	/* 107 */
--	{ 3,	TS,	printargs,	"sigvec" },		/* 108 */
--	{ 1,    TS,	sys_sigblock,	"sigblock" },		/* 109 */
--	{ 1,	TS,	sys_sigsetmask,	"sigsetmask" },		/* 110 */
--	{ 1,	TS,	printargs,	"sigpause" },		/* 111 */
-+	{ 3,	0,	sys_setresuid,	"setresuid32" },	/* 108 */
-+	{ 3,    0,	sys_getresuid,	"getresuid32" },	/* 109 */
-+	{ 3,	0,	sys_setresgid,	"setresgid32" },	/* 110 */
-+	{ 3,	0,	sys_getresgid,	"getresgid32" },	/* 111 */
- 	{ 2,	TS,	printargs,	"sigstack" },		/* 112 */
- 	{ 3,	TN,	sys_recvmsg,	"recvmsg" },		/* 113 */
- 	{ 3,	TN,	sys_sendmsg,	"sendmsg" },		/* 114 */
--	{ 3,	0,	printargs,	"vtrace" },		/* 115 */
+@@ -113,7 +113,7 @@
+ 	{ 2,	TS,	sys_setresgid,	"setresgid32" },	/* 112 */
+ 	{ 5,	TN,	sys_recvmsg,	"recvmsg" },		/* 113 */
+ 	{ 5,	TN,	sys_sendmsg,	"sendmsg" },		/* 114 */
+-	{ 2,	0,	sys_getgroups,	"getgroups32" },	/* 115 */
 +	{ 2,	0,	sys_getgroups32,"getgroups32" },	/* 115 */
  	{ 2,	0,	sys_gettimeofday,"gettimeofday" },	/* 116 */
  	{ 2,	0,	sys_getrusage,	"getrusage" },		/* 117 */
