@@ -12,7 +12,7 @@ Version:	4.5.8
 Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
-Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
+Source0:	http://osdn.dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
 # Source0-md5:	9320ac849890b8e2cc623193bd5733ba
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
