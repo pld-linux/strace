@@ -1,190 +1,37 @@
---- strace-4.2/linux/sparc/syscall.h.jj	Tue May 23 06:23:31 2000
-+++ strace-4.2/linux/sparc/syscall.h	Wed May 24 06:08:08 2000
-@@ -36,7 +36,7 @@ int	sys_errsys();
- /* 1.1 processes and protection */
- int	sys_gethostid(),sys_sethostname(),sys_gethostname(),sys_getpid();
- int	sys_setdomainname(),sys_getdomainname();
--int	sys_fork(),sys_exit(),sys_execv(),sys_execve(),sys_wait4(),sys_waitpid();
-+int	sys_fork(),sys_exit(),sys_clone(),sys_execv(),sys_execve(),sys_wait4(),sys_waitpid();
- int	sys_setuid(),sys_setgid(),sys_getuid(),sys_setreuid(),sys_getgid(),sys_getgroups(),sys_setregid(),sys_setgroups();
- int	sys_getpgrp(),sys_setpgrp();
- int	sys_setsid(), sys_setpgid();
---- strace-4.2/syscall.c.jj	Tue May 23 06:23:31 2000
-+++ strace-4.2/syscall.c	Wed May 24 10:18:49 2000
-@@ -43,12 +43,16 @@
- #include <sys/param.h>
- 
- #if HAVE_ASM_REG_H
-+#ifndef __sparc__
- #include <asm/reg.h>
+diff -urN strace-4.3.org/process.c strace-4.3/process.c
+--- strace-4.3.org/process.c	Wed Apr  4 19:25:52 2001
++++ strace-4.3/process.c	Wed Apr  4 21:07:52 2001
+@@ -75,7 +75,7 @@
+ #ifndef PTRACE_POKEUSR
+ # define PTRACE_POKEUSR PTRACE_POKEUSER
  #endif
-+#endif
- 
- #if HAVE_LINUX_PTRACE_H
-+#ifndef __sparc__
+-#elif defined(HAVE_LINUX_PTRACE_H)
++#elif defined(HAVE_LINUX_PTRACE_H) && !defined(SPARC)
  #undef PTRACE_SYSCALL
  #include <linux/ptrace.h>
-+#endif
- #endif 
- 
- #ifdef HAVE_SYS_REG_H
-@@ -561,7 +565,7 @@ struct tcb *tcp;
- #elif defined(MIPS)
- 	long r2,a3;
- #elif defined (SPARC)
--	struct regs regs;
-+	gregset_t regs;
- 	unsigned long trap;
- #elif defined(S390)
- 	long gpr2;
-@@ -677,14 +681,14 @@ struct tcb *tcp;
- 	}
- #elif defined (SPARC)
- 	/* Everything we need is in the current register set. */
--	if (ptrace(PTRACE_GETREGS,pid,(char *)&regs,0) < 0)
-+	if (ptrace(PTRACE_GETREGS,pid,(char *)regs,0) < 0)
- 		return -1;
- 
-         /* If we are entering, then disassemble the syscall trap. */
- 	if (!(tcp->flags & TCB_INSYSCALL)) {
- 		/* Retrieve the syscall trap instruction. */
- 		errno = 0;
--		trap = ptrace(PTRACE_PEEKTEXT,pid,(char *)regs.r_pc,0);
-+		trap = ptrace(PTRACE_PEEKTEXT,pid,(char *)regs[REG_PC],0);
- 		if (errno)
- 			return -1;
- 
-@@ -720,7 +724,7 @@ struct tcb *tcp;
- 				tcp->flags &= ~TCB_WAITEXECVE;
- 				return 0;
- 			}
--			fprintf(stderr,"syscall: unknown syscall trap %08x %08x\n", trap, regs.r_pc);
-+			fprintf(stderr,"syscall: unknown syscall trap %08x %08x\n", trap, regs[REG_PC]);
- 			return -1;
- 		}
- 
-@@ -728,10 +732,10 @@ struct tcb *tcp;
- 		if (trap == 0x91d02027)
- 			scno = 156;
- 		else
--			scno = regs.r_g1;
-+			scno = regs[REG_G1];
- 		if (scno == 0) {
--			scno = regs.r_o0;
--			memmove (&regs.r_o0, &regs.r_o1, 7*sizeof(regs.r_o0));
-+			scno = regs[REG_O0];
-+			memmove (&regs[REG_O0], &regs[REG_O1], 7*sizeof(regs[REG_O0]));
- 		}
- 	}
- #endif 
-@@ -917,12 +921,12 @@ struct tcb *tcp;
- 		}
- #else /* !ALPHA */
- #ifdef SPARC
--		if (regs.r_psr & PSR_C) {
-+		if (regs[REG_PSR] & PSR_C) {
- 			tcp->u_rval = -1;
--			u_error = regs.r_o0;
-+			u_error = regs[REG_O0];
- 		}
- 		else {
--			tcp->u_rval = regs.r_o0;
-+			tcp->u_rval = regs[REG_O0];
- 			u_error = 0;
- 		}
- #endif /* SPARC */
-@@ -947,12 +951,12 @@ struct tcb *tcp;
- #ifdef SVR4
- #ifdef SPARC
- 		/* Judicious guessing goes a long way. */
--		if (tcp->status.pr_reg[R_PSR] & 0x100000) {
-+		if (tcp->status.pr_reg[REG_PSR] & 0x100000) {
- 			tcp->u_rval = -1;
--			u_error = tcp->status.pr_reg[R_O0];
-+			u_error = tcp->status.pr_reg[REG_O0];
- 		}
- 		else {
--			tcp->u_rval = tcp->status.pr_reg[R_O0];
-+			tcp->u_rval = tcp->status.pr_reg[REG_O0];
- 			u_error = 0;
- 		}
- #endif /* SPARC */
-@@ -1185,7 +1189,7 @@ struct tcb *tcp;
- 	         
- 		tcp->u_nargs = sysent[tcp->scno].nargs;
- 		for (i = 0; i < tcp->u_nargs; i++)
--			tcp->u_arg[i] = *((&regs.r_o0) + i);
-+			tcp->u_arg[i] = *((&regs[REG_O0]) + i);
- 	}
- #else 
- 	{
-@@ -1399,10 +1403,10 @@ struct tcb *tcp;
- 
- #ifdef LINUX
- #ifdef SPARC
--	struct regs regs;
--	if (ptrace(PTRACE_GETREGS,tcp->pid,(char *)&regs,0) < 0)
-+	gregset_t regs;
-+	if (ptrace(PTRACE_GETREGS,tcp->pid,(char *)regs,0) < 0)
- 		return -1;
--	val = regs.r_o1;
-+	val = regs[REG_O1];
- #endif /* SPARC */
- #endif /* LINUX */
- 
---- strace-4.2/util.c.jj	Tue May 23 06:23:31 2000
-+++ strace-4.2/util.c	Wed May 24 10:19:30 2000
-@@ -44,7 +44,7 @@
- #include <link.h>
- #endif /* SUNOS4 */
- 
--#if defined(linux)
-+#if defined(linux) && !defined(SPARC)
- #include <linux/ptrace.h>
- #endif 
- 
---- strace-4.2/process.c.jj	Tue May 23 06:23:31 2000
-+++ strace-4.2/process.c	Wed May 24 10:20:33 2000
-@@ -49,7 +49,7 @@
- #include <machine/reg.h>
- #endif /* SUNOS4 */
- 
--#if HAVE_LINUX_PTRACE_H
-+#if HAVE_LINUX_PTRACE_H && !defined(SPARC)
+ #endif
+diff -urN strace-4.3.org/signal.c strace-4.3/signal.c
+--- strace-4.3.org/signal.c	Wed Apr  4 19:25:52 2001
++++ strace-4.3/signal.c	Wed Apr  4 21:07:52 2001
+@@ -51,7 +51,7 @@
+ #ifndef PTRACE_POKEUSR
+ # define PTRACE_POKEUSR PTRACE_POKEUSER
+ #endif
+-#elif defined(HAVE_LINUX_PTRACE_H)
++#elif defined(HAVE_LINUX_PTRACE_H) && !defined(SPARC)
  #undef PTRACE_SYSCALL
  #include <linux/ptrace.h>
- #endif 
---- strace-4.2/signal.c.jj	Tue May 23 06:23:31 2000
-+++ strace-4.2/signal.c	Wed May 24 11:02:15 2000
-@@ -43,7 +43,7 @@
- #include <sys/ucontext.h>
- #endif /* SVR4 */
- 
--#if HAVE_LINUX_PTRACE_H
-+#if HAVE_LINUX_PTRACE_H && !defined(SPARC)
- #undef PTRACE_SYSCALL
- #include <linux/ptrace.h>
- #endif 
-@@ -64,15 +64,14 @@
- # include <asm/ptrace_offsets.h>
- #endif /* !IA64 */
- 
--#ifdef HAVE_ASM_SIGCONTEXT_H
--#include <asm/sigcontext.h>
+ #endif
+@@ -80,7 +80,7 @@
+ #ifdef HAVE_ASM_SIGCONTEXT_H
  #ifdef SPARC
--#include <asm/reg.h>
  typedef struct {
 -	struct regs		si_regs;
-+	gregset_t		si_regs;
++    	gregset_t		si_regs;
  	int			si_mask;
  } m_siginfo_t;
- #endif
-+#if defined HAVE_ASM_SIGCONTEXT_H && !defined(SPARC)
-+#include <asm/sigcontext.h>
- #else /* !HAVE_ASM_SIGCONTEXT_H */
- #ifdef I386
- struct sigcontext_struct {
-@@ -841,16 +840,16 @@ struct tcb *tcp;
+ #else
+@@ -899,16 +899,16 @@
  #else
  #ifdef SPARC
  	long i1;
@@ -204,3 +51,134 @@
  		if(umove(tcp, i1, &si) < 0) {
  			perror("sigreturn: umove ");
  			return 0;
+diff -urN strace-4.3.org/syscall.c strace-4.3/syscall.c
+--- strace-4.3.org/syscall.c	Wed Apr  4 19:25:52 2001
++++ strace-4.3/syscall.c	Wed Apr  4 21:08:28 2001
+@@ -62,9 +62,11 @@
+ # define PTRACE_PEEKUSR PTRACE_PEEKUSER
+ #endif
+ #elif defined(HAVE_LINUX_PTRACE_H)
++#ifndef __sparc__
+ #undef PTRACE_SYSCALL
+ #include <linux/ptrace.h>
+ #endif
++#endif
+ 
+ #if defined(LINUX) && defined(IA64)
+ # include <asm/ptrace_offsets.h>
+@@ -635,7 +637,7 @@
+ 	static long r0;
+ 	static long a3;
+ #elif defined (SPARC)
+-	static struct regs regs;
++	static gregset_t regs;
+ 	static unsigned long trap;
+ #elif defined(MIPS)
+ 	static long a3;
+@@ -761,14 +763,14 @@
+ 	}
+ #elif defined (SPARC)
+ 	/* Everything we need is in the current register set. */
+-	if (ptrace(PTRACE_GETREGS,pid,(char *)&regs,0) < 0)
++	if (ptrace(PTRACE_GETREGS,pid,(char *)regs,0) < 0)
+ 		return -1;
+ 
+         /* If we are entering, then disassemble the syscall trap. */
+ 	if (!(tcp->flags & TCB_INSYSCALL)) {
+ 		/* Retrieve the syscall trap instruction. */
+ 		errno = 0;
+-		trap = ptrace(PTRACE_PEEKTEXT,pid,(char *)regs.r_pc,0);
++		trap = ptrace(PTRACE_PEEKTEXT,pid,(char *)regs[REG_PC],0);
+ 		if (errno)
+ 			return -1;
+ 
+@@ -804,7 +806,7 @@
+ 				tcp->flags &= ~TCB_WAITEXECVE;
+ 				return 0;
+ 			}
+-			fprintf(stderr,"syscall: unknown syscall trap %08x %08x\n", trap, regs.r_pc);
++			fprintf(stderr,"syscall: unknown syscall trap %08x %08x\n", trap, regs[REG_PC]);
+ 			return -1;
+ 		}
+ 
+@@ -812,10 +814,10 @@
+ 		if (trap == 0x91d02027)
+ 			scno = 156;
+ 		else
+-			scno = regs.r_g1;
++			scno = regs[REG_G1];
+ 		if (scno == 0) {
+-			scno = regs.r_o0;
+-			memmove (&regs.r_o0, &regs.r_o1, 7*sizeof(regs.r_o0));
++			scno = regs[REG_O0];
++			memmove (&regs[REG_O0], &regs[REG_O1], 7*sizeof(regs[REG_O0]));
+ 		}
+ 	}
+ #elif defined(HPPA)
+@@ -1067,12 +1069,12 @@
+ 		}
+ #else /* !ALPHA */
+ #ifdef SPARC
+-		if (regs.r_psr & PSR_C) {
++		if (regs[REG_PSR] & PSR_C) {
+ 			tcp->u_rval = -1;
+-			u_error = regs.r_o0;
++			u_error = regs[REG_O0];
+ 		}
+ 		else {
+-			tcp->u_rval = regs.r_o0;
++			tcp->u_rval = regs[REG_O0];
+ 			u_error = 0;
+ 		}
+ #else /* !SPARC */
+@@ -1109,12 +1111,12 @@
+ #ifdef SVR4
+ #ifdef SPARC
+ 		/* Judicious guessing goes a long way. */
+-		if (tcp->status.pr_reg[R_PSR] & 0x100000) {
++		if (tcp->status.pr_reg[REG_PSR] & 0x100000) {
+ 			tcp->u_rval = -1;
+-			u_error = tcp->status.pr_reg[R_O0];
++			u_error = tcp->status.pr_reg[REG_O0];
+ 		}
+ 		else {
+-			tcp->u_rval = tcp->status.pr_reg[R_O0];
++			tcp->u_rval = tcp->status.pr_reg[REG_O0];
+ 			u_error = 0;
+ 		}
+ #endif /* SPARC */
+@@ -1262,7 +1264,7 @@
+ 		else 
+      	        	tcp->u_nargs = MAX_ARGS;
+ 		for (i = 0; i < tcp->u_nargs; i++)
+-			tcp->u_arg[i] = *((&regs.r_o0) + i);
++			tcp->u_arg[i] = *((&regs[REG_O0]) + i);
+ 	}
+ #elif defined (HPPA)
+ 	{
+@@ -1715,10 +1717,10 @@
+ 
+ #ifdef LINUX
+ #ifdef SPARC
+-	struct regs regs;
+-	if (ptrace(PTRACE_GETREGS,tcp->pid,(char *)&regs,0) < 0)
++	gregset_t regs;
++	if (ptrace(PTRACE_GETREGS,tcp->pid,(char *)regs,0) < 0)
+ 		return -1;
+-	val = regs.r_o1;
++	val = regs[REG_O1];
+ #endif /* SPARC */
+ #endif /* LINUX */
+ 
+diff -urN strace-4.3.org/util.c strace-4.3/util.c
+--- strace-4.3.org/util.c	Wed Apr  4 19:25:52 2001
++++ strace-4.3/util.c	Wed Apr  4 21:07:52 2001
+@@ -44,7 +44,7 @@
+ #include <link.h>
+ #endif /* SUNOS4 */
+ 
+-#if defined(linux) && (__GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1))
++#if defined(linux) && (__GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1)) && !defined(SPARC)
+ #include <linux/ptrace.h>
+ #endif 
+ 

@@ -1,5 +1,6 @@
---- strace-4.1/linux/sparc/syscall.h.sparc	Sun Aug 29 19:15:08 1999
-+++ strace-4.1/linux/sparc/syscall.h	Sat Nov 27 13:32:14 1999
+diff -urN strace-4.3.org/linux/sparc/syscall.h strace-4.3/linux/sparc/syscall.h
+--- strace-4.3.org/linux/sparc/syscall.h	Wed Apr  4 19:25:52 2001
++++ strace-4.3/linux/sparc/syscall.h	Wed Apr  4 19:52:01 2001
 @@ -105,25 +105,45 @@
  
  /* 2.3.1 SystemV-compatible IPC */
@@ -49,8 +50,9 @@
  
  /* 2.4 processes */
  int	sys_ptrace();
---- strace-4.1/linux/sparc/syscall.h.2.sparc	Thu Feb 18 19:23:14 1999
-+++ strace-4.1/linux/sparc/syscall.h.2	Sat Nov 27 13:32:14 1999
+diff -urN strace-4.3.org/linux/sparc/syscall.h.2 strace-4.3/linux/sparc/syscall.h.2
+--- strace-4.3.org/linux/sparc/syscall.h.2	Wed Apr  4 19:25:52 2001
++++ strace-4.3/linux/sparc/syscall.h.2	Wed Apr  4 19:52:01 2001
 @@ -1,142 +0,0 @@
 -/*
 - * Copyright (c) 1993 Branko Lankester <branko@hacktic.nl>
@@ -194,9 +196,10 @@
 -int sys_syscall_writev();
 -
 -#include "syscall1.h"
---- strace-4.1/linux/sparc/syscallent.h.sparc	Sat Nov 27 13:54:14 1999
-+++ strace-4.1/linux/sparc/syscallent.h	Sat Nov 27 13:57:34 1999
-@@ -268,22 +268,24 @@
+diff -urN strace-4.3.org/linux/sparc/syscallent.h strace-4.3/linux/sparc/syscallent.h
+--- strace-4.3.org/linux/sparc/syscallent.h	Wed Apr  4 19:25:52 2001
++++ strace-4.3/linux/sparc/syscallent.h	Wed Apr  4 19:52:01 2001
+@@ -269,22 +269,24 @@
  	{ 5,	0,	printargs,	"SYS_264" },		/* 264 */
  	{ 5,	0,	printargs,	"SYS_265" },		/* 265 */
  	{ 5,	0,	printargs,	"SYS_266" },		/* 266 */
@@ -236,11 +239,12 @@
  	{ 5,	0,	printargs,	"SYS_283" },		/* 283 */
  	{ 5,	0,	printargs,	"SYS_284" },		/* 284 */
  	{ 5,	0,	printargs,	"SYS_285" },		/* 285 */
---- strace-4.1/syscall.c.sparc	Sun Oct 31 16:15:38 1999
-+++ strace-4.1/syscall.c	Sat Nov 27 13:58:57 1999
-@@ -408,48 +408,6 @@
+diff -urN strace-4.3.org/syscall.c strace-4.3/syscall.c
+--- strace-4.3.org/syscall.c	Wed Apr  4 19:25:52 2001
++++ strace-4.3/syscall.c	Wed Apr  4 19:57:33 2001
+@@ -444,48 +444,6 @@
  
- #if !(defined(LINUX) && ( defined(ALPHA) || defined(MIPS) ))
+ #if !(defined(LINUX) && ( defined(ALPHA) || defined(IA64) || defined(MIPS) ))
  
 -const int socket_map [] = {
 -	       /* SYS_SOCKET      */ 97,
@@ -287,29 +291,28 @@
  static void
  decode_subcall(tcp, subcall, nsubcalls, style)
  struct tcb *tcp;
-@@ -1214,21 +1172,18 @@
- 	switch (tcp->scno) {
- #endif
+@@ -1564,21 +1522,18 @@
+ 
+ 	switch (tcp->scno + NR_SYSCALL_BASE) {
  #ifdef LINUX
--#if !defined (ALPHA) && !defined(SPARC) && !defined(MIPS)
-+#if !defined (ALPHA) && !defined(MIPS)
+-#if !defined (ALPHA) && !defined(IA64) && !defined(SPARC) && !defined(MIPS) && !defined(HPPA)
++#if !defined (ALPHA) && !defined(IA64) && !defined(MIPS) && !defined(HPPA)
  	case SYS_socketcall:
  		decode_subcall(tcp, SYS_socket_subcall,
  			SYS_socket_nsubcalls, deref_style);
  		break;
-+#endif /* !ALPHA && !MIPS */
-+#if !defined (ALPHA) && !defined(SPARC) && !defined(MIPS)
++#endif /* !ALPHA && !IA64 && !MIPS */
++#if !defined (ALPHA) && !defined(IA64) && !defined(SPARC) && !defined(MIPS) && !defined(HPPA)	
  	case SYS_ipc:
  		decode_subcall(tcp, SYS_ipc_subcall,
  			SYS_ipc_nsubcalls, shift_style);
  		break;
--#endif /* !ALPHA && !SPARC */
+ #endif /* !ALPHA && !IA64 && !MIPS && !SPARC */
 -#ifdef SPARC
 -	case SYS_socketcall:
 -		sparc_socket_decode (tcp);
 -		break;
 -#endif
-+#endif /* !ALPHA && !SPARC && !MIPS */
  #endif /* LINUX */
  #ifdef SVR4
  #ifdef SYS_pgrpsys_subcall
