@@ -5,18 +5,15 @@ Summary(pl):	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony pro
 Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:		strace
 Version:	4.4
-Release:	3
+Release:	4
 License:	distributable
 Group:		Development/Debuggers
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/strace/%{name}_%{version}-1.tar.gz
 Source1:	%{name}.1.pl
-Patch0:		%{name}-sparc.patch
-Patch1:		%{name}-sparc2.patch
-Patch2:		%{name}-sparc3.patch
-Patch3:		%{name}-newsysc.patch
-Patch4:		%{name}-getdents64.patch
-Patch5:		%{name}-acfix.patch
-Patch6:		%{name}-threads.patch
+Patch0:		%{name}-newsysc.patch
+Patch1:		%{name}-getdents64.patch
+Patch2:		%{name}-acfix.patch
+Patch3:		%{name}-threads.patch
 URL:		http://www.liacs.nl/~wichert/strace/
 BuildRequires:	autoconf
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -50,12 +47,8 @@ birlikte döker.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-# Temporary not used (problems on sparc/2.2?)
-#%patch2 -p1
+%patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 %build
 %{__autoconf}
