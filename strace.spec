@@ -10,14 +10,15 @@ License:	distributable
 Group:		Development/Debuggers
 Group(pl):	Programowanie/Odpluskwiacze
 Source0:	http://www.wi.leidenuniv.nl/~wichert/strace/%{name}-%{version}.tar.gz
-Patch0:		%{name}-sparc.patch
-Patch1:		%{name}-ia64.patch
-Patch2:		%{name}-stat64.patch
-Patch3:		%{name}-sparc2.patch
-Patch4:		%{name}-putmsg.patch
-Patch5:		%{name}-newsysc.patch
+#Patch0:		%{name}-sparc.patch
+#Patch1:		%{name}-ia64.patch
+#Patch2:		%{name}-stat64.patch
+#Patch3:		%{name}-sparc2.patch
+#Patch4:		%{name}-putmsg.patch
+#Patch5:		%{name}-newsysc.patch
 Patch6:		%{name}-do_not_check_for_libsnl.patch
 Patch7:		%{name}-linux.patch
+Patch8:		http://www.misiek.eu.org/ipv6/strace-4.2-ipv6-20000919.patch.gz
 BuildRequires:	autoconf
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -48,14 +49,15 @@ birlikte döker.
 
 %prep
 %setup  -q 
-%patch0 -p1 
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
+#%patch0 -p1 
+#%patch1 -p1
+#%patch2 -p1
+#%patch3 -p1
+#%patch4 -p1
+#%patch5 -p1
+#%patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %build
 autoconf
