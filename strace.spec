@@ -9,7 +9,7 @@ Summary(tr):	гalЩЧan bir sЭrecin yaptЩПЩ sistem ГaПrЩlarЩnЩ listeler
 Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним процесом
 Name:		strace
 Version:	4.5.1
-Release:	1
+Release:	2
 License:	distributable
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
