@@ -4,14 +4,13 @@ Summary(fr): 	affiche l'appel système strace d'un processus en exécution.
 Summary(pl): 	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony proces
 Summary(tr): 	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:        	strace
-Version:     	3.99.1
+Version:     	4.0
 Release:     	1
 Copyright:   	distributable
 Group:       	Development/Debuggers
 Group(pl):   	Programowanie/Odpluskwiacze
-Source:      	ftp://ftp.std.com/pub/jrs/%{name}-%{version}.tar.gz
-Patch0:      	%{name}-debian.patch
-Patch1:      	%{name}-fhs.patch
+Source:      	http://www.wi.leidenuniv.nl/~wichert/strace/%{name}-%{version}.tar.gz
+Patch:      	%{name}-fhs.patch
 BuildRoot:	/tmp/%{name}-%{version}-root
 
 %description
@@ -38,9 +37,8 @@ strace bir programýn çalýþtýðý sürece yaptýðý bütün sistem çaðrýlarýný,
 gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 
 %prep
-%setup  -q -n %{name}
-%patch0 -p1 
-%patch1 -p1
+%setup  -q 
+%patch -p1 
 
 %build
 aclocal && autoconf && %configure
