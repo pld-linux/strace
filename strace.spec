@@ -4,7 +4,7 @@ Summary(fr): 	affiche l'appel système strace d'un processus en exécution.
 Summary(pl): 	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony proces
 Summary(tr): 	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:        	strace
-Version:     	4.1
+Version:     	4.2
 Release:     	1
 Copyright:   	distributable
 Group:       	Development/Debuggers
@@ -42,7 +42,7 @@ gönderdiði parametreler ve geri dönüþ deðerleriyle birlikte döker.
 %setup  -q 
 %patch0 -p1 
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 
 %build
 autoconf && autoheader
