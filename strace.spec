@@ -65,25 +65,3 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_bindir}/strace
 %{_mandir}/man1/*
-
-%changelog
-* Sat Apr 24 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [3.1-18]
-- added patches for arm arch and clone() (from rawhide),
-- removed obsolete AC_C_CROSS macro from configure.in
-  (strace-AC_C_CROSS.patch).
-
-* Thu Apr 22 1999 Artur Frysiak <wiget@pld.org.pl>
-  [3.1-14]
-- removed man group from man pages
-- compiled on rpm 3
-
-* Wed Feb 17 1999 Micha³ Kuratczyk <kura@wroclaw.art.pl>
-  [3.1-13]
-- added Group(pl)
-- added gzipping man page
-
-* Thu Oct 08 1998 Marcin Korzonek <mkorz@shadow.eu.org>
-  [3.1-12]
-- added translation pl.
-- build against GNU libc-2.1
