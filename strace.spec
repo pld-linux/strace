@@ -6,8 +6,9 @@ Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:		strace
 Version:	4.2
 Release:	10
-License:	distributable
+License:	Distributable
 Group:		Development/Debuggers
+Group(de):	Entwicklung/Debugger
 Group(pl):	Programowanie/Odpluskwiacze
 Source0:	http://www.wi.leidenuniv.nl/~wichert/strace/%{name}-%{version}.tar.gz
 Patch0:		%{name}-sparc.patch
@@ -18,7 +19,7 @@ Patch4:		%{name}-putmsg.patch
 Patch5:		%{name}-newsysc.patch
 Patch6:		%{name}-do_not_check_for_libsnl.patch
 Patch7:		%{name}-linux.patch
-Patch8:		http://www.misiek.eu.org/ipv6/strace-4.2-ipv6-20001225.patch.gz
+Patch8:		http://www.misiek.eu.org/ipv6/%{name}-4.2-ipv6-20001225.patch.gz
 Patch9:		%{name}-sparc3.patch
 Patch10:	%{name}-getdents64.patch
 BuildRequires:	autoconf
@@ -67,11 +68,10 @@ birlikte döker.
 autoconf
 autoheader
 %configure
-%{__make} LDFLAGS="-s"
+%{__make} 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 
 %{__make} install \
@@ -79,14 +79,13 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
 	bindir=$RPM_BUILD_ROOT%{_bindir}
 
-gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* ChangeLog README-linux
+gzip -9nf ChangeLog README-linux
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc {ChangeLog,README-linux}.gz
-
+%doc *.gz
 %attr(755,root,root) %{_bindir}/strace
 %{_mandir}/man1/*
