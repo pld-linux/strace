@@ -1,6 +1,6 @@
-diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscallent.h
---- strace-4.4.orig/linux/alpha/syscallent.h	Mon May  1 03:54:00 2000
-+++ strace-4.4/linux/alpha/syscallent.h	Fri Oct 19 15:28:02 2001
+diff -Nur strace-4.5.1.orig/linux/alpha/syscallent.h strace-4.5.1/linux/alpha/syscallent.h
+--- strace-4.5.1.orig/linux/alpha/syscallent.h	2003-07-09 11:47:59.000000000 +0200
++++ strace-4.5.1/linux/alpha/syscallent.h	2003-11-18 20:53:22.722489584 +0100
 @@ -103,7 +103,7 @@
  	{ 5,	0,	printargs,		"osf_old_vadvise"	}, /* 72, not implemented */
  	{ 2,	0,	sys_munmap,		"munmap"		}, /* 73 */
@@ -29,41 +29,9 @@ diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscal
  	{ 4,	0,	sys_getdents64,		"getdents64"		}, /* 377 */
  	{ 0,	0,	printargs,		"gettid"		}, /* 378 */
  	{ 4,	0,	sys_readahead,		"readahead"		}, /* 379 */
-diff -Nur strace-4.4.orig/linux/dummy.h strace-4.4/linux/dummy.h
---- strace-4.4.orig/linux/dummy.h	Mon May  1 03:54:00 2000
-+++ strace-4.4/linux/dummy.h	Fri Oct 19 15:28:02 2001
-@@ -78,6 +78,12 @@
- #define	sys_vhangup		printargs
- #define	sys_idle		printargs
- #define	sys_getpgid		printargs
-+#define sys_getuid32            printargs
-+#define sys_getgid32            printargs
-+#define sys_geteuid32           printargs
-+#define sys_getegid32           printargs
-+#define sys_setfsuid32          printargs
-+#define sys_setfsgid32          printargs
- #define sys_munlockall		printargs
- 
- /* subcall entry points */
-diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
---- strace-4.4.orig/linux/sparc/syscall.h	Fri Oct 19 15:27:34 2001
-+++ strace-4.4/linux/sparc/syscall.h	Fri Oct 19 15:28:02 2001
-@@ -42,6 +42,13 @@
- int	sys_setsid(), sys_setpgid();
- int	sys_uname(), sys_sysinfo();
- 
-+/* 32bit uids */
-+int sys_getuid32(), sys_getgid32(), sys_geteuid32(), sys_getegid32();
-+int sys_setreuid32(), sys_setregid32(), sys_getgroups32(), sys_setgroups32();
-+int sys_setresuid32(), sys_getresuid32(), sys_setresgid32();
-+int sys_getresgid32(), sys_setuid32(), sys_setgid32();
-+int sys_setfsuid32(), sys_setfsgid32();
-+
- /* 1.2 memory management */
- int	sys_brk(),sys_sbrk(),sys_sstk();
- int	sys_getpagesize(),sys_mmap(),sys_mctl(),sys_munmap(),sys_mprotect(),sys_mincore(), sys_mremap();
---- strace-4.4.94/linux/sparc/syscallent.h.orig	Tue Jan 14 23:29:43 2003
-+++ strace-4.4.94/linux/sparc/syscallent.h	Fri Apr  4 09:03:24 2003
+diff -Nur strace-4.5.1.orig/linux/sparc/syscallent.h strace-4.5.1/linux/sparc/syscallent.h
+--- strace-4.5.1.orig/linux/sparc/syscallent.h	2003-08-21 12:05:40.000000000 +0200
++++ strace-4.5.1/linux/sparc/syscallent.h	2003-11-18 21:41:54.142886408 +0100
 @@ -29,11 +29,11 @@
  	{ 2,	TS,	sys_sigaltstack,"sigaltstack" },	/* 28 */
  	{ 0,	TS,	sys_pause,	"pause" },		/* 29 */
@@ -84,7 +52,7 @@ diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
  	{ 0,	0,	sys_pipe,	"pipe" },		/* 42 */
  	{ 1,	0,	sys_times,	"times" },		/* 43 */
 -	{ 4,	0,	sys_profil,	"profil" },		/* 44 */
-+	{ 0,	0,	sys_getuid32,	"getuid32" },		/* 44 */
++	{ 0,	0,	sys_getuid,	"getuid32" },		/* 44 */
  	{ 2,	TF,	sys_umount2,	"umount" },		/* 45 */
  	{ 1,	0,	sys_setgid,	"setgid" },		/* 46 */
  	{ 0,	0,	sys_getgid,	"getgid" },		/* 47 */
@@ -93,7 +61,7 @@ diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
  	{ 1,	0,	sys_acct,	"acct" },		/* 51 */
  	{ 0,	0,	printargs,	"SYS_52" },		/* 52 */
 -	{ 4,	0,	sys_mctl,	"mctl" },		/* 53 */
-+	{ 0,	0,	sys_getgid32,	"getgid32" },		/* 53 */
++	{ 0,	0,	sys_getgid,	"getgid32" },		/* 53 */
  	{ 3,	0,	sys_ioctl,	"ioctl" },		/* 54 */
  	{ 2,	0,	sys_reboot,	"reboot" },		/* 55 */
 -	{ 3,	0,	printargs,	"SYS_56" },		/* 56 */
@@ -101,50 +69,47 @@ diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
  	{ 2,	TF,	sys_symlink,	"symlink" },		/* 57 */
  	{ 3,	TF,	sys_readlink,	"readlink" },		/* 58 */
  	{ 3,	TF|TP,	sys_execve,	"execve" },		/* 59 */
-@@ -67,32 +67,31 @@
+@@ -67,10 +67,10 @@
  	{ 0,	TP,	sys_vfork,	"vfork" },		/* 66 */
  	{ 5,	TF,	sys_pread,	"pread" },		/* 67 */
  	{ 5,	TF,	sys_pwrite,	"pwrite" },		/* 68 */
 -	{ 1,    0,	sys_sbrk,	"sbrk" },		/* 69 */
 -	{ 1,	0,	printargs,	"sstk" },		/* 70 */
-+	{ 0,    0,      sys_geteuid32,  "geteuid32" },          /* 69 */
-+	{ 0,    0,      sys_getegid32,  "getegid32" },          /* 70 */
++	{ 0,    0,	sys_geteuid,	"geteuid32" },		/* 69 */
++	{ 0,	0,	sys_getegid,	"getegid32" },		/* 70 */
  	{ 6,	0,	sys_mmap,	"mmap" },		/* 71 */
 -	{ 1,	0,	printargs,	"vadvise" },		/* 72 */
-+	{ 2,    0,      sys_setreuid32, "setreuid32" },         /* 72 */
++	{ 2,	0,	sys_setreuid,	"setreuid32" },		/* 72 */
  	{ 2,	0,	sys_munmap,	"munmap" },		/* 73 */
  	{ 3,	0,	sys_mprotect,	"mprotect" },		/* 74 */
  	{ 3,	0,	sys_madvise,	"madvise" },		/* 75 */
- 	{ 1,	0,	sys_vhangup,	"vhangup" },		/* 76 */
--	{ 2,	TF,	sys_truncate64,	"truncate64" },		/* 77 */
-+	{ 2,    TF,     sys_truncate64, "truncate64" },         /* 77 */
- 	{ 3,	0,	sys_mincore,	"mincore" },		/* 78 */
+@@ -80,19 +80,19 @@
  	{ 2,	0,	sys_getgroups,	"getgroups" },		/* 79 */
  	{ 2,	0,	sys_setgroups,	"setgroups" },		/* 80 */
  	{ 1,	0,	sys_getpgrp,	"getpgrp" },		/* 81 */
 -	{ 2,	0,	sys_setpgrp,	"setpgrp" },		/* 82 */
-+	{ 2,    0,      sys_setgroups32,"setgroups32" },        /* 82 */
++	{ 2,	0,	sys_setgroups32,"setgroups32" },	/* 82 */
  	{ 3,	0,	sys_setitimer,	"setitimer" },		/* 83 */
 -	{ 0,	0,	printargs,	"SYS_84" },		/* 84 */
-+	{ 2,    0,      sys_ftruncate64,"ftruncate64" },        /* 84 */
++	{ 2,	0,	sys_ftruncate64,"ftruncate64" },	/* 84 */
  	{ 1,	TF,	sys_swapon,	"swapon" },		/* 85 */
  	{ 2,	0,	sys_getitimer,	"getitimer" },		/* 86 */
 -	{ 2,	0,	sys_gethostname,"gethostname" },	/* 87 */
--	{ 2,	0,	sys_sethostname,"sethostname" },	 /* 88 */
++	{ 1,	0,	sys_setuid,	"setuid32" },		/* 87 */
+ 	{ 2,	0,	sys_sethostname,"sethostname" },	 /* 88 */
 -	{ 0,	0,	sys_getdtablesize,"getdtablesize" },	 /* 89 */
-+	{ 1,    0,      sys_setuid32,   "setuid32" },           /* 87 */	
-+	{ 1,    0,      sys_setgid32,   "setgid32" },           /* 89 */	
++	{ 1,	0,	sys_getgid,	"getgid32" },		 /* 89 */
  	{ 2,	0,	sys_dup2,	"dup2" },		/* 90 */
 -	{ 2,	0,	printargs,	"getdopt" },		/* 91 */
-+	{ 1,    0,      sys_setfsuid32, "setfsuid32" },         /* 91 */
++	{ 1,	0,	sys_setfsuid,	"setfduid32" },		/* 91 */
  	{ 3,	0,	sys_fcntl,	"fcntl" },		/* 92 */
  	{ 5,	0,	sys_oldselect,	"select" },		/* 93 */
 -	{ 2,	0,	printargs,	"setdopt" },		/* 94 */
-+	{ 1,    0,      sys_setfsgid32, "setfsgid32" },         /* 94 */
++	{ 1,	0,	sys_setfsgid,	"setfsgid32" },		/* 94 */
  	{ 1,	0,	sys_fsync,	"fsync" },		/* 95 */
  	{ 3,	0,	sys_setpriority,"setpriority" },	/* 96 */
  	{ 3,	TN,	sys_socket,	"socket" },		/* 97 */
-@@ -106,14 +105,14 @@
+@@ -106,14 +106,14 @@
  	{ 4,	TS,	sys_rt_sigtimedwait,"rt_sigtimedwait" },/* 105 */
  	{ 3,	TS,	sys_rt_sigqueueinfo,"rt_sigqueueinfo" },/* 106 */
  	{ 2,	TS,	sys_rt_sigsuspend,"rt_sigsuspend" },	/* 107 */
@@ -152,313 +117,27 @@ diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
 -	{ 1,    TS,	sys_sigblock,	"sigblock" },		/* 109 */
 -	{ 1,	TS,	sys_sigsetmask,	"sigsetmask" },		/* 110 */
 -	{ 1,	TS,	printargs,	"sigpause" },		/* 111 */
-+	{ 3,	0,	sys_setresuid32,"setresuid32" },	/* 108 */
-+	{ 3,    0,	sys_getresuid32,"getresuid32" },	/* 109 */
-+	{ 3,	0,	sys_setresgid32,"setresgid32" },	/* 110 */
-+	{ 3,	0,	sys_getresgid32,"getresgid32" },	/* 111 */
++	{ 3,	0,	sys_setresuid,	"setresuid32" },	/* 108 */
++	{ 3,    0,	sys_getresuid,	"getresuid32" },	/* 109 */
++	{ 3,	0,	sys_setresgid,	"setresgid32" },	/* 110 */
++	{ 3,	0,	sys_getresgid,	"getresgid32" },	/* 111 */
  	{ 2,	TS,	printargs,	"sigstack" },		/* 112 */
  	{ 3,	TN,	sys_recvmsg,	"recvmsg" },		/* 113 */
  	{ 3,	TN,	sys_sendmsg,	"sendmsg" },		/* 114 */
 -	{ 3,	0,	printargs,	"vtrace" },		/* 115 */
-+	{ 3,	0,	sys_getgroups32,"getgroups32" },	/* 115 */
++	{ 2,	0,	getgroups32,	"getgroups32" },	/* 115 */
  	{ 2,	0,	sys_gettimeofday,"gettimeofday" },	/* 116 */
  	{ 2,	0,	sys_getrusage,	"getrusage" },		/* 117 */
  	{ 5,	TN,	sys_getsockopt,	"getsockopt" },		/* 118 */
-diff -Nur strace-4.4.orig/linux/syscall.h strace-4.4/linux/syscall.h
---- strace-4.4.orig/linux/syscall.h	Sun Apr  8 21:14:05 2001
-+++ strace-4.4/linux/syscall.h	Fri Oct 19 15:28:02 2001
-@@ -84,6 +84,12 @@
- int sys_sendfile(), sys_old_mmap(), sys_stat64(), sys_lstat64(), sys_fstat64();
- int sys_truncate64(), sys_ftruncate64(), sys_pivotroot();
+diff -Nur strace-4.5.1.orig/linux/syscallent.h strace-4.5.1/linux/syscallent.h
+--- strace-4.5.1.orig/linux/syscallent.h	2003-11-13 23:32:25.000000000 +0100
++++ strace-4.5.1/linux/syscallent.h	2003-11-18 21:43:16.371385776 +0100
+@@ -248,7 +248,7 @@
  
-+/* 32bit uids */
-+int sys_getuid32(), sys_getgid32(), sys_geteuid32(), sys_getegid32();
-+int sys_setreuid32(), sys_setregid32(), sys_getgroups32(), sys_setgroups32();
-+int sys_setresuid32(), sys_getresuid32(), sys_setresgid32();
-+int sys_getresgid32(), sys_setuid32(), sys_setgid32();
-+int sys_setfsuid32(), sys_setfsgid32();
- 
- /* sys_socketcall subcalls */
- 
-diff -Nur strace-4.4.orig/process.c strace-4.4/process.c
---- strace-4.4.orig/process.c	Fri Oct 19 15:27:34 2001
-+++ strace-4.4/process.c	Fri Oct 19 15:28:02 2001
-@@ -884,6 +884,80 @@
- 	return 0;
- }
- 
-+int
-+sys_setuid32(tcp)
-+struct tcb *tcp;
-+{
-+	if (entering(tcp)) {
-+		tprintf("%u", (__kernel_uid32_t) tcp->u_arg[0]);
-+	}
-+	return 0;
-+}
-+
-+int
-+sys_setgid32(tcp)
-+struct tcb *tcp;
-+{
-+	if (entering(tcp)) {
-+		tprintf("%u", (__kernel_gid32_t) tcp->u_arg[0]);
-+	}
-+	return 0;
-+}
-+
-+int
-+sys_getresuid32(tcp)
-+    struct tcb *tcp;
-+{
-+	if (exiting(tcp)) {
-+		__kernel_uid32_t uid;
-+		if (syserror(tcp))
-+			tprintf("%#lx, %#lx, %#lx", tcp->u_arg[0],
-+				tcp->u_arg[1], tcp->u_arg[2]);
-+		else {
-+			if (umove(tcp, tcp->u_arg[0], &uid) < 0)
-+				tprintf("%#lx, ", tcp->u_arg[0]);
-+			else
-+				tprintf("ruid %lu, ", (unsigned long) uid);
-+			if (umove(tcp, tcp->u_arg[0], &uid) < 0)
-+				tprintf("%#lx, ", tcp->u_arg[0]);
-+			else
-+				tprintf("euid %lu, ", (unsigned long) uid);
-+			if (umove(tcp, tcp->u_arg[0], &uid) < 0)
-+				tprintf("%#lx", tcp->u_arg[0]);
-+			else
-+				tprintf("suid %lu", (unsigned long) uid);
-+		}
-+	}
-+	return 0;
-+}
-+
-+int
-+sys_getresgid32(tcp)
-+struct tcb *tcp;
-+{
-+	if (exiting(tcp)) {
-+		__kernel_gid32_t gid;
-+		if (syserror(tcp))
-+			tprintf("%#lx, %#lx, %#lx", tcp->u_arg[0],
-+				tcp->u_arg[1], tcp->u_arg[2]);
-+		else {
-+			if (umove(tcp, tcp->u_arg[0], &gid) < 0)
-+				tprintf("%#lx, ", tcp->u_arg[0]);
-+			else
-+				tprintf("rgid %lu, ", (unsigned long) gid);
-+			if (umove(tcp, tcp->u_arg[0], &gid) < 0)
-+				tprintf("%#lx, ", tcp->u_arg[0]);
-+			else
-+				tprintf("egid %lu, ", (unsigned long) gid);
-+			if (umove(tcp, tcp->u_arg[0], &gid) < 0)
-+				tprintf("%#lx", tcp->u_arg[0]);
-+			else
-+				tprintf("sgid %lu", (unsigned long) gid);
-+		}
-+	}
-+	return 0;
-+}
-+
- #endif /* LINUX */
- 
- int
-@@ -912,6 +986,30 @@
- 
- #if defined(LINUX) || defined(FREEBSD)
- int
-+sys_setreuid32(tcp)
-+struct tcb *tcp;
-+{
-+	if (entering(tcp)) {
-+		tprintf("%lu, %lu",
-+			(unsigned long) (__kernel_uid32_t) tcp->u_arg[0],
-+			(unsigned long) (__kernel_uid32_t) tcp->u_arg[1]);
-+	}
-+	return 0;
-+}
-+
-+int
-+sys_setregid32(tcp)
-+struct tcb *tcp;
-+{
-+	if (entering(tcp)) {
-+		tprintf("%lu, %lu",
-+			(unsigned long) (__kernel_gid32_t) tcp->u_arg[0],
-+			(unsigned long) (__kernel_gid32_t) tcp->u_arg[1]);
-+	}
-+	return 0;
-+}
-+
-+int
- sys_setresuid(tcp)
-      struct tcb *tcp;
- {
-@@ -929,9 +1027,35 @@
- {
- 	if (entering(tcp)) {
- 		tprintf("rgid %u, egid %u, sgid %u",
--				(uid_t) tcp->u_arg[0],
--				(uid_t) tcp->u_arg[1],
--				(uid_t) tcp->u_arg[2]);
-+				(gid_t) tcp->u_arg[0],
-+				(gid_t) tcp->u_arg[1],
-+				(gid_t) tcp->u_arg[2]);
-+	}
-+	return 0;
-+}
-+
-+int
-+sys_setresuid32(tcp)
-+     struct tcb *tcp;
-+{
-+	if (entering(tcp)) {
-+		tprintf("ruid %u, euid %u, suid %u",
-+				(__kernel_uid32_t) tcp->u_arg[0],
-+				(__kernel_uid32_t) tcp->u_arg[1],
-+				(__kernel_uid32_t) tcp->u_arg[2]);
-+	}
-+	return 0;
-+}
-+
-+int
-+sys_setresgid32(tcp)
-+     struct tcb *tcp;
-+{
-+	if (entering(tcp)) {
-+		tprintf("rgid %u, egid %u, sgid %u",
-+				(__kernel_gid32_t) tcp->u_arg[0],
-+				(__kernel_gid32_t) tcp->u_arg[1],
-+				(__kernel_gid32_t) tcp->u_arg[2]);
- 	}
- 	return 0;
- }
-@@ -1014,6 +1138,84 @@
- 	return 0;
- }
- 
-+#ifdef LINUX
-+int
-+sys_setgroups32(tcp)
-+struct tcb *tcp;
-+{
-+	int i, len;
-+	__kernel_gid32_t *gidset;
-+
-+	if (entering(tcp)) {
-+		len = tcp->u_arg[0];
-+		tprintf("%u, ", len);
-+		if (len <= 0) {
-+			tprintf("[]");
-+			return 0;
-+		}
-+		gidset = (__kernel_gid32_t *) malloc(len * sizeof(GETGROUPS_T));
-+		if (gidset == NULL) {
-+			fprintf(stderr, "sys_setgroups: out of memory\n");
-+			return -1;
-+		}
-+		if (!verbose(tcp))
-+			tprintf("%#lx", tcp->u_arg[1]);
-+		else if (umoven(tcp, tcp->u_arg[1],
-+		    len * sizeof(__kernel_gid32_t), (char *) gidset) < 0)
-+			tprintf("[?]");
-+		else {
-+			tprintf("[");
-+			for (i = 0; i < len; i++)
-+				tprintf("%s%lu", i ? ", " : "",
-+					(unsigned long) gidset[i]);
-+			tprintf("]");
-+		}
-+		free((char *) gidset);
-+	}
-+	return 0;
-+}
-+
-+int
-+sys_getgroups32(tcp)
-+struct tcb *tcp;
-+{
-+	int i, len;
-+	__kernel_gid32_t *gidset;
-+
-+	if (entering(tcp)) {
-+		len = tcp->u_arg[0];
-+		tprintf("%u, ", len);
-+	} else {
-+		len = tcp->u_rval;
-+		if (len <= 0) {
-+			tprintf("[]");
-+			return 0;
-+		}
-+		gidset = (__kernel_gid32_t *) malloc(len * sizeof(GETGROUPS_T));
-+		if (gidset == NULL) {
-+			fprintf(stderr, "sys_getgroups: out of memory\n");
-+			return -1;
-+		}
-+		if (!tcp->u_arg[1])
-+			tprintf("NULL");
-+		else if (!verbose(tcp) || tcp->u_arg[0] == 0)
-+			tprintf("%#lx", tcp->u_arg[1]);
-+		else if (umoven(tcp, tcp->u_arg[1],
-+		    len * sizeof(GETGROUPS_T), (char *) gidset) < 0)
-+			tprintf("[?]");
-+		else {
-+			tprintf("[");
-+			for (i = 0; i < len; i++)
-+				tprintf("%s%lu", i ? ", " : "",
-+					(unsigned long) gidset[i]);
-+			tprintf("]");
-+		}
-+		free((char *)gidset);
-+	}
-+	return 0;
-+}
-+#endif
-+
- int
- sys_setpgrp(tcp)
- struct tcb *tcp;
---- strace-4.4.91/linux/syscallent.h.orig	Tue Jan 14 20:02:35 2003
-+++ strace-4.4.91/linux/syscallent.h	Tue Jan 14 21:03:13 2003
-@@ -246,23 +246,23 @@
- 	{ 3,	TF,	sys_chown,		"lchown32"	}, /* 198 */
- 	{ 0,	0,	sys_getuid,		"getuid32"	}, /* 199 */
- 
--	{ 0,	0,	printargs,		"getgid32"	}, /* 200 */
--	{ 0,	0,	printargs,		"geteuid32"	}, /* 201 */
--	{ 0,	0,	printargs,		"getegid32"	}, /* 202 */
--	{ 2,	0,	printargs,		"setreuid32"	}, /* 203 */
--	{ 2,	0,	printargs,		"setregid32"	}, /* 204 */
--	{ 2,	0,	printargs,		"getgroups32"	}, /* 205 */
--	{ 2,	0,	printargs,		"setgroups32"	}, /* 206 */
--	{ 3,	0,	printargs,		"fchown32"	}, /* 207 */
--	{ 3,	0,	printargs,		"setresuid32"	}, /* 208 */
--	{ 3,	0,	printargs,		"getresuid32"	}, /* 209 */
--	{ 3,	0,	printargs,		"setresgid32"	}, /* 210 */
--	{ 3,	0,	printargs,		"getresgid32"	}, /* 211 */
--	{ 3,	TF,	printargs,		"chown32"	}, /* 212 */
--	{ 1,	0,	printargs,		"setuid32"	}, /* 213 */
--	{ 1,	0,	printargs,		"setgid32"	}, /* 214 */
--	{ 1,	0,	printargs,		"setfsuid32"	}, /* 215 */
--	{ 1,	0,	printargs,		"setfsgid32"	}, /* 216 */
-+	{ 0,	0,	sys_getgid32,		"getgid32"	}, /* 200 */
-+	{ 0,	0,	sys_geteuid32,		"geteuid32"	}, /* 201 */
-+	{ 0,	0,	sys_getegid32,		"getegid32"	}, /* 202 */
-+	{ 2,	0,	sys_setreuid32,		"setreuid32"	}, /* 203 */
-+	{ 2,	0,	sys_setregid32,		"setregid32"	}, /* 204 */
-+	{ 2,	0,	sys_getgroups32,	"getgroups32"	}, /* 205 */
-+	{ 2,	0,	sys_setgroups32,	"setgroups32"	}, /* 206 */
-+	{ 3,	0,	sys_fchown,		"fchown32"	}, /* 207 */
-+	{ 3,	0,	sys_setresuid32,	"setresuid32"	}, /* 208 */
-+	{ 3,	0,	sys_getresuid32,	"getresuid32"	}, /* 209 */
-+	{ 3,	0,	sys_setresgid32,	"setresgid32"	}, /* 210 */
-+	{ 3,	0,	sys_getresgid32,	"getresgid32"	}, /* 211 */
-+	{ 3,	TF,	sys_chown,		"chown32"	}, /* 212 */
-+	{ 1,	0,	sys_setuid32,		"setuid32"	}, /* 213 */
-+	{ 1,	0,	sys_setgid32,		"setgid32"	}, /* 214 */
-+	{ 1,	0,	sys_setfsuid32,		"setfsuid32"	}, /* 215 */
-+	{ 1,	0,	sys_setfsgid32,		"setfsgid32"	}, /* 216 */
- 	{ 2,	TF,	sys_pivotroot,		"pivot_root"	}, /* 217 */
- 	{ 3,	0,	printargs,		"mincore"	}, /* 218 */
- 	{ 3,	0,	sys_madvise,		"madvise"	}, /* 219 */
+ 	{ 0,	0,	sys_getgid,		"getgid32"	}, /* 200 */
+ 	{ 0,	0,	sys_geteuid,		"geteuid32"	}, /* 201 */
+-	{ 0,	0,	sys_geteuid,		"getegid32"	}, /* 202 */
++	{ 0,	0,	sys_getegid,		"getegid32"	}, /* 202 */
+ 	{ 2,	0,	sys_setreuid,		"setreuid32"	}, /* 203 */
+ 	{ 2,	0,	sys_setregid,		"setregid32"	}, /* 204 */
+ 	{ 2,	0,	sys_getgroups32,	"getgroups32"	}, /* 205 */
