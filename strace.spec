@@ -4,7 +4,7 @@ Summary(fr):	affiche l'appel système strace d'un processus en exécution
 Summary(pl):	strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony proces
 Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:		strace
-Version:	4.4.91
+Version:	4.4.92
 Release:	1
 License:	distributable
 Group:		Development/Debuggers

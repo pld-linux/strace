@@ -36,15 +36,3 @@ diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscal
  	{ 4,	0,	printargs,	"getdirentries" },	/* 156 */
  	{ 2,	TF,	sys_statfs,	"statfs" },		/* 157 */
  	{ 2,	0,	sys_fstatfs,	"fstatfs" },		/* 158 */
-diff -Nur strace-4.4.orig/linux/syscallent.h strace-4.4/linux/syscallent.h
---- strace-4.4.orig/linux/syscallent.h	Fri Oct 19 16:35:06 2001
-+++ strace-4.4/linux/syscallent.h	Fri Oct 19 16:36:24 2001
-@@ -266,7 +266,7 @@
- 	{ 2,	TF,	sys_pivotroot,		"pivot_root"	}, /* 217 */
- 	{ 3,	0,	sys_mincore,		"mincore"	}, /* 218 */
- 	{ 3,	0,	sys_madvise,		"madvise"	}, /* 219 */
--	{ 4,	0,	printargs,		"getdents64"	}, /* 220 */
-+	{ 3,	0,	sys_getdents64,		"getdents64"	}, /* 220 */
- 	{ 3,	0,	sys_fcntl,		"fcntl64"	}, /* 221 */
- 	{ 4,	0,	printargs,		"SYS_222"	}, /* 222 */
- 	{ 4,	0,	printargs,		"SYS_223"	}, /* 223 */
