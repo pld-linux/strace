@@ -1,6 +1,6 @@
-diff -urN strace-4.3.org/desc.c strace-4.3/desc.c
---- strace-4.3.org/desc.c	Wed Apr  4 21:38:47 2001
-+++ strace-4.3/desc.c	Wed Apr  4 21:38:54 2001
+diff -Nur strace-4.4.orig/desc.c strace-4.4/desc.c
+--- strace-4.4.orig/desc.c	Tue Mar 13 00:29:05 2001
++++ strace-4.4/desc.c	Fri Oct 19 16:35:23 2001
 @@ -139,6 +139,11 @@
  #ifdef F_UNSHARE
  	{ F_UNSHARE,	"F_UNSHARE"	},
@@ -13,22 +13,22 @@ diff -urN strace-4.3.org/desc.c strace-4.3/desc.c
  	{ 0,		NULL		},
  };
  
-@@ -334,6 +364,12 @@
- #endif
+@@ -335,6 +340,12 @@
   		default:
  			tprintf(", %#lx", tcp->u_arg[2]);
-+			break;
+ 			break;
 +#if defined(F_GETLK64) && F_GETLK64 != F_GETLK
 +		case F_SETLK64: case F_SETLKW64:
 +			tprintf(", ");
 +			printflock64(tcp, tcp->u_arg[2], 0);
 +#endif
- 			break;
++			break;
  		}
  	}
-diff -urN strace-4.3.org/file.c strace-4.3/file.c
---- strace-4.3.org/file.c	Wed Apr  4 21:38:47 2001
-+++ strace-4.3/file.c	Wed Apr  4 21:38:54 2001
+ 	return 0;
+diff -Nur strace-4.4.orig/file.c strace-4.4/file.c
+--- strace-4.4.orig/file.c	Fri Oct 19 16:35:06 2001
++++ strace-4.4/file.c	Fri Oct 19 16:35:23 2001
 @@ -40,8 +40,10 @@
  #include <linux/types.h>
  #include <linux/dirent.h>
@@ -40,17 +40,17 @@ diff -urN strace-4.3.org/file.c strace-4.3/file.c
  #endif
  
  #ifdef linux
-diff -urN strace-4.3.org/linux/alpha/syscallent.h strace-4.3/linux/alpha/syscallent.h
---- strace-4.3.org/linux/alpha/syscallent.h	Wed Apr  4 21:38:47 2001
-+++ strace-4.3/linux/alpha/syscallent.h	Wed Apr  4 21:39:18 2001
+diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscallent.h
+--- strace-4.4.orig/linux/alpha/syscallent.h	Fri Oct 19 16:35:06 2001
++++ strace-4.4/linux/alpha/syscallent.h	Fri Oct 19 16:35:23 2001
 @@ -406,3 +406,4 @@
  	{ 2,	TF,	sys_pivot_root,		"pivot_root"		}, /* 374 */
  	{ 3,	0,	sys_mincore,		"mincore"		}, /* 375 */
  	{ 3,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
 +	{ 3,    0,      sys_getdents64,         "getdents64"            }, /* 377 */  
-diff -urN strace-4.3.org/linux/ia64/syscallent.h strace-4.3/linux/ia64/syscallent.h
---- strace-4.3.org/linux/ia64/syscallent.h	Wed Apr  4 21:38:47 2001
-+++ strace-4.3/linux/ia64/syscallent.h	Wed Apr  4 21:38:54 2001
+diff -Nur strace-4.4.orig/linux/ia64/syscallent.h strace-4.4/linux/ia64/syscallent.h
+--- strace-4.4.orig/linux/ia64/syscallent.h	Mon May  1 03:54:00 2000
++++ strace-4.4/linux/ia64/syscallent.h	Fri Oct 19 16:35:23 2001
 @@ -1243,7 +1243,7 @@
  	{ 8,	0,	printargs,		"SYS_1211"	}, /* 1211 */
  	{ 8,	0,	printargs,		"SYS_1212"	}, /* 1212 */
@@ -60,9 +60,9 @@ diff -urN strace-4.3.org/linux/ia64/syscallent.h strace-4.3/linux/ia64/syscallen
  	{ 8,	0,	printargs,		"SYS_1215"	}, /* 1215 */
  	{ 8,	0,	printargs,		"SYS_1216"	}, /* 1216 */
  	{ 8,	0,	printargs,		"SYS_1217"	}, /* 1217 */
-diff -urN strace-4.3.org/linux/sparc/syscall.h strace-4.3/linux/sparc/syscall.h
---- strace-4.3.org/linux/sparc/syscall.h	Wed Apr  4 21:38:47 2001
-+++ strace-4.3/linux/sparc/syscall.h	Wed Apr  4 21:38:54 2001
+diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
+--- strace-4.4.orig/linux/sparc/syscall.h	Fri Oct 19 16:35:06 2001
++++ strace-4.4/linux/sparc/syscall.h	Fri Oct 19 16:35:23 2001
 @@ -87,7 +87,7 @@
  /* 2.2 file system */
  int	sys_chdir(),sys_chroot();
@@ -72,23 +72,23 @@ diff -urN strace-4.3.org/linux/sparc/syscall.h strace-4.3/linux/sparc/syscall.h
  int	sys_creat(),sys_open(),sys_mknod(),sys_unlink(),sys_stat(),sys_fstat(),sys_lstat();
  int	sys_chown(),sys_fchown(),sys_chmod(),sys_fchmod(),sys_utimes();
  int	sys_link(),sys_symlink(),sys_readlink(),sys_rename();
-diff -urN strace-4.3.org/linux/sparc/syscallent.h strace-4.3/linux/sparc/syscallent.h
---- strace-4.3.org/linux/sparc/syscallent.h	Wed Apr  4 21:38:47 2001
-+++ strace-4.3/linux/sparc/syscallent.h	Wed Apr  4 21:38:54 2001
+diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscallent.h
+--- strace-4.4.orig/linux/sparc/syscallent.h	Fri Oct 19 16:35:06 2001
++++ strace-4.4/linux/sparc/syscallent.h	Fri Oct 19 16:37:21 2001
 @@ -153,8 +153,8 @@
  	{ 4,	TN,	sys_getmsg,	"getmsg" },		/* 151 */
  	{ 4,	TN,	sys_putmsg,	"putmsg" },		/* 152 */
  	{ 3,	0,	sys_poll,	"poll" },		/* 153 */
--	{ 0,	0,	printargs,	"SYS_154" },		/* 154 */
+-	{ 4,	0,	printargs,	"getdents64" },		/* 154 */
 -	{ 1,	0,	printargs,	"nfssvc" },		/* 155 */
 +	{ 3,	0,	sys_getdents64,	"getdents64" },		/* 154 */
 +	{ 3,	0,	sys_fcntl,	"fcntl64" },		/* 155 */
  	{ 4,	0,	printargs,	"getdirentries" },	/* 156 */
  	{ 2,	TF,	sys_statfs,	"statfs" },		/* 157 */
  	{ 2,	0,	sys_fstatfs,	"fstatfs" },		/* 158 */
-diff -urN strace-4.3.org/linux/syscall.h strace-4.3/linux/syscall.h
---- strace-4.3.org/linux/syscall.h	Wed Apr  4 21:38:47 2001
-+++ strace-4.3/linux/syscall.h	Wed Apr  4 21:38:54 2001
+diff -Nur strace-4.4.orig/linux/syscall.h strace-4.4/linux/syscall.h
+--- strace-4.4.orig/linux/syscall.h	Fri Oct 19 16:35:06 2001
++++ strace-4.4/linux/syscall.h	Fri Oct 19 16:35:23 2001
 @@ -69,7 +69,7 @@
  int sys_getpgid(), sys_fchdir(), sys_bdflush();
  int sys_sysfs(), sys_personality(), sys_afs_syscall();
@@ -98,19 +98,15 @@ diff -urN strace-4.3.org/linux/syscall.h strace-4.3/linux/syscall.h
  int sys_readv(), sys_writev(), sys_select();
  int sys_getsid(), sys_fdatasync(), sys_sysctl();
  int sys_mlock(), sys_munlock(), sys_mlockall(), sys_munlockall(), sys_madvise();
-diff -urN strace-4.3.org/linux/syscallent.h strace-4.3/linux/syscallent.h
---- strace-4.3.org/linux/syscallent.h	Wed Apr  4 21:38:47 2001
-+++ strace-4.3/linux/syscallent.h	Wed Apr  4 21:45:03 2001
-@@ -265,9 +265,8 @@
+diff -Nur strace-4.4.orig/linux/syscallent.h strace-4.4/linux/syscallent.h
+--- strace-4.4.orig/linux/syscallent.h	Fri Oct 19 16:35:06 2001
++++ strace-4.4/linux/syscallent.h	Fri Oct 19 16:36:24 2001
+@@ -266,7 +266,7 @@
  	{ 2,	TF,	sys_pivotroot,		"pivot_root"	}, /* 217 */
  	{ 3,	0,	sys_mincore,		"mincore"	}, /* 218 */
  	{ 3,	0,	sys_madvise,		"madvise"	}, /* 219 */
--
--        { 5,    0,      printargs,              "SYS_220"       }, /* 220 */
--        { 5,    0,      printargs,              "SYS_221"       }, /* 221 */
-+	{ 3,    0,      sys_getdents64,         "getdents64"    }, /* 220 */
-+	{ 3,    0,      sys_fcntl,              "fcntl64"       }, /* 221 */          
-         { 5,    0,      printargs,              "SYS_222"       }, /* 222 */
-         { 5,    0,      printargs,              "SYS_223"       }, /* 223 */
-         { 5,    0,      printargs,              "SYS_224"       }, /* 224 */
-
+-	{ 4,	0,	printargs,		"getdents64"	}, /* 220 */
++	{ 3,	0,	sys_getdents64,		"getdents64"	}, /* 220 */
+ 	{ 3,	0,	sys_fcntl,		"fcntl64"	}, /* 221 */
+ 	{ 4,	0,	printargs,		"SYS_222"	}, /* 222 */
+ 	{ 4,	0,	printargs,		"SYS_223"	}, /* 223 */

@@ -1,6 +1,6 @@
-diff -urN strace-4.3.org/file.c strace-4.3/file.c
---- strace-4.3.org/file.c	Wed Apr  4 19:25:52 2001
-+++ strace-4.3/file.c	Wed Apr  4 20:22:55 2001
+diff -Nur strace-4.4.orig/file.c strace-4.4/file.c
+--- strace-4.4.orig/file.c	Tue Mar 27 14:17:17 2001
++++ strace-4.4/file.c	Fri Oct 19 15:28:02 2001
 @@ -1545,6 +1545,20 @@
  	return 0;
  }
@@ -22,9 +22,9 @@ diff -urN strace-4.3.org/file.c strace-4.3/file.c
  int
  sys_link(tcp)
  struct tcb *tcp;
-diff -urN strace-4.3.org/linux/alpha/syscallent.h strace-4.3/linux/alpha/syscallent.h
---- strace-4.3.org/linux/alpha/syscallent.h	Wed Apr  4 19:25:52 2001
-+++ strace-4.3/linux/alpha/syscallent.h	Wed Apr  4 20:22:55 2001
+diff -Nur strace-4.4.orig/linux/alpha/syscallent.h strace-4.4/linux/alpha/syscallent.h
+--- strace-4.4.orig/linux/alpha/syscallent.h	Mon May  1 03:54:00 2000
++++ strace-4.4/linux/alpha/syscallent.h	Fri Oct 19 15:28:02 2001
 @@ -103,7 +103,7 @@
  	{ 5,	0,	printargs,		"osf_old_vadvise"	}, /* 72, not implemented */
  	{ 2,	0,	sys_munmap,		"munmap"		}, /* 73 */
@@ -50,9 +50,9 @@ diff -urN strace-4.3.org/linux/alpha/syscallent.h strace-4.3/linux/alpha/syscall
 +	{ 2,	TF,	sys_pivot_root,		"pivot_root"		}, /* 374 */
 +	{ 3,	0,	sys_mincore,		"mincore"		}, /* 375 */
 +	{ 3,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
-diff -urN strace-4.3.org/linux/dummy.h strace-4.3/linux/dummy.h
---- strace-4.3.org/linux/dummy.h	Wed Apr  4 19:25:52 2001
-+++ strace-4.3/linux/dummy.h	Wed Apr  4 20:22:55 2001
+diff -Nur strace-4.4.orig/linux/dummy.h strace-4.4/linux/dummy.h
+--- strace-4.4.orig/linux/dummy.h	Mon May  1 03:54:00 2000
++++ strace-4.4/linux/dummy.h	Fri Oct 19 15:28:02 2001
 @@ -78,6 +78,12 @@
  #define	sys_vhangup		printargs
  #define	sys_idle		printargs
@@ -66,9 +66,9 @@ diff -urN strace-4.3.org/linux/dummy.h strace-4.3/linux/dummy.h
  #define sys_munlockall		printargs
  
  /* subcall entry points */
-diff -urN strace-4.3.org/linux/sparc/syscall.h strace-4.3/linux/sparc/syscall.h
---- strace-4.3.org/linux/sparc/syscall.h	Wed Apr  4 19:25:52 2001
-+++ strace-4.3/linux/sparc/syscall.h	Wed Apr  4 20:22:55 2001
+diff -Nur strace-4.4.orig/linux/sparc/syscall.h strace-4.4/linux/sparc/syscall.h
+--- strace-4.4.orig/linux/sparc/syscall.h	Fri Oct 19 15:27:34 2001
++++ strace-4.4/linux/sparc/syscall.h	Fri Oct 19 15:28:02 2001
 @@ -42,6 +42,13 @@
  int	sys_setsid(), sys_setpgid();
  int	sys_uname(), sys_sysinfo();
@@ -83,9 +83,9 @@ diff -urN strace-4.3.org/linux/sparc/syscall.h strace-4.3/linux/sparc/syscall.h
  /* 1.2 memory management */
  int	sys_brk(),sys_sbrk(),sys_sstk();
  int	sys_getpagesize(),sys_mmap(),sys_mctl(),sys_munmap(),sys_mprotect(),sys_mincore(), sys_mremap();
-diff -urN strace-4.3.org/linux/sparc/syscallent.h strace-4.3/linux/sparc/syscallent.h
---- strace-4.3.org/linux/sparc/syscallent.h	Wed Apr  4 19:25:52 2001
-+++ strace-4.3/linux/sparc/syscallent.h	Wed Apr  4 20:22:55 2001
+diff -Nur strace-4.4.orig/linux/sparc/syscallent.h strace-4.4/linux/sparc/syscallent.h
+--- strace-4.4.orig/linux/sparc/syscallent.h	Fri Oct 19 15:27:34 2001
++++ strace-4.4/linux/sparc/syscallent.h	Fri Oct 19 16:30:54 2001
 @@ -29,11 +29,11 @@
  	{ 2,	TS,	sys_sigaltstack,"sigaltstack" },	/* 28 */
  	{ 0,	TS,	sys_pause,	"pause" },		/* 29 */
@@ -110,7 +110,7 @@ diff -urN strace-4.3.org/linux/sparc/syscallent.h strace-4.3/linux/sparc/syscall
  	{ 2,	TF,	sys_umount2,	"umount" },		/* 45 */
  	{ 1,	0,	sys_setgid,	"setgid" },		/* 46 */
  	{ 0,	0,	sys_getgid,	"getgid" },		/* 47 */
-@@ -51,48 +51,48 @@
+@@ -51,10 +51,10 @@
  	{ 0,	0,	sys_getegid,	"getegid" },		/* 50 */
  	{ 1,	0,	sys_acct,	"acct" },		/* 51 */
  	{ 0,	0,	printargs,	"SYS_52" },		/* 52 */
@@ -123,13 +123,7 @@ diff -urN strace-4.3.org/linux/sparc/syscallent.h strace-4.3/linux/sparc/syscall
  	{ 2,	TF,	sys_symlink,	"symlink" },		/* 57 */
  	{ 3,	TF,	sys_readlink,	"readlink" },		/* 58 */
  	{ 3,	TF|TP,	sys_execve,	"execve" },		/* 59 */
- 	{ 1,	0,	sys_umask,	"umask" },		/* 60 */
- 	{ 1,	TF,	sys_chroot,	"chroot" },		/* 61 */
- 	{ 2,	0,	sys_fstat,	"fstat" },		/* 62 */
--	{ 0,	0,	printargs,	"SYS_63" },		/* 63 */
-+	{ 2,	0,	sys_fstat64,	"fstat64" },		/* 63 */
- 	{ 1,	0,	sys_getpagesize,"getpagesize" },	/* 64 */
- 	{ 3,	0,	sys_msync,	"msync" },		/* 65 */
+@@ -67,32 +67,32 @@
  	{ 0,	TP,	sys_vfork,	"vfork" },		/* 66 */
  	{ 5,	TF,	sys_pread,	"pread" },		/* 67 */
  	{ 5,	TF,	sys_pwrite,	"pwrite" },		/* 68 */
@@ -158,11 +152,10 @@ diff -urN strace-4.3.org/linux/sparc/syscallent.h strace-4.3/linux/sparc/syscall
  	{ 1,	TF,	sys_swapon,	"swapon" },		/* 85 */
  	{ 2,	0,	sys_getitimer,	"getitimer" },		/* 86 */
 -	{ 2,	0,	sys_gethostname,"gethostname" },	/* 87 */
--	{ 2,	0,	sys_sethostname,"sethostname" },	 /* 88 */
--	{ 0,	0,	sys_getdtablesize,"getdtablesize" },	 /* 89 */
 +	{ 1,	0,	sys_setuid32,	"setuid32" },		/* 87 */
-+	{ 2,	0,	sys_sethostname,"sethostname" },	/* 88 */
-+	{ 1,	0,	sys_setgid32,	"setgid32" },		/* 89 */
+ 	{ 2,	0,	sys_sethostname,"sethostname" },	 /* 88 */
+-	{ 0,	0,	sys_getdtablesize,"getdtablesize" },	 /* 89 */
++	{ 1,	0,	sys_setgid32,	"setgid32" },		 /* 89 */
  	{ 2,	0,	sys_dup2,	"dup2" },		/* 90 */
 -	{ 2,	0,	printargs,	"getdopt" },		/* 91 */
 +	{ 1,	0,	sys_setfsuid32,	"setfsuid32" },		/* 91 */
@@ -193,26 +186,9 @@ diff -urN strace-4.3.org/linux/sparc/syscallent.h strace-4.3/linux/sparc/syscall
  	{ 2,	0,	sys_gettimeofday,"gettimeofday" },	/* 116 */
  	{ 2,	0,	sys_getrusage,	"getrusage" },		/* 117 */
  	{ 5,	TN,	sys_getsockopt,	"getsockopt" },		/* 118 */
-@@ -130,14 +130,14 @@
- 	{ 2,	TF,	sys_truncate,	"truncate" },		/* 129 */
- 	{ 2,	0,	sys_ftruncate,	"ftruncate" },		/* 130 */
- 	{ 2,	0,	sys_flock,	"flock" },		/* 131 */
--	{ 0,	0,	printargs,	"SYS_132" },		/* 132 */
-+	{ 2,	TF,	sys_lstat64,	"lstat64" },		/* 132 */
- 	{ 6,	TN,	sys_sendto,	"sendto" },		/* 133 */
- 	{ 2,	TN,	sys_shutdown,	"shutdown" },		/* 134 */
- 	{ 5,	TN,	sys_socketpair,	"socketpair" },		/* 135 */
- 	{ 2,	TF,	sys_mkdir,	"mkdir" },		/* 136 */
- 	{ 1,	TF,	sys_rmdir,	"rmdir" },		/* 137 */
- 	{ 2,	TF,	sys_utimes,	"utimes" },		/* 138 */
--	{ 0,	TS,	printargs,	"SYS_139" },		/* 139 */
-+	{ 2,	TS,	sys_stat64,	"stat64" },		/* 139 */
- 	{ 2,   0,	sys_adjtime,	"adjtime" },		/* 140 */
- 	{ 3,	TN,	sys_getpeername,"getpeername" },	/* 141 */
- 	{ 2,   0,	sys_gethostid,	"gethostid" },		/* 142 */
-diff -urN strace-4.3.org/linux/syscall.h strace-4.3/linux/syscall.h
---- strace-4.3.org/linux/syscall.h	Wed Apr  4 19:25:52 2001
-+++ strace-4.3/linux/syscall.h	Wed Apr  4 20:22:55 2001
+diff -Nur strace-4.4.orig/linux/syscall.h strace-4.4/linux/syscall.h
+--- strace-4.4.orig/linux/syscall.h	Sun Apr  8 21:14:05 2001
++++ strace-4.4/linux/syscall.h	Fri Oct 19 15:28:02 2001
 @@ -37,6 +37,7 @@
  int sys_unlink(), sys_execve(), sys_chdir(), sys_time(), sys_mknod();
  int sys_chmod(), sys_chown(), sys_break(), sys_oldstat();
@@ -252,18 +228,18 @@ diff -urN strace-4.3.org/linux/syscall.h strace-4.3/linux/syscall.h
  #endif
  #define SYS_semop		(SYS_ipc_subcall + 1)
  #define SYS_semget		(SYS_ipc_subcall + 2)
-@@ -170,6 +177,8 @@
- #ifdef ALPHA
+@@ -171,6 +178,8 @@
  int osf_statfs(), osf_fstatfs();
  #endif
-+
-+int sys_madvise(), sys_mincore();
  
++int sys_madvise(), sys_mincore();
++
  #ifdef IA64
  int sys_getpmsg(), sys_putpmsg();	/* STREAMS stuff */
-diff -urN strace-4.3.org/linux/syscallent.h strace-4.3/linux/syscallent.h
---- strace-4.3.org/linux/syscallent.h	Wed Apr  4 19:25:52 2001
-+++ strace-4.3/linux/syscallent.h	Wed Apr  4 20:34:31 2001
+ #endif
+diff -Nur strace-4.4.orig/linux/syscallent.h strace-4.4/linux/syscallent.h
+--- strace-4.4.orig/linux/syscallent.h	Fri Aug  3 14:27:54 2001
++++ strace-4.4/linux/syscallent.h	Fri Oct 19 16:21:57 2001
 @@ -233,8 +233,8 @@
  	{ 2,	0,	sys_capset,		"capset"	}, /* 185 */
  	{ 2,	TS,	sys_sigaltstack,	"sigaltstack"	}, /* 186 */
@@ -275,11 +251,13 @@ diff -urN strace-4.3.org/linux/syscallent.h strace-4.3/linux/syscallent.h
  	{ 0,	TP,	sys_vfork,		"vfork"		}, /* 190 */
  	{ 2,	0,	printargs,		"getrlimit"	}, /* 191 */
  	{ 6,	0,	sys_mmap,		"mmap2"		}, /* 192 */
-@@ -245,64 +245,63 @@
+@@ -244,27 +244,27 @@
+ 	{ 2,	TF,	sys_lstat64,		"lstat64"	}, /* 196 */
  	{ 2,	TF,	sys_fstat64,		"fstat64"	}, /* 197 */
  /*TODO*/{ 3,	TF,	printargs,		"lchown32"	}, /* 198 */
- /*TODO*/{ 0,	0,	printargs,		"getuid32"	}, /* 199 */
--
+-/*TODO*/{ 0,	0,	printargs,		"getuid32"	}, /* 199 */
++/*TODO*/{ 0,	0,	sys_getuid32,		"getuid32"	}, /* 199 */
+ 
 -	{ 0,	0,	printargs,		"getgid32"	}, /* 200 */
 -	{ 0,	0,	printargs,		"geteuid32"	}, /* 201 */
 -	{ 0,	0,	printargs,		"getegid32"	}, /* 202 */
@@ -299,7 +277,7 @@ diff -urN strace-4.3.org/linux/syscallent.h strace-4.3/linux/syscallent.h
 -	{ 1,	0,	printargs,		"setfsgid32"	}, /* 216 */
 +	{ 0,	0,	sys_getgid32,		"getgid32"	}, /* 200 */
 +	{ 0,	0,	sys_geteuid32,		"geteuid32"	}, /* 201 */
-+	{ 0,	0,	sys_geteuid32,		"getegid32"	}, /* 202 */
++	{ 0,	0,	sys_getegid32,		"getegid32"	}, /* 202 */
 +	{ 2,	0,	sys_setreuid32,		"setreuid32"	}, /* 203 */
 +	{ 2,	0,	sys_setregid32,		"setregid32"	}, /* 204 */
 +	{ 2,	0,	sys_getgroups32,	"getgroups32"	}, /* 205 */
@@ -318,16 +296,22 @@ diff -urN strace-4.3.org/linux/syscallent.h strace-4.3/linux/syscallent.h
 -	{ 3,	0,	printargs,		"mincore"	}, /* 218 */
 +	{ 3,	0,	sys_mincore,		"mincore"	}, /* 218 */
  	{ 3,	0,	sys_madvise,		"madvise"	}, /* 219 */
--	{ 4,	0,	printargs,		"getdents64"	}, /* 220 */
--	{ 4,	0,	printargs,		"fcntl64"	}, /* 221 */
--	{ 4,	0,	printargs,		"SYS_222"	}, /* 222 */
--	{ 4,	0,	printargs,		"SYS_223"	}, /* 223 */
--	{ 4,	0,	printargs,		"SYS_224"	}, /* 224 */
--	{ 5,	0,	printargs,		"SYS_225"	}, /* 225 */
--	{ 5,	0,	printargs,		"SYS_226"	}, /* 226 */
--	{ 5,	0,	printargs,		"SYS_227"	}, /* 227 */
--	{ 5,	0,	printargs,		"SYS_228"	}, /* 228 */
--	{ 5,	0,	printargs,		"SYS_229"	}, /* 229 */
+ 	{ 4,	0,	printargs,		"getdents64"	}, /* 220 */
+ 	{ 3,	0,	sys_fcntl,		"fcntl64"	}, /* 221 */
+@@ -276,33 +276,33 @@
+ 	{ 5,	0,	printargs,		"SYS_227"	}, /* 227 */
+ 	{ 5,	0,	printargs,		"SYS_228"	}, /* 228 */
+ 	{ 5,	0,	printargs,		"SYS_229"	}, /* 229 */
++        { 5,    0,      printargs,              "SYS_230"       }, /* 230 */
++        { 5,    0,      printargs,              "SYS_231"       }, /* 231 */
++        { 5,    0,      printargs,              "SYS_232"       }, /* 232 */
++        { 5,    0,      printargs,              "SYS_233"       }, /* 233 */
++        { 5,    0,      printargs,              "SYS_234"       }, /* 234 */
++        { 5,    0,      printargs,              "SYS_235"       }, /* 235 */
++        { 5,    0,      printargs,              "SYS_236"       }, /* 236 */
++        { 5,    0,      printargs,              "SYS_237"       }, /* 237 */
++        { 5,    0,      printargs,              "SYS_238"       }, /* 238 */
++        { 5,    0,      printargs,              "SYS_239"       }, /* 239 */
  
 -	{ 8,	0,	printargs,		"socket_subcall"}, /* 230 */
 -	{ 3,	TN,	sys_socket,		"socket"	}, /* 231 */
@@ -349,27 +333,6 @@ diff -urN strace-4.3.org/linux/syscallent.h strace-4.3/linux/syscallent.h
 -	{ 5,	TN,	sys_recvmsg,		"recvmsg"	}, /* 247 */
 -	{ 5,	0,	printargs,		"SYS_248"	}, /* 248 */
 -	{ 5,	0,	printargs,		"SYS_249"	}, /* 249 */
-+        { 5,    0,      printargs,              "SYS_220"       }, /* 220 */
-+        { 5,    0,      printargs,              "SYS_221"       }, /* 221 */
-+        { 5,    0,      printargs,              "SYS_222"       }, /* 222 */
-+        { 5,    0,      printargs,              "SYS_223"       }, /* 223 */
-+        { 5,    0,      printargs,              "SYS_224"       }, /* 224 */
-+        { 5,    0,      printargs,              "SYS_225"       }, /* 225 */
-+        { 5,    0,      printargs,              "SYS_226"       }, /* 226 */
-+        { 5,    0,      printargs,              "SYS_227"       }, /* 227 */
-+        { 5,    0,      printargs,              "SYS_228"       }, /* 228 */
-+        { 5,    0,      printargs,              "SYS_229"       }, /* 229 */
-+        { 5,    0,      printargs,              "SYS_230"       }, /* 230 */
-+        { 5,    0,      printargs,              "SYS_231"       }, /* 231 */
-+        { 5,    0,      printargs,              "SYS_232"       }, /* 232 */
-+        { 5,    0,      printargs,              "SYS_233"       }, /* 233 */
-+        { 5,    0,      printargs,              "SYS_234"       }, /* 234 */
-+        { 5,    0,      printargs,              "SYS_235"       }, /* 235 */
-+        { 5,    0,      printargs,              "SYS_236"       }, /* 236 */
-+        { 5,    0,      printargs,              "SYS_237"       }, /* 237 */
-+        { 5,    0,      printargs,              "SYS_238"       }, /* 238 */
-+        { 5,    0,      printargs,              "SYS_239"       }, /* 239 */
- 
 +        { 4,    0,      printargs,              "ipc_subcall"   }, /* 240 */
 +        { 4,    TI,     sys_semop,              "semop"         }, /* 241 */
 +        { 4,    TI,     sys_semget,             "semget"        }, /* 242 */
@@ -380,19 +343,20 @@ diff -urN strace-4.3.org/linux/syscallent.h strace-4.3/linux/syscallent.h
 +        { 4,    0,      printargs,              "ipc_subcall"   }, /* 247 */
 +        { 4,    0,      printargs,              "ipc_subcall"   }, /* 248 */
 +        { 4,    0,      printargs,              "ipc_subcall"   }, /* 249 */
+ 
  	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 250 */
 -	{ 4,	TI,	sys_semop,		"semop"		}, /* 251 */
 -	{ 4,	TI,	sys_semget,		"semget"	}, /* 252 */
 -	{ 4,	TI,	sys_semctl,		"semctl"	}, /* 253 */
 -	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 254 */
-+        { 4,    TI,     sys_msgsnd,             "msgsnd"        }, /* 251 */
-+        { 4,    TI,     sys_msgrcv,             "msgrcv"        }, /* 252 */
-+        { 4,    TI,     sys_msgget,             "msgget"        }, /* 253 */
-+        { 4,    TI,     sys_msgctl,             "msgctl"        }, /* 254 */
++	{ 4,	TI,	sys_msgsnd,		"msgsnd"	}, /* 251 */
++	{ 4,	TI,	sys_msgrcv,		"msgrcv"	}, /* 252 */
++	{ 4,	TI,	sys_msgget,		"msgget"	}, /* 253 */
++	{ 4,	TI,	sys_msgctl,		"msgctl"	}, /* 254 */
  	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 255 */
  	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 256 */
  	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 257 */
-@@ -318,10 +317,24 @@
+@@ -318,10 +318,24 @@
  	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 267 */
  	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 268 */
  	{ 4,	0,	printargs,		"ipc_subcall"	}, /* 269 */
@@ -423,10 +387,10 @@ diff -urN strace-4.3.org/linux/syscallent.h strace-4.3/linux/syscallent.h
 +        { 5,    TN,     sys_recvmsg,            "recvmsg"       }, /* 287 */
 +        { 5,    0,      printargs,              "SYS_288"       }, /* 288 */
 +        { 5,    0,      printargs,              "SYS_289"       }, /* 289 */
-diff -urN strace-4.3.org/process.c strace-4.3/process.c
---- strace-4.3.org/process.c	Wed Apr  4 19:25:52 2001
-+++ strace-4.3/process.c	Wed Apr  4 20:22:55 2001
-@@ -864,6 +864,80 @@
+diff -Nur strace-4.4.orig/process.c strace-4.4/process.c
+--- strace-4.4.orig/process.c	Fri Oct 19 15:27:34 2001
++++ strace-4.4/process.c	Fri Oct 19 15:28:02 2001
+@@ -884,6 +884,80 @@
  	return 0;
  }
  
@@ -507,7 +471,7 @@ diff -urN strace-4.3.org/process.c strace-4.3/process.c
  #endif /* LINUX */
  
  int
-@@ -892,6 +966,30 @@
+@@ -912,6 +986,30 @@
  
  #if defined(LINUX) || defined(FREEBSD)
  int
@@ -538,7 +502,7 @@ diff -urN strace-4.3.org/process.c strace-4.3/process.c
  sys_setresuid(tcp)
       struct tcb *tcp;
  {
-@@ -909,9 +1007,35 @@
+@@ -929,9 +1027,35 @@
  {
  	if (entering(tcp)) {
  		tprintf("rgid %u, egid %u, sgid %u",
@@ -577,11 +541,10 @@ diff -urN strace-4.3.org/process.c strace-4.3/process.c
  	}
  	return 0;
  }
-@@ -993,6 +1117,84 @@
- 	}
+@@ -1014,6 +1138,84 @@
  	return 0;
  }
-+
+ 
 +#ifdef LINUX
 +int
 +sys_setgroups32(tcp)
@@ -659,6 +622,7 @@ diff -urN strace-4.3.org/process.c strace-4.3/process.c
 +	return 0;
 +}
 +#endif
- 
++
  int
  sys_setpgrp(tcp)
+ struct tcb *tcp;
