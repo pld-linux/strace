@@ -5,9 +5,10 @@ Summary(pl): strace wy¶wietla funkcje systemowe wywo³ywane przez uruchomiony pro
 Summary(tr): Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Name:        strace
 Version:     3.1
-Release:     12
+Release:     13
 Copyright:   distributable
 Group:       Development/Debuggers
+Group(pl):   Programowanie/Odpluskwiacze
 Source:      ftp://ftp.std.com/pub/jrs/%{name}-%{version}.tar.gz
 Patch0:      strace-3.0.14elf.patch
 Patch1:      ftp://ftp.azstarnet.com/pub/linux/axp/glibc/strace-3.1-glibc.patch
@@ -76,14 +77,21 @@ make install prefix=$RPM_BUILD_ROOT/usr
 
 strip $RPM_BUILD_ROOT/usr/bin/*
 
+gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/*
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %attr(755, root, root) /usr/bin/strace
-%attr(644, root,  man) /usr/man/man1/strace.1
+%attr(644, root,  man) /usr/man/man1/*
 
 %changelog
+* Wed Feb 17 1999 Micha³ Kuratczyk <kura@wroclaw.art.pl>
+  [3.1-13]
+- added Group(pl)
+- added gzipping man page
+
 * Thu Oct 08 1998 Marcin Korzonek <mkorz@shadow.eu.org>
   [3.1-12]
 - added translation pl.
