@@ -17,6 +17,7 @@ Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
 Patch1:		%{name}-getdents64.patch
+Patch2:		%{name}-kernel26_userspace.patch
 URL:		http://www.liacs.nl/~wichert/strace/
 BuildRequires:	autoconf >= 2.54
 BuildRequires:	automake
@@ -73,6 +74,7 @@ Strace корисний для д╕агностики проблем та в╕дладки.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__aclocal}
