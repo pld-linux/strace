@@ -28,7 +28,7 @@ Patch14:	strace-fork.patch
 Patch15:	strace-arm.patch
 Patch16:	strace-clone.patch
 Patch17:	strace-AC_C_CROSS.patch
-Buildroot:   	/tmp/%{name}-%{version}-root
+BuildRoot:	/tmp/%{name}-%{version}-root
 
 %description
 Strace prints a record of each system call another program makes, including
