@@ -1,0 +1,16 @@
+--- strace-4.5.11/defs.h.orig	2005-02-06 01:16:32 +0000
++++ strace-4.5.11/defs.h	2005-05-24 23:14:19 +0000
+@@ -193,7 +193,13 @@
+ 
+ #ifdef LINUXSPARC
+ #include <linux/a.out.h>
++
++#ifdef __sparc_v9__
++#include <asm/psrcompat.h>
++#else
+ #include <asm/psr.h>
++#endif
++
+ #undef  SUPPORTED_PERSONALITIES
+ #if defined(SPARC64)
+ #define SUPPORTED_PERSONALITIES 3
