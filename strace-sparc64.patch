@@ -5,7 +5,7 @@
  #ifdef LINUXSPARC
  #include <linux/a.out.h>
 +
-+#ifdef __sparc_v9__
++#if defined(__sparc__) && defined(__arch64__)
 +#include <asm/psrcompat.h>
 +#else
  #include <asm/psr.h>
