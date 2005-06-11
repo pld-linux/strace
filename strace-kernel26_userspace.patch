@@ -10,13 +10,3 @@ diff -durN -x '*~' strace-4.5.1.orig/configure.ac strace-4.5.1/configure.ac
  AC_CHECK_HEADERS([asm/sigcontext.h], [], [], [#include <signal.h>])
  AC_CHECK_HEADERS([netinet/tcp.h netinet/udp.h],,, [#include <netinet/in.h>])
  
---- strace-4.5.1/bjm.c.orig	2002-11-06 15:00:12.000000000 +0100
-+++ strace-4.5.1/bjm.c	2004-01-17 12:15:45.707269760 +0100
-@@ -42,7 +42,6 @@
- #include <sys/user.h>
- #include <sys/syscall.h>
- #include <signal.h>
--#include <linux/linkage.h>
- 
- /* Bits of module.flags.  */
- 

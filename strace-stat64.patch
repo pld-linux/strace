@@ -15,9 +15,9 @@
  
  AC_TYPE_SIGNAL
  AC_TYPE_UID_T
---- strace-4.5.3/file.c.orig	2004-01-13 10:16:47.000000000 +0000
-+++ strace-4.5.3/file.c	2004-04-25 16:30:39.000000000 +0000
-@@ -862,27 +862,27 @@
+--- strace-4.5.12/file.c.orig	2005-06-08 22:45:28.000000000 +0200
++++ strace-4.5.12/file.c	2005-06-11 19:25:18.200972552 +0200
+@@ -958,27 +958,27 @@
  			(unsigned long) statbuf.st_nlink,
  			(unsigned long) statbuf.st_uid,
  			(unsigned long) statbuf.st_gid);
@@ -52,17 +52,14 @@
  		break;
  	default:
  		tprintf("st_size=%llu, ", statbuf.st_size);
-@@ -892,24 +892,24 @@
+@@ -988,21 +988,21 @@
  		tprintf("st_atime=%s, ", sprinttime(statbuf.st_atime));
  		tprintf("st_mtime=%s, ", sprinttime(statbuf.st_mtime));
  		tprintf("st_ctime=%s", sprinttime(statbuf.st_ctime));
 -#if HAVE_STRUCT_STAT_ST_FLAGS
 +#if HAVE_STRUCT_STAT64_ST_FLAGS
  		tprintf(", st_flags=");
- 		if (statbuf.st_flags) {
- 			printflags(fileflags, statbuf.st_flags);
- 		} else
- 			tprintf("0");
+ 		printflags(fileflags, statbuf.st_flags, "UF_???");
  #endif
 -#if HAVE_STRUCT_STAT_ST_ACLCNT
 +#if HAVE_STRUCT_STAT64_ST_ACLCNT
