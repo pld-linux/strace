@@ -8,12 +8,12 @@ Summary(ru):	Отслеживает и показывает системные вызовы, связанные с запущенным п
 Summary(tr):	гalЩЧan bir sЭrecin yaptЩПЩ sistem ГaПrЩlarЩnЩ listeler
 Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним процесом
 Name:		strace
-Version:	4.5.11
+Version:	4.5.12
 Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
-# Source0-md5:	28335e15c83456a3db055a0a0efcb4fe
+# Source0-md5:	c9dc77b9bd7f144f317e8289e0f6d40b
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
 Patch1:		%{name}-getdents64.patch
