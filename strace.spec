@@ -1,3 +1,5 @@
+# TODO
+# - rel 2 & STBR after translation of -graph subpackage
 Summary:	prints system call strace of a running process
 Summary(de):	druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
 Summary(es):	EnseЯa las llamadas de sistema de un proceso en ejecuciСn
@@ -9,7 +11,7 @@ Summary(tr):	гalЩЧan bir sЭrecin yaptЩПЩ sistem ГaПrЩlarЩnЩ listeler
 Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним процесом
 Name:		strace
 Version:	4.5.12
-Release:	1
+Release:	1.1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
@@ -72,6 +74,19 @@ birlikte dЖker.
 системних визов╕в, ╖х аргумент╕в та значень, як╕ вони повернули.
 Strace корисний для д╕агностики проблем та в╕дладки.
 
+%package graph
+Summary:	strace graph
+Group:		Development/Debuggers
+# NOTE: doesn't require directly strace binary.
+
+%description graph
+strace-graph script processes strace -f output. It displays a graph of
+invoked subprocesses, and is useful for finding out what complex
+commands do.
+
+The script can also handle the output with strace -t, -tt, or -ttt.
+It will add elapsed time for each process in that case.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -102,6 +117,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc COPYRIGHT CREDITS ChangeLog NEWS README-linux TODO
-%attr(755,root,root) %{_bindir}/strace*
+%attr(755,root,root) %{_bindir}/strace
 %{_mandir}/man1/*
 %lang(pl) %{_mandir}/pl/man1/*
+
+%files graph
+%attr(755,root,root) %{_bindir}/strace-graph
