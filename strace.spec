@@ -1,5 +1,3 @@
-# TODO
-# - rel 2 & STBR after translation of -graph subpackage
 Summary:	prints system call strace of a running process
 Summary(de):	druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
 Summary(es):	Enseña las llamadas de sistema de un proceso en ejecución
@@ -11,8 +9,7 @@ Summary(tr):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk):	÷¦ÄÓÌ¦ÄËÏ×Õ¤ ÔÁ ĞÏËÁÚÕ¤ ÓÉÓÔÅÍÎ¦ ×ÉËÌÉËÉ, ĞÏ×'ÑÚÁÎ¦ ¦Ú ÚÁĞÕİÅÎÉÍ ĞÒÏÃÅÓÏÍ
 Name:		strace
 Version:	4.5.12
-Release:	1.1
-License:	BSD-like
+Release:	2
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
 # Source0-md5:	c9dc77b9bd7f144f317e8289e0f6d40b
@@ -76,6 +73,7 @@ Strace ËÏÒÉÓÎÉÊ ÄÌÑ Ä¦ÁÇÎÏÓÔÉËÉ ĞÒÏÂÌÅÍ ÔÁ ×¦ÄÌÁÄËÉ.
 
 %package graph
 Summary:	strace graph
+Summary(pl):	Graf strace
 Group:		Development/Debuggers
 # NOTE: doesn't require directly strace binary.
 
@@ -86,6 +84,14 @@ commands do.
 
 The script can also handle the output with strace -t, -tt, or -ttt.
 It will add elapsed time for each process in that case.
+
+%description graph -l pl
+Skrypt strace-graph przetwarza wynik strace -f i wy¶wietla graf
+wywo³ywanych podprocesów. Jest przydatny do sprawdzania co robi±
+z³o¿one polecenia.
+
+Skrypt jest w stanie obs³u¿yæ tak¿e wyj¶cie ze strace -t, -tt i -ttt.
+Doda wtedy up³ywaj±cy czas dla ka¿dego procesu.
 
 %prep
 %setup -q
@@ -122,4 +128,5 @@ rm -rf $RPM_BUILD_ROOT
 %lang(pl) %{_mandir}/pl/man1/*
 
 %files graph
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/strace-graph
