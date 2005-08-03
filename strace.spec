@@ -10,6 +10,7 @@ Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним пр
 Name:		strace
 Version:	4.5.12
 Release:	2
+License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
 # Source0-md5:	c9dc77b9bd7f144f317e8289e0f6d40b
