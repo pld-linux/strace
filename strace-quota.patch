@@ -81,3 +81,15 @@
                          tprintf("}");
  		}
  
+--- strace-4.5.12.orig/configure.ac	2005-12-12 00:10:59.000000000 +0000
++++ strace-4.5.12/configure.ac	2005-12-12 00:41:12.000000000 +0000
+@@ -168,6 +168,9 @@
+ 		  struct stat.st_gen,
+ 		  struct stat.st_level,
+ 		  struct stat.st_rdev])
++
++AC_CHECK_MEMBER([struct dqblk.dqb_curblocks], [CFLAGS="$CFLAGS -DHAVE_STRUCT_DQBLK_DQB_CURBLOCKS"], , [#include <sys/quota.h>])
++
+ AC_STAT64
+ 
+ AC_TYPE_SIGNAL
