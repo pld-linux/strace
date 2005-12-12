@@ -110,8 +110,7 @@ Doda wtedy up³ywaj±cy czas dla ka¿dego procesu.
 %{__autoheader}
 %{__automake}
 %configure
-%{__make} \
-	CFLAGS="%{rpmcflags} -DHAVE_STRUCT_DQBLK_DQB_CURBLOCKS"
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
