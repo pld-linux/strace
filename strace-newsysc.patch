@@ -1,6 +1,5 @@
-diff -Nur strace-4.5.1.orig/linux/alpha/syscallent.h strace-4.5.1/linux/alpha/syscallent.h
---- strace-4.5.1.orig/linux/alpha/syscallent.h	2003-07-09 11:47:59.000000000 +0200
-+++ strace-4.5.1/linux/alpha/syscallent.h	2003-11-18 20:53:22.722489584 +0100
+--- strace-4.5.14/linux/alpha/syscallent.h.orig	2006-01-12 23:34:50.000000000 +0100
++++ strace-4.5.14/linux/alpha/syscallent.h	2006-01-21 22:45:08.102313250 +0100
 @@ -103,7 +103,7 @@
  	{ 5,	0,	printargs,		"osf_old_vadvise"	}, /* 72, not implemented */
  	{ 2,	0,	sys_munmap,		"munmap"		}, /* 73 */
@@ -13,22 +12,21 @@ diff -Nur strace-4.5.1.orig/linux/alpha/syscallent.h strace-4.5.1/linux/alpha/sy
 @@ -399,12 +399,12 @@
  	{ 2,	0,	sys_capget,		"capget"		}, /* 368 */
  	{ 2,	0,	sys_capset,		"capset"		}, /* 369 */
- 	{ 4,	TF,	sys_sendfile,		"sendfile"		}, /* 370 */
+ 	{ 4,	TD,	sys_sendfile,		"sendfile"		}, /* 370 */
 -	{ 3,	0,	printargs,		"setresgid"		}, /* 371 */
 -	{ 3,	0,	printargs,		"getresgid"		}, /* 372 */
--	{ 4,	0,	printargs,		"dipc"			}, /* 373, not implemented */
++	{ 3,	0,	sys_setresgid,		"setresgid"		}, /* 371 */
++	{ 3,	0,	sys_getresgid,		"getresgid"		}, /* 372 */
+ 	{ 4,	0,	printargs,		"dipc"			}, /* 373, not implemented */
 -	{ 2,	TF,	printargs,		"pivot_root"		}, /* 374 */
 -	{ 3,	0,	printargs,		"mincore"		}, /* 375 */
 -	{ 4,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
-+	{ 3,	0,	sys_setresgid,		"setresgid"		}, /* 371 */
-+	{ 3,	0,	sys_getresgid,		"getresgid"		}, /* 372 */
-+	{ 5,	0,	printargs,		"dipc"			}, /* 373, not implemented */
 +	{ 2,	TF,	sys_pivotroot,		"pivot_root"		}, /* 374 */
 +	{ 3,	0,	sys_mincore,		"mincore"		}, /* 375 */
 +	{ 3,	0,	printargs,		"pciconfig_iobase"	}, /* 376 */
- 	{ 4,	0,	sys_getdents64,		"getdents64"		}, /* 377 */
+ 	{ 4,	TD,	sys_getdents64,		"getdents64"		}, /* 377 */
  	{ 0,	0,	printargs,		"gettid"		}, /* 378 */
- 	{ 4,	0,	sys_readahead,		"readahead"		}, /* 379 */
+ 	{ 4,	TD,	sys_readahead,		"readahead"		}, /* 379 */
 --- strace-4.5.6/linux/sparc/syscallent.h.orig	2004-07-12 09:41:05.000000000 +0200
 +++ strace-4.5.6/linux/sparc/syscallent.h	2004-07-26 08:21:58.496665928 +0200
 @@ -80,7 +80,7 @@

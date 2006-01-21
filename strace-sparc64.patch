@@ -1,16 +1,19 @@
---- strace-4.5.11/defs.h.orig	2005-02-06 01:16:32 +0000
-+++ strace-4.5.11/defs.h	2005-05-24 23:14:19 +0000
-@@ -193,7 +193,13 @@
+--- strace-4.5.14/defs.h.orig	2006-01-12 11:18:53.000000000 +0100
++++ strace-4.5.14/defs.h	2006-01-21 22:59:49.045368750 +0100
+@@ -193,14 +193,15 @@
  
  #ifdef LINUXSPARC
  #include <linux/a.out.h>
-+
-+#if defined(__sparc__) && defined(__arch64__)
-+#include <asm/psrcompat.h>
-+#else
- #include <asm/psr.h>
-+#endif
-+
+-#include <asm/psr.h>
+ #define PERSONALITY0_WORDSIZE 4
+ #define PERSONALITY1_WORDSIZE 4
  #undef  SUPPORTED_PERSONALITIES
  #if defined(SPARC64)
++#include <asm/psrcompat.h>
  #define SUPPORTED_PERSONALITIES 3
+ #define PERSONALITY2_WORDSIZE 8
+ #else
++#include <asm/psr.h>
+ #define SUPPORTED_PERSONALITIES 2
+ #endif /* SPARC64 */
+ #endif /* LINUXSPARC */
