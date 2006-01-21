@@ -8,19 +8,18 @@ Summary(ru):	ïÔÓÌÅÖÉ×ÁÅÔ É ÐÏËÁÚÙ×ÁÅÔ ÓÉÓÔÅÍÎÙÅ ×ÙÚÏ×Ù, Ó×ÑÚÁÎÎÙÅ Ó ÚÁÐÕÝÅÎÎÙÍ Ð
 Summary(tr):	Çalýþan bir sürecin yaptýðý sistem çaðrýlarýný listeler
 Summary(uk):	÷¦ÄÓÌ¦ÄËÏ×Õ¤ ÔÁ ÐÏËÁÚÕ¤ ÓÉÓÔÅÍÎ¦ ×ÉËÌÉËÉ, ÐÏ×'ÑÚÁÎ¦ ¦Ú ÚÁÐÕÝÅÎÉÍ ÐÒÏÃÅÓÏÍ
 Name:		strace
-Version:	4.5.12
-Release:	2
+Version:	4.5.14
+Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
-# Source0-md5:	c9dc77b9bd7f144f317e8289e0f6d40b
+# Source0-md5:	09bcd5d00ece28f8154dec11cadfce3c
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
 Patch1:		%{name}-getdents64.patch
 Patch2:		%{name}-kernel26_userspace.patch
 Patch3:		%{name}-stat64.patch
 Patch4:		%{name}-sparc64.patch
-Patch5:		%{name}-quota.patch
 URL:		http://www.liacs.nl/~wichert/strace/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
@@ -102,7 +101,6 @@ Doda wtedy up³ywaj±cy czas dla ka¿dego procesu.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 
 %build
 %{__aclocal}
