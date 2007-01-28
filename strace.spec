@@ -8,19 +8,19 @@ Summary(ru):	Отслеживает и показывает системные вызовы, связанные с запущенным п
 Summary(tr):	гalЩЧan bir sЭrecin yaptЩПЩ sistem ГaПrЩlarЩnЩ listeler
 Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним процесом
 Name:		strace
-Version:	4.5.14
+Version:	4.5.15
 Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
-# Source0-md5:	09bcd5d00ece28f8154dec11cadfce3c
+# Source0-md5:	ef40944118841803391d212cb64d3c5b
 Source1:	%{name}.1.pl
 Patch0:		%{name}-newsysc.patch
 Patch1:		%{name}-getdents64.patch
 Patch2:		%{name}-kernel26_userspace.patch
 Patch3:		%{name}-stat64.patch
 Patch4:		%{name}-sparc64.patch
-URL:		http://www.liacs.nl/~wichert/strace/
+URL:		http://sourceforge.net/projects/strace/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
