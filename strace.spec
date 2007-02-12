@@ -1,12 +1,12 @@
 Summary:	prints system call strace of a running process
-Summary(de):	druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
-Summary(es):	EnseЯa las llamadas de sistema de un proceso en ejecuciСn
-Summary(fr):	affiche l'appel systХme strace d'un processus en exИcution
-Summary(pl):	strace wy╤wietla funkcje systemowe wywoЁywane przez uruchomiony proces
-Summary(pt_BR):	Mostra as chamadas de sistema de um processo rodando
-Summary(ru):	Отслеживает и показывает системные вызовы, связанные с запущенным процессом
-Summary(tr):	гalЩЧan bir sЭrecin yaptЩПЩ sistem ГaПrЩlarЩnЩ listeler
-Summary(uk):	В╕дсл╕дкову╓ та показу╓ системн╕ виклики, пов'язан╕ ╕з запущеним процесом
+Summary(de.UTF-8):   druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
+Summary(es.UTF-8):   Enseц╠a las llamadas de sistema de un proceso en ejecuciцЁn
+Summary(fr.UTF-8):   affiche l'appel systц╗me strace d'un processus en exц╘cution
+Summary(pl.UTF-8):   strace wyе⌡wietla funkcje systemowe wywoе┌ywane przez uruchomiony proces
+Summary(pt_BR.UTF-8):   Mostra as chamadas de sistema de um processo rodando
+Summary(ru.UTF-8):   п·я┌я│п╩п╣п╤п╦п╡п╟п╣я┌ п╦ п©п╬п╨п╟п╥я▀п╡п╟п╣я┌ я│п╦я│я┌п╣п╪п╫я▀п╣ п╡я▀п╥п╬п╡я▀, я│п╡я▐п╥п╟п╫п╫я▀п╣ я│ п╥п╟п©я┐я┴п╣п╫п╫я▀п╪ п©я─п╬я├п╣я│я│п╬п╪
+Summary(tr.UTF-8):   ц┤alд╠е÷an bir sц╪recin yaptд╠д÷д╠ sistem ц╖aд÷rд╠larд╠nд╠ listeler
+Summary(uk.UTF-8):   п▓я√п╢я│п╩я√п╢п╨п╬п╡я┐я■ я┌п╟ п©п╬п╨п╟п╥я┐я■ я│п╦я│я┌п╣п╪п╫я√ п╡п╦п╨п╩п╦п╨п╦, п©п╬п╡'я▐п╥п╟п╫я√ я√п╥ п╥п╟п©я┐я┴п╣п╫п╦п╪ п©я─п╬я├п╣я│п╬п╪
 Name:		strace
 Version:	4.5.15
 Release:	1
@@ -30,51 +30,51 @@ Strace prints a record of each system call another program makes,
 including all of the arguments passed to it and the system call's
 return value.
 
-%description -l de
+%description -l de.UTF-8
 Strace druckt ein Protokoll aller von einem anderen Programm
-ausgegebenen Systemaufrufe, einschlieъlich aller weitergeleiteten
+ausgegebenen Systemaufrufe, einschlieц÷lich aller weitergeleiteten
 Argumente und dem Ausgabewert des Systemaufrufs.
 
-%description -l es
-Strace imprime una "grabaciСn" de cada llamada de sistema que el
-programa hace, incluyendo todos los argumentos pasados para Иl, si la
+%description -l es.UTF-8
+Strace imprime una "grabaciцЁn" de cada llamada de sistema que el
+programa hace, incluyendo todos los argumentos pasados para ц╘l, si la
 vuelta de cada llamada de sistema es verdadera, o si hay creado error.
 
-%description -l fr
-strace affiche l'enregistrement de chaque appel systХme que fait un
-programme ainsi que tous les arguments qui lui ont ИtИ passИs et la
+%description -l fr.UTF-8
+strace affiche l'enregistrement de chaque appel systц╗me que fait un
+programme ainsi que tous les arguments qui lui ont ц╘tц╘ passц╘s et la
 valeur de retour de l'appel.
 
-%description -l pl
-Strace wy╤wietla informacje o ka©dym wywoЁaniu funkcji systemowych
-przez uruchamiany program, w tym rСwnie© wszystkie argumenty wywoЁania
-i zwrСcon╠ warto╤Ф.
+%description -l pl.UTF-8
+Strace wyе⌡wietla informacje o kaе╪dym wywoе┌aniu funkcji systemowych
+przez uruchamiany program, w tym rцЁwnieе╪ wszystkie argumenty wywoе┌ania
+i zwrцЁconд┘ wartoе⌡д┤.
 
-%description -l pt_BR
-Strace imprime uma "gravaГЦo" de cada chamada de sistema que o
+%description -l pt_BR.UTF-8
+Strace imprime uma "gravaц╖цёo" de cada chamada de sistema que o
 programa faz, incluindo todos os argumentos passados para ele e se o
-retorno de cada chamada de sistema И verdadeiro ou gerou erro.
+retorno de cada chamada de sistema ц╘ verdadeiro ou gerou erro.
 
-%description -l ru
-Программа strace перехватывает и регистрирует системные вызовы,
-произведенные и полученные исполняющимся процессом. Strace может
-вывести список всех системных вызовов, их аргументов и возвращаемые
-ими значения. Strace полезна для диагностики проблем и отладки.
+%description -l ru.UTF-8
+п÷я─п╬пЁя─п╟п╪п╪п╟ strace п©п╣я─п╣я┘п╡п╟я┌я▀п╡п╟п╣я┌ п╦ я─п╣пЁп╦я│я┌я─п╦я─я┐п╣я┌ я│п╦я│я┌п╣п╪п╫я▀п╣ п╡я▀п╥п╬п╡я▀,
+п©я─п╬п╦п╥п╡п╣п╢п╣п╫п╫я▀п╣ п╦ п©п╬п╩я┐я┤п╣п╫п╫я▀п╣ п╦я│п©п╬п╩п╫я▐я▌я┴п╦п╪я│я▐ п©я─п╬я├п╣я│я│п╬п╪. Strace п╪п╬п╤п╣я┌
+п╡я▀п╡п╣я│я┌п╦ я│п©п╦я│п╬п╨ п╡я│п╣я┘ я│п╦я│я┌п╣п╪п╫я▀я┘ п╡я▀п╥п╬п╡п╬п╡, п╦я┘ п╟я─пЁя┐п╪п╣п╫я┌п╬п╡ п╦ п╡п╬п╥п╡я─п╟я┴п╟п╣п╪я▀п╣
+п╦п╪п╦ п╥п╫п╟я┤п╣п╫п╦я▐. Strace п©п╬п╩п╣п╥п╫п╟ п╢п╩я▐ п╢п╦п╟пЁп╫п╬я│я┌п╦п╨п╦ п©я─п╬п╠п╩п╣п╪ п╦ п╬я┌п╩п╟п╢п╨п╦.
 
-%description -l tr
-strace bir programЩn ГalЩЧtЩПЩ sЭrece yaptЩПЩ bЭtЭn sistem
-ГaПrЩlarЩnЩ, gЖnderdiПi parametreler ve geri dЖnЭЧ deПerleriyle
-birlikte dЖker.
+%description -l tr.UTF-8
+strace bir programд╠n ц╖alд╠е÷tд╠д÷д╠ sц╪rece yaptд╠д÷д╠ bц╪tц╪n sistem
+ц╖aд÷rд╠larд╠nд╠, gц╤nderdiд÷i parametreler ve geri dц╤nц╪е÷ deд÷erleriyle
+birlikte dц╤ker.
 
-%description -l uk
-Програма strace перехоплю╓ та рег╕стру╓ системн╕ визови, зроблен╕ та
-отриман╕ процесом, який викону╓ться. Strace може вивести список ус╕х
-системних визов╕в, ╖х аргумент╕в та значень, як╕ вони повернули.
-Strace корисний для д╕агностики проблем та в╕дладки.
+%description -l uk.UTF-8
+п÷я─п╬пЁя─п╟п╪п╟ strace п©п╣я─п╣я┘п╬п©п╩я▌я■ я┌п╟ я─п╣пЁя√я│я┌я─я┐я■ я│п╦я│я┌п╣п╪п╫я√ п╡п╦п╥п╬п╡п╦, п╥я─п╬п╠п╩п╣п╫я√ я┌п╟
+п╬я┌я─п╦п╪п╟п╫я√ п©я─п╬я├п╣я│п╬п╪, я▐п╨п╦п╧ п╡п╦п╨п╬п╫я┐я■я┌я▄я│я▐. Strace п╪п╬п╤п╣ п╡п╦п╡п╣я│я┌п╦ я│п©п╦я│п╬п╨ я┐я│я√я┘
+я│п╦я│я┌п╣п╪п╫п╦я┘ п╡п╦п╥п╬п╡я√п╡, я≈я┘ п╟я─пЁя┐п╪п╣п╫я┌я√п╡ я┌п╟ п╥п╫п╟я┤п╣п╫я▄, я▐п╨я√ п╡п╬п╫п╦ п©п╬п╡п╣я─п╫я┐п╩п╦.
+Strace п╨п╬я─п╦я│п╫п╦п╧ п╢п╩я▐ п╢я√п╟пЁп╫п╬я│я┌п╦п╨п╦ п©я─п╬п╠п╩п╣п╪ я┌п╟ п╡я√п╢п╩п╟п╢п╨п╦.
 
 %package graph
 Summary:	strace graph
-Summary(pl):	Graf strace
+Summary(pl.UTF-8):   Graf strace
 Group:		Development/Debuggers
 # NOTE: doesn't require directly strace binary.
 
@@ -86,13 +86,13 @@ commands do.
 The script can also handle the output with strace -t, -tt, or -ttt.
 It will add elapsed time for each process in that case.
 
-%description graph -l pl
-Skrypt strace-graph przetwarza wynik strace -f i wy╤wietla graf
-wywoЁywanych podprocesСw. Jest przydatny do sprawdzania co robi╠
-zЁo©one polecenia.
+%description graph -l pl.UTF-8
+Skrypt strace-graph przetwarza wynik strace -f i wyе⌡wietla graf
+wywoе┌ywanych podprocesцЁw. Jest przydatny do sprawdzania co robiд┘
+zе┌oе╪one polecenia.
 
-Skrypt jest w stanie obsЁu©yФ tak©e wyj╤cie ze strace -t, -tt i -ttt.
-Doda wtedy upЁywaj╠cy czas dla ka©dego procesu.
+Skrypt jest w stanie obsе┌uе╪yд┤ takе╪e wyjе⌡cie ze strace -t, -tt i -ttt.
+Doda wtedy upе┌ywajд┘cy czas dla kaе╪dego procesu.
 
 %prep
 %setup -q
