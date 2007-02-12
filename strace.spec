@@ -1,12 +1,12 @@
 Summary:	prints system call strace of a running process
-Summary(de.UTF-8):   druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
-Summary(es.UTF-8):   Enseña las llamadas de sistema de un proceso en ejecución
-Summary(fr.UTF-8):   affiche l'appel système strace d'un processus en exécution
-Summary(pl.UTF-8):   strace wyświetla funkcje systemowe wywoływane przez uruchomiony proces
-Summary(pt_BR.UTF-8):   Mostra as chamadas de sistema de um processo rodando
-Summary(ru.UTF-8):   Отслеживает и показывает системные вызовы, связанные с запущенным процессом
-Summary(tr.UTF-8):   Çalışan bir sürecin yaptığı sistem çağrılarını listeler
-Summary(uk.UTF-8):   Відслідковує та показує системні виклики, пов'язані із запущеним процесом
+Summary(de.UTF-8):	druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
+Summary(es.UTF-8):	Enseña las llamadas de sistema de un proceso en ejecución
+Summary(fr.UTF-8):	affiche l'appel système strace d'un processus en exécution
+Summary(pl.UTF-8):	strace wyświetla funkcje systemowe wywoływane przez uruchomiony proces
+Summary(pt_BR.UTF-8):	Mostra as chamadas de sistema de um processo rodando
+Summary(ru.UTF-8):	Отслеживает и показывает системные вызовы, связанные с запущенным процессом
+Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
+Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
 Version:	4.5.15
 Release:	1
@@ -74,7 +74,7 @@ Strace корисний для діагностики проблем та від
 
 %package graph
 Summary:	strace graph
-Summary(pl.UTF-8):   Graf strace
+Summary(pl.UTF-8):	Graf strace
 Group:		Development/Debuggers
 # NOTE: doesn't require directly strace binary.
 
