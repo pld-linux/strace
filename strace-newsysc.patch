@@ -69,3 +69,17 @@ diff -Nur strace-4.5.1.orig/linux/syscallent.h strace-4.5.1/linux/syscallent.h
  
  int	sys_umask();		/* XXX */
  
+--- strace-4.5.15/linux/sparc/syscall.h.orig	2007-04-16 19:07:11.068255000 +0000
++++ strace-4.5.15/linux/sparc/syscall.h	2007-04-16 19:53:44.194814500 +0000
+@@ -204,4 +204,11 @@
+ int	sys_clock_getres(), sys_clock_nanosleep();
+ int	sys_timer_create(), sys_timer_settime(), sys_timer_gettime();
+ 
++int	sys_io_setup(), sys_io_destroy(), sys_io_submit(), sys_io_cancel(), sys_io_getevents();
++int	sys_mq_open(), sys_mq_unlink(), sys_mq_timedsend(), sys_mq_timedreceive(), sys_mq_notify(), sys_mq_getsetattr();
++int	sys_waitid();
++int	sys_openat(), sys_mkdirat(), sys_mknodat(), sys_fchownat(), sys_futimesat(), sys_newfstatat(), sys_unlinkat(), sys_renameat(), sys_linkat(), sys_symlinkat(), sys_readlinkat(), sys_fchmodat(),	sys_faccessat();
++int	sys_pselect6(), sys_ppoll();
++int	sys_unshare();
++
+ #include "syscall1.h"
