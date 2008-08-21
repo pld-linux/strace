@@ -8,17 +8,14 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	4.5.16
+Version:	4.5.17
 Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
-# Source0-md5:	77f66d09aa82981bb6d65fa19a2c1ba9
+# Source0-md5:	60f50358eeb19cadabef53b548df2732
 Source1:	%{name}.1.pl
-Patch0:		%{name}-newsysc.patch
-Patch1:		%{name}-getdents64.patch
-Patch2:		%{name}-stat64.patch
-Patch3:		%{name}-sparc64.patch
+Patch0:		%{name}-stat64.patch
 URL:		http://sourceforge.net/projects/strace/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
@@ -96,9 +93,6 @@ Doda wtedy upływający czas dla każdego procesu.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 %{__aclocal}
