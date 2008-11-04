@@ -17,8 +17,11 @@ Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
 Source1:	%{name}.1.pl
 Patch0:		%{name}-stat64.patch
 URL:		http://sourceforge.net/projects/strace/
+# acl and libaio for headers only
+BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
+BuildRequires:	libaio-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
