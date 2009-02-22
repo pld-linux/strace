@@ -1,0 +1,298 @@
+commit ba2cfac31ccfd0aa4c93524088d1be4fca3e68f6
+Author: ldv <ldv>
+Date:   Mon Nov 10 22:53:02 2008 +0000
+
+    2008-10-23  Dmitry V. Levin  <ldv@altlinux.org>
+    
+    	Implement parsers for new linux syscalls.
+    	* desc.c (do_dup2, [LINUX] sys_dup3): New functions.
+    	(sys_dup2): Use do_dup2.
+    	[LINUX] (sys_epoll_create1): New function.
+    	[LINUX] (do_eventfd, sys_eventfd2): New functions.
+    	[LINUX] (sys_eventfd): Use do_eventfd.
+    	* net.c (do_pipe, [LINUX] sys_pipe2): New functions.
+    	(sys_pipe): Use do_pipe.
+    	* signal.c [LINUX] (do_signalfd, sys_signalfd4): New functions.
+    	[LINUX] (sys_signalfd): Use do_signalfd.
+    	* linux/syscall.h: Declare new sys_* functions.
+    	* linux/syscallent.h: Hook up signalfd4, eventfd2, epoll_create1,
+    	dup3, pipe2, inotify_init1.
+    	* linux/x86_64/syscallent.h: Hook up paccept, signalfd4, eventfd2,
+    	epoll_create1, dup3, pipe2, inotify_init1.
+
+diff --git a/desc.c b/desc.c
+index 8b8a894..222cb2b 100644
+--- a/desc.c
++++ b/desc.c
+@@ -242,6 +242,8 @@ int getlk;
+ }
+ #endif
+ 
++extern const struct xlat open_mode_flags[];
++
+ /*
+  * low bits of the open(2) flags define access mode,
+  * other bits are real flags.
+@@ -250,7 +252,6 @@ static const char *
+ sprint_open_modes(mode_t flags)
+ {
+ 	extern const struct xlat open_access_modes[];
+-	extern const struct xlat open_mode_flags[];
+ 	static char outstr[1024];
+ 	const char *str = xlookup(open_access_modes, flags & 3);
+ 	const char *sep = "";
+@@ -396,16 +397,33 @@ struct tcb *tcp;
+ 	return 0;
+ }
+ 
+-int
+-sys_dup2(tcp)
+-struct tcb *tcp;
++static int
++do_dup2(struct tcb *tcp, int flags_arg)
+ {
+ 	if (entering(tcp)) {
+ 		tprintf("%ld, %ld", tcp->u_arg[0], tcp->u_arg[1]);
++		if (flags_arg >= 0) {
++			tprintf(", ");
++			printflags(open_mode_flags, tcp->u_arg[flags_arg], "O_???");
++		}
+ 	}
+ 	return 0;
+ }
+ 
++int
++sys_dup2(struct tcb *tcp)
++{
++	return do_dup2(tcp, -1);
++}
++
++#ifdef LINUX
++int
++sys_dup3(struct tcb *tcp)
++{
++	return do_dup2(tcp, 2);
++}
++#endif
++
+ #if defined(ALPHA) || defined(FREEBSD) || defined(SUNOS4)
+ int
+ sys_getdtablesize(tcp)
+@@ -605,14 +623,21 @@ static struct xlat epollevents[] = {
+ };
+ 
+ int
+-sys_epoll_create(tcp)
+-struct tcb *tcp;
++sys_epoll_create(struct tcb *tcp)
+ {
+ 	if (entering(tcp))
+ 		tprintf("%ld", tcp->u_arg[0]);
+ 	return 0;
+ }
+ 
++int
++sys_epoll_create1(struct tcb *tcp)
++{
++	if (entering(tcp))
++		printflags(open_mode_flags, tcp->u_arg[0], "O_???");
++	return 0;
++}
++
+ #ifdef HAVE_SYS_EPOLL_H
+ static void
+ print_epoll_event(ev)
+@@ -889,12 +914,28 @@ sys_pselect6(struct tcb *tcp)
+ 	return rc;
+ }
+ 
+-int
+-sys_eventfd(tcp)
+-struct tcb *tcp;
++static int
++do_eventfd(struct tcb *tcp, int flags_arg)
+ {
+-	if (entering(tcp))
++	if (entering(tcp)) {
+ 		tprintf("%lu", tcp->u_arg[0]);
++		if (flags_arg >= 0) {
++			tprintf(", ");
++			printflags(open_mode_flags, tcp->u_arg[flags_arg], "O_???");
++		}
++	}
+ 	return 0;
+ }
++
++int
++sys_eventfd(struct tcb *tcp)
++{
++	return do_eventfd(tcp, -1);
++}
++
++int
++sys_eventfd2(struct tcb *tcp)
++{
++	return do_eventfd(tcp, 1);
++}
+ #endif
+diff --git a/linux/syscall.h b/linux/syscall.h
+index 96d6d2f..f8e4f20 100644
+--- a/linux/syscall.h
++++ b/linux/syscall.h
+@@ -105,6 +105,7 @@ int sys_io_setup(), sys_io_submit(), sys_io_cancel(), sys_io_getevents(), sys_io
+ int sys_utimensat(), sys_epoll_pwait(), sys_signalfd(), sys_timerfd(), sys_eventfd();
+ int sys_getcpu();
+ int sys_fallocate(), sys_timerfd_create(), sys_timerfd_settime(), sys_timerfd_gettime();
++int sys_signalfd4(), sys_eventfd2(), sys_epoll_create1(), sys_dup3(), sys_pipe2();
+ 
+ /* sys_socketcall subcalls */
+ 
+diff --git a/linux/syscallent.h b/linux/syscallent.h
+index 59c9a72..53bd9b3 100644
+--- a/linux/syscallent.h
++++ b/linux/syscallent.h
+@@ -357,12 +357,12 @@
+ 	{ 6,	TF,	sys_fallocate,		"fallocate"	}, /* 324 */
+ 	{ 4,	TD,	sys_timerfd_settime,	"timerfd_settime"}, /* 325 */
+ 	{ 2,	TD,	sys_timerfd_gettime,	"timerfd_gettime"}, /* 326 */
+-	{ 5,	0,	printargs,		"SYS_327"	}, /* 327 */
+-	{ 5,	0,	printargs,		"SYS_328"	}, /* 328 */
+-	{ 5,	0,	printargs,		"SYS_329"	}, /* 329 */
+-	{ 5,	0,	printargs,		"SYS_330"	}, /* 330 */
+-	{ 5,	0,	printargs,		"SYS_331"	}, /* 331 */
+-	{ 5,	0,	printargs,		"SYS_332"	}, /* 332 */
++	{ 4,	TD|TS,	sys_signalfd4,		"signalfd4"	}, /* 327 */
++	{ 2,	TD,	sys_eventfd2,		"eventfd2"	}, /* 328 */
++	{ 1,	0,	sys_epoll_create1,	"epoll_create1"	}, /* 329 */
++	{ 3,	TD,	sys_dup3,		"dup3"		}, /* 330 */
++	{ 2,	TD,	sys_pipe2,		"pipe2"		}, /* 331 */
++	{ 1,	TD,	printargs,		"inotify_init1"	}, /* 332 */
+ 	{ 5,	0,	printargs,		"SYS_333"	}, /* 333 */
+ 	{ 5,	0,	printargs,		"SYS_334"	}, /* 334 */
+ 	{ 5,	0,	printargs,		"SYS_335"	}, /* 335 */
+diff --git a/linux/x86_64/syscallent.h b/linux/x86_64/syscallent.h
+index 0b2150b..4b4eaf0 100644
+--- a/linux/x86_64/syscallent.h
++++ b/linux/x86_64/syscallent.h
+@@ -286,3 +286,10 @@
+ 	{ 6,	TF,	sys_fallocate,		"fallocate"	}, /* 285 */
+ 	{ 4,	TD,	sys_timerfd_settime,	"timerfd_settime"}, /* 286 */
+ 	{ 2,	TD,	sys_timerfd_gettime,	"timerfd_gettime"}, /* 287 */
++	{ 6,	TN,	printargs,		"paccept"	}, /* 288 */
++	{ 4,	TD|TS,	sys_signalfd4,		"signalfd4"	}, /* 289 */
++	{ 2,	TD,	sys_eventfd2,		"eventfd2"	}, /* 290 */
++	{ 1,	0,	sys_epoll_create1,	"epoll_create1"	}, /* 291 */
++	{ 3,	TD,	sys_dup3,		"dup3"		}, /* 292 */
++	{ 2,	TD,	sys_pipe2,		"pipe2"		}, /* 293 */
++	{ 1,	TD,	printargs,		"inotify_init1"	}, /* 294 */
+diff --git a/net.c b/net.c
+index f5426b2..d5426bd 100644
+--- a/net.c
++++ b/net.c
+@@ -1463,31 +1463,50 @@
+ 	return sys_accept(tcp);
+ }
+ 
+-int
+-sys_pipe(tcp)
+-struct tcb *tcp;
+-{
+-
+-#if defined(LINUX) && !defined(SPARC) && !defined(SPARC64) && !defined(SH) && !defined(IA64)
+-	int fds[2];
++extern const struct xlat open_mode_flags[];
+ 
++	static int
++do_pipe(struct tcb *tcp, int flags_arg)
++{
+ 	if (exiting(tcp)) {
+ 		if (syserror(tcp)) {
+ 			tprintf("%#lx", tcp->u_arg[0]);
+-			return 0;
+-		}
+-		if (umoven(tcp, tcp->u_arg[0], sizeof fds, (char *) fds) < 0)
+-			tprintf("[...]");
+-		else
+-			tprintf("[%u, %u]", fds[0], fds[1]);
+-	}
++		} else {
++#if defined(LINUX) && !defined(SPARC) && !defined(SPARC64) && !defined(SH) && !defined(IA64)
++			int fds[2];
++
++			if (umoven(tcp, tcp->u_arg[0], sizeof fds, (char *) fds) < 0)
++				tprintf("[...]");
++			else
++				tprintf("[%u, %u]", fds[0], fds[1]);
+ #elif defined(SPARC) || defined(SPARC64) || defined(SH) || defined(SVR4) || defined(FREEBSD) || defined(IA64)
+-	if (exiting(tcp))
+-		tprintf("[%lu, %lu]", tcp->u_rval, getrval2(tcp));
++			tprintf("[%lu, %lu]", tcp->u_rval, getrval2(tcp));
++#else
++			tprintf("%#lx", tcp->u_arg[0]);
+ #endif
++		}
++		if (flags_arg >= 0) {
++			tprintf(", ");
++			printflags(open_mode_flags, tcp->u_arg[flags_arg], "O_???");
++		}
++	}
+ 	return 0;
+ }
+ 
++	int
++sys_pipe(struct tcb *tcp)
++{
++	return do_pipe(tcp, -1);
++}
++
++#ifdef LINUX
++	int
++sys_pipe2(struct tcb *tcp)
++{
++	return do_pipe(tcp, 1);
++}
++#endif
++
+ int
+ sys_socketpair(tcp)
+ struct tcb *tcp;
+diff --git a/signal.c b/signal.c
+index 12bbac3..0366bb5 100644
+--- a/signal.c
++++ b/signal.c
+@@ -2011,15 +2011,32 @@ struct tcb *tcp;
+ 	return 0;
+ }
+ 
+-int
+-sys_signalfd(tcp)
+-struct tcb *tcp;
++extern const struct xlat open_mode_flags[];
++
++static int
++do_signalfd(struct tcb *tcp, int flags_arg)
+ {
+ 	if (entering(tcp)) {
+ 		tprintf("%ld, ", tcp->u_arg[0]);
+ 		print_sigset(tcp, tcp->u_arg[1], 1);
+ 		tprintf("%lu", tcp->u_arg[2]);
++		if (flags_arg >= 0) {
++			tprintf(", ");
++			printflags(open_mode_flags, tcp->u_arg[flags_arg], "O_???");
++		}
+ 	}
+ 	return 0;
+ }
++
++int
++sys_signalfd(struct tcb *tcp)
++{
++	return do_signalfd(tcp, -1);
++}
++
++int
++sys_signalfd4(struct tcb *tcp)
++{
++	return do_signalfd(tcp, 3);
++}
+ #endif /* LINUX */
