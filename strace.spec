@@ -18,6 +18,7 @@ Source1:	%{name}.1.pl
 Patch0:		%{name}-stat64.patch
 Patch1:		%{name}-fd.patch
 Patch2:		%{name}-utilc.patch
+Patch3:		%{name}-semop.patch
 URL:		http://sourceforge.net/projects/strace/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
@@ -100,6 +101,7 @@ Doda wtedy upływający czas dla każdego procesu.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p0
+%patch3 -p1
 
 %build
 %{__aclocal}
