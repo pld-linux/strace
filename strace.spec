@@ -8,17 +8,14 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	4.5.18
-Release:	5
+Version:	4.5.19
+Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
-# Source0-md5:	e9449fcee97e6a8ed73934c883c870e0
+# Source0-md5:	2415e435d61e40315a298c80aced0cda
 Source1:	%{name}.1.pl
 Patch0:		%{name}-stat64.patch
-Patch1:		%{name}-fd.patch
-Patch2:		%{name}-utilc.patch
-Patch3:		%{name}-semop.patch
 URL:		http://sourceforge.net/projects/strace/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
@@ -99,9 +96,6 @@ Doda wtedy upływający czas dla każdego procesu.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p0
-%patch3 -p1
 
 %build
 %{__aclocal}
@@ -126,8 +120,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc COPYRIGHT CREDITS ChangeLog NEWS README-linux TODO
 %attr(755,root,root) %{_bindir}/strace
-%{_mandir}/man1/*
-%lang(pl) %{_mandir}/pl/man1/*
+%{_mandir}/man1/strace.1*
+%lang(pl) %{_mandir}/pl/man1/strace.1*
 
 %files graph
 %defattr(644,root,root,755)
