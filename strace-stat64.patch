@@ -1,18 +1,18 @@
---- strace-4.5.3/configure.ac.orig	2004-04-25 15:46:46.000000000 +0000
-+++ strace-4.5.3/configure.ac	2004-04-25 16:29:07.000000000 +0000
-@@ -165,6 +165,14 @@
- 		  struct stat.st_level,
- 		  struct stat.st_rdev])
+--- strace-4.5.20/configure.ac~ 2010-04-13 18:09:23.000000000 +0200
++++ strace-4.5.20/configure.ac  2010-04-15 09:33:06.216138318 +0200
+@@ -192,6 +192,14 @@
+                  struct stat.st_rdev])
  AC_STAT64
+ AC_STATFS64
 +AC_CHECK_MEMBERS([struct stat64.st_blksize,
-+		  struct stat64.st_blocks,
-+		  struct stat64.st_aclcnt,
-+		  struct stat64.st_flags,
-+		  struct stat64.st_fstype,
-+		  struct stat64.st_gen,
-+		  struct stat64.st_level,
-+		  struct stat64.st_rdev],,,[#include <asm/stat.h>])
- 
++                 struct stat64.st_blocks,
++                 struct stat64.st_aclcnt,
++                 struct stat64.st_flags,
++                 struct stat64.st_fstype,
++                 struct stat64.st_gen,
++                 struct stat64.st_level,
++                 struct stat64.st_rdev],,,[#include <asm/stat.h>])
+
  AC_TYPE_SIGNAL
  AC_TYPE_UID_T
 --- strace-4.5.12/file.c.orig	2005-06-08 22:45:28.000000000 +0200
