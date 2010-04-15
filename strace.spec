@@ -8,12 +8,12 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	4.5.19
+Version:	4.5.20
 Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
-Source0:	http://dl.sourceforge.net/strace/%{name}-%{version}.tar.bz2
-# Source0-md5:	2415e435d61e40315a298c80aced0cda
+Source0:	http://downloads.sourceforge.net/strace/%{name}-%{version}.tar.bz2
+# Source0-md5:	64dfe10d9db0c1e34030891695ffca4b
 Source1:	%{name}.1.pl
 Patch0:		%{name}-stat64.patch
 URL:		http://sourceforge.net/projects/strace/
@@ -82,8 +82,8 @@ strace-graph script processes strace -f output. It displays a graph of
 invoked subprocesses, and is useful for finding out what complex
 commands do.
 
-The script can also handle the output with strace -t, -tt, or -ttt.
-It will add elapsed time for each process in that case.
+The script can also handle the output with strace -t, -tt, or -ttt. It
+will add elapsed time for each process in that case.
 
 %description graph -l pl.UTF-8
 Skrypt strace-graph przetwarza wynik strace -f i wyświetla graf
