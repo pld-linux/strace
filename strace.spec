@@ -8,18 +8,17 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	4.7
+Version:	4.8
 Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://downloads.sourceforge.net/strace/%{name}-%{version}.tar.xz
-# Source0-md5:	6054c3880a00c6703f83b57f15e04642
+# Source0-md5:	c575ef43829586801f514fd91bfe7575
 Source1:	%{name}.1.pl
+Patch0:		strace-fix-ftbfs.patch
 URL:		http://sourceforge.net/projects/strace/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
-BuildRequires:	autoconf >= 2.57
-BuildRequires:	automake
 BuildRequires:	libaio-devel
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
@@ -96,12 +95,9 @@ Doda wtedy upływający czas dla każdego procesu.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
 %configure
 %{__make}
 
@@ -118,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYRIGHT CREDITS ChangeLog NEWS README-linux
+%doc COPYING CREDITS ChangeLog NEWS README-linux
 %attr(755,root,root) %{_bindir}/strace
 %attr(755,root,root) %{_bindir}/strace-log-merge
 %{_mandir}/man1/strace.1*
