@@ -8,14 +8,13 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	4.8
+Version:	4.9
 Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://downloads.sourceforge.net/strace/%{name}-%{version}.tar.xz
-# Source0-md5:	c575ef43829586801f514fd91bfe7575
+# Source0-md5:	885eafadb10f6c60464a266d3929a2a4
 Source1:	%{name}.1.pl
-Patch0:		strace-fix-ftbfs.patch
 URL:		http://sourceforge.net/projects/strace/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
@@ -95,7 +94,6 @@ Doda wtedy upływający czas dla każdego procesu.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %configure
