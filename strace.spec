@@ -8,12 +8,12 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	4.9
-Release:	2
+Version:	4.10
+Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	http://downloads.sourceforge.net/strace/%{name}-%{version}.tar.xz
-# Source0-md5:	885eafadb10f6c60464a266d3929a2a4
+# Source0-md5:	107a5be455493861189e9b57a3a51912
 Source1:	%{name}.1.pl
 URL:		http://sourceforge.net/projects/strace/
 # acl and libaio for headers only
@@ -112,7 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING CREDITS ChangeLog NEWS README-linux
+%doc COPYING CREDITS ChangeLog NEWS README-linux-ptrace
 %attr(755,root,root) %{_bindir}/strace
 %attr(755,root,root) %{_bindir}/strace-log-merge
 %{_mandir}/man1/strace.1*
