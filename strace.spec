@@ -1,3 +1,10 @@
+#
+# Conditional build:
+%bcond_without	libunwind	# strack tracing using libunwind
+#
+%ifnarch %{ix86} %{x8664} arm hppa ia64 mips ppc ppc64 sh
+%undefine	with_libunwind
+%endif
 Summary:	prints system call strace of a running process
 Summary(de.UTF-8):	druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
 Summary(es.UTF-8):	Enseña las llamadas de sistema de un proceso en ejecución
@@ -19,6 +26,7 @@ URL:		http://sourceforge.net/projects/strace/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
 BuildRequires:	libaio-devel
+%{?with_libunwind:BuildRequires:	libunwind-devel}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -96,7 +104,15 @@ Doda wtedy upływający czas dla każdego procesu.
 %setup -q
 
 %build
-%configure
+%if %{with libunwind}
+# workaround for:
+# /usr/bin/ld: copy reloc against protected `_UPT_accessors' is invalid
+# /usr/bin/ld: failed to set dynamic section sizes: Bad value
+# (should be fixed in gcc >(=?) 5.1)
+CFLAGS="%{rpmcflags} -fPIE"
+%endif
+%configure \
+	%{!?with_libunwind:--without-libunwind}
 %{__make}
 
 %install
