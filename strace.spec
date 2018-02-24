@@ -19,10 +19,10 @@ Version:	4.21
 Release:	1
 License:	BSD-like
 Group:		Development/Debuggers
-Source0:	http://downloads.sourceforge.net/strace/%{name}-%{version}.tar.xz
-# Source0-md5:	2f3d225b4de54ffe49a392f39923c5fd
+Source0:	https://github.com/strace/strace/releases/download/v%{version}/%{name}-%{version}.tar.xz
+# Source0-md5:	785b679a75e9758ebeb66816f315b9fe
 Source1:	%{name}.1.pl
-URL:		http://sourceforge.net/projects/strace/
+URL:		https://strace.io/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
 BuildRequires:	libaio-devel
