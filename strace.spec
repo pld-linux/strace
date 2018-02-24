@@ -1,8 +1,9 @@
 #
 # Conditional build:
 %bcond_without	libunwind	# strack tracing using libunwind
+%bcond_without	libiberty	# symbol demangling in stack backtraces
 #
-%ifnarch %{ix86} %{x8664} arm hppa ia64 mips ppc ppc64 sh
+%ifnarch %{ix86} %{x8664} x32 %{arm} hppa ia64 mips ppc ppc64 sh
 %undefine	with_libunwind
 %endif
 Summary:	prints system call strace of a running process
@@ -25,6 +26,7 @@ Source1:	%{name}.1.pl
 URL:		https://strace.io/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
+%{?with_libiberty:BuildRequires:	binutils-devel}
 BuildRequires:	libaio-devel
 %{?with_libunwind:BuildRequires:	libunwind-devel}
 BuildRequires:	tar >= 1:1.22
@@ -112,6 +114,7 @@ Doda wtedy upływający czas dla każdego procesu.
 CFLAGS="%{rpmcflags} -fPIE"
 %endif
 %configure \
+	%{!?with_libiberty:--without-libiberty} \
 	%{!?with_libunwind:--without-libunwind}
 %{__make}
 
