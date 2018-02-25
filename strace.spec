@@ -17,7 +17,7 @@ Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını li
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
 Version:	4.21
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	https://github.com/strace/strace/releases/download/v%{version}/%{name}-%{version}.tar.xz
