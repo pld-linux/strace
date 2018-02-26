@@ -17,7 +17,7 @@ Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını li
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
 Version:	4.21
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Development/Debuggers
 Source0:	https://github.com/strace/strace/releases/download/v%{version}/%{name}-%{version}.tar.xz
@@ -26,7 +26,7 @@ Source1:	%{name}.1.pl
 URL:		https://strace.io/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
-%{?with_libiberty:BuildRequires:	binutils-devel}
+%{?with_libiberty:BuildRequires:	binutils-devel >= 4:2.30-1}
 BuildRequires:	libaio-devel
 %{?with_libunwind:BuildRequires:	libunwind-devel}
 BuildRequires:	tar >= 1:1.22
