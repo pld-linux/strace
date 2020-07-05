@@ -6,6 +6,11 @@
 %ifnarch %{ix86} %{x8664} x32 %{arm} hppa ia64 mips ppc ppc64 sh
 %undefine	with_libunwind
 %endif
+
+%ifnarch aarch64
+%define		with_mpers	1
+%endif
+
 Summary:	prints system call strace of a running process
 Summary(de.UTF-8):	druckt ein Protokoll der Systemaufrufe eines laufenden Prozesses
 Summary(es.UTF-8):	Enseña las llamadas de sistema de un proceso en ejecución
@@ -115,7 +120,8 @@ CFLAGS="%{rpmcflags} -fPIE"
 %endif
 %configure \
 	%{!?with_libiberty:--without-libiberty} \
-	%{!?with_libunwind:--without-libunwind}
+	%{!?with_libunwind:--without-libunwind} \
+        --enable-mpers=%{?with_mpers:yes}%{!?with_mpers:no}
 %{__make}
 
 %install
