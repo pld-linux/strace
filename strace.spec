@@ -21,12 +21,12 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	5.10
+Version:	5.11
 Release:	1
 License:	LGPL v2.1+
 Group:		Development/Debuggers
 Source0:	https://github.com/strace/strace/releases/download/v%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	5f9f87f9afa282e7512f67a129287d6c
+# Source0-md5:	f5a317fd535465cf9130d0547661f5c4
 Source1:	%{name}.1.pl
 URL:		https://strace.io/
 # acl and libaio for headers only
@@ -132,12 +132,14 @@ rm -rf $RPM_BUILD_ROOT
 
 install -D %{SOURCE1} $RPM_BUILD_ROOT%{_mandir}/pl/man1/strace.1
 
+cp -p src/strace-graph $RPM_BUILD_ROOT%{_bindir}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING CREDITS ChangeLog NEWS README-linux-ptrace
+%doc COPYING CREDITS ChangeLog NEWS doc/README-linux-ptrace
 %attr(755,root,root) %{_bindir}/strace
 %attr(755,root,root) %{_bindir}/strace-log-merge
 %{_mandir}/man1/strace.1*
