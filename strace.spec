@@ -21,14 +21,13 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	5.19
-Release:	2
+Version:	6.3
+Release:	1
 License:	LGPL v2.1+
 Group:		Development/Debuggers
 Source0:	https://github.com/strace/strace/releases/download/v%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	13a37bd709b452a7c30e89f0db39b535
+# Source0-md5:	119a0d932104452782149467ad619b97
 Source1:	%{name}.1.pl
-Patch0:		%{name}-binutils2.36.patch
 URL:		https://strace.io/
 # acl and libaio for headers only
 BuildRequires:	acl-devel
@@ -110,7 +109,6 @@ Doda wtedy upływający czas dla każdego procesu.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %if %{with libunwind}
