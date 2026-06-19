@@ -21,12 +21,12 @@ Summary(ru.UTF-8):	Отслеживает и показывает системн
 Summary(tr.UTF-8):	Çalışan bir sürecin yaptığı sistem çağrılarını listeler
 Summary(uk.UTF-8):	Відслідковує та показує системні виклики, пов'язані із запущеним процесом
 Name:		strace
-Version:	7.0
+Version:	7.1
 Release:	1
 License:	LGPL v2.1+
 Group:		Development/Debuggers
 Source0:	https://github.com/strace/strace/releases/download/v%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	3453a5880241e7327e467410646b611a
+# Source0-md5:	6455330775e3ed8430bc4a00c4ba525c
 Source1:	%{name}.1.pl
 URL:		https://strace.io/
 # acl and libaio for headers only
